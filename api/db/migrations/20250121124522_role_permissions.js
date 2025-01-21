@@ -6,18 +6,16 @@ import { createTriggerUpdateTimestampTrigger } from "../knex.utilities.js";
  */
 export function up(knex) {
   return knex.schema
-    .createTable("role", (table) => {
+    .createTable("role_permissions", (table) => {
       table.uuid("id").primary().defaultTo(knex.fn.uuid());
-      table.uuid("tenant").notNullable();
-      table.foreign("tenant").references("tenant.id");
-      table.text("name").notNullable();
-      table.text("key").notNullable();
-      table.text("description").nullable();
+      table.uuid("role").notNullable();
+      table.foreign("role").references("role.id");
+      table.uuid("permissions").notNullable();
+      table.foreign("permissions").references("permissions.id");
       table.boolean("is_active").defaultTo(true);
-      table.boolean("is_deleted").defaultTo(false);
       table.timestamps(true, true);
     })
-    .raw(createTriggerUpdateTimestampTrigger("role"));
+    .raw(createTriggerUpdateTimestampTrigger("role_permissions"));
 }
 
 /**
@@ -25,5 +23,5 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-  return knex.schema.dropTable("role");
+  return knex.schema.dropTable("role_permissions");
 }
