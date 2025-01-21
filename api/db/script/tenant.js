@@ -9,10 +9,6 @@ const { hashSync } = pkg;
 export async function script(knex) {
   const transaction = await knex.transaction();
 
-  const tenantName = await input({ message: "enter tenant name:  " });
-  if (!tenantName) {
-    throw new Error("tenant name is required");
-  }
   const tenantDomain = await input({ message: "enter tenant domain:  " });
   if (!tenantDomain) {
     throw new Error("tenant domain is required");
