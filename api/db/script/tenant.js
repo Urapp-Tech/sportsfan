@@ -96,10 +96,10 @@ export async function script(knex) {
       })
       .returning("*");
 
-      const [role] = await transaction("role")
+    const [role] = await transaction("role")
       .insert({
         tenant: tenant.id,
-        name: "ADMIN",
+        name: "ADMINISTRATOR",
         description: "This is manager role",
         is_active: true,
         is_deleted: false,
