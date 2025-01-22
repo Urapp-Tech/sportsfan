@@ -1,5 +1,5 @@
-import controller from "./office-user.controller.js";
-import schema from "./office-user.swagger.js";
+import controller from "./role-permissions.controller.js";
+import schema from "./role-permissions.swagger.js";
 
 const rolePermissionsRoutes = (fastify, options, done) => {
   fastify.get(
