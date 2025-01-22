@@ -1,20 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
-import { lazy, Suspense } from 'react';
-import { Navigate, RouteObject } from 'react-router';
 import AppLayout from '@/layout/AppLayout';
 import AuthLayout from '@/layout/AuthLayout';
 import LayoutOutlet from '@/layout/LayoutOutlet';
 import Login from '@/pages/auth/Login';
-import Users from '@/pages/users/Users';
-import Cabins from '@/pages/cabins/Cabins';
-import Employees from '@/pages/employees/Employees';
 import EmployeeCabinHistory from '@/pages/employees/EmployeeCabinHistory';
+import Employees from '@/pages/employees/Employees';
 import PanelSetting from '@/pages/setting/panelSetting';
 import SystemConfiguration from '@/pages/setting/systemConfiguration';
-import CabinHistory from '@/pages/cabins/CabinHistory';
-import Categories from '@/pages/operations/categories/Categories';
-import CategoryItems from '@/pages/operations/category-items/CategoryItems';
-import Reports from '@/pages/operations/reports/Reports';
+import Users from '@/pages/users/Users';
+import { lazy, Suspense } from 'react';
+import { Navigate, RouteObject } from 'react-router';
+import Otp from './pages/auth/Otp';
 
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 
@@ -40,6 +36,15 @@ export const routeObjects: RouteObject[] = [
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <Login />
+              </Suspense>
+            ),
+          },
+
+          {
+            path: 'otp',
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Otp />
               </Suspense>
             ),
           },

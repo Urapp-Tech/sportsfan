@@ -14,13 +14,12 @@ import { useSelector } from 'react-redux';
 import {
   Form,
   FormControl,
-  FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 // import { button } from '@/components/ui/button';
 import assets from '@/assets/images';
 import { Button } from '@/components/ui/button';
@@ -40,7 +39,7 @@ interface LoginFields {
   password: string;
 }
 
-const Login = () => {
+const Otp = () => {
   const { toast } = useToast();
   const form = useForm<LoginFields>();
   const dispatch = useAppDispatch();
@@ -104,7 +103,7 @@ const Login = () => {
     <div className="bg-wrap w-full">
       <div className="flex items-center">
         <div className='max-w-[795px] h-[889px]'>
-          <img src={assets.images.signBanner} alt='banner' className='w-full max-w-full h-full object-contain' />
+          <img src={assets.images.otpBanner} alt='banner' className='w-full max-w-full h-full object-contain' />
         </div>
         <div className="w-full max-w-[528px] min-h-[776px] mx-auto  p-[30px] bg-quinary-bg rounded-[20px] sign-bg-wrap">
           <div className="w-full max-w-[122px] h-[40px] mx-auto">
@@ -115,8 +114,8 @@ const Login = () => {
             />
           </div>
           <div className=' max-w-[242px] mx-auto mt-[100px] mb-5'>
-            <h1 className='text-[48px] font-semibold capitalize text-center leading-[normal] mb-4 text-tertiary-bg'>sign in</h1>
-            <p className='text-[10px] leading-normal text-center font-normal text-quaternary-bg'>By signing in, you agree to our <NavLink to="" className='font-semibold text-tertiary-bg'>Privacy Policy</NavLink> and <NavLink to="" className='font-semibold text-tertiary-bg'>Terms and Conditions</NavLink></p>
+            <h1 className='text-[40px] font-semibold capitalize text-center leading-[normal] mb-4 text-tertiary-bg'>Verify Code</h1>
+            <p className='text-[10px] leading-normal text-center font-normal text-quaternary-bg'>Please enter the code are just sent to <NavLink to="" className='font-semibold text-tertiary-bg'>Garett_Schowalter@gmail.com</NavLink></p>
           </div>
           <div className="">
             <Form {...form}>
@@ -129,82 +128,98 @@ const Login = () => {
                       htmlFor="password"
                       className="text-[14px] font-medium ml-1 text-tertiary-bg"
                     >
-                      Email / Phone
+                      Code
                     </FormLabel>
-                    <FormControl className="m-1 w-full">
-                      <div className="mb-2">
-                        <Input
-                          className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
-                          id="email"
-                          placeholder="Enter email or phone"
-                          type="text"
-                          {...register('email', {
-                            required: 'Please enter your email or phone.',
-                          })}
-                        //   disableUnderline
-                        />
-                        {errors.email && (
-                          <FormMessage>*{errors.email.message}</FormMessage>
-                        )}
-                      </div>
-                    </FormControl>
-                  </div>
-                  <div className="form-group w-full">
-                    <FormItem>
-                      <FormLabel
-                        htmlFor="password"
-                        className="text-[14px] font-medium ml-1 text-tertiary-bg"
-                      >
-                        Password
-                      </FormLabel>
-                      {/* <FormControl> */}
-                      <div className="relative">
-                        <Input
-                          id="password"
-                          placeholder="********"
-                          type={passwordVisible ? 'text' : 'password'}
-                          className="h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0 rounded-[20px]"
-                          {...register('password', {
-                            required: 'Please enter your password.',
-                          })}
-                        />
-                        <Button
-                          variant="ghost"
-                          type="button"
-                          className="bg-transparent absolute inset-y-0 top-[6px] right-[6px] flex items-center pr-3 hover:bg-primary-bg"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {passwordVisible ? (
-                            <EyeOff color="black" />
-                          ) : (
-                            <Eye color="black" />
+                    <div className='flex gap-0'>
+                      <FormControl className="m-1 w-full">
+                        <div className="mb-2">
+                          <Input
+                            className="placeholder:text-secondary-bg/25 text-center rounded-[20px] w-[109px] h-[109px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[40px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                            id="email"
+                            placeholder="0"
+                            type="text"
+                            {...register('email', {
+                              required: 'Please enter your email or phone.',
+                            })}
+                          //   disableUnderline
+                          />
+                          {errors.email && (
+                            <FormMessage>*{errors.email.message}</FormMessage>
                           )}
-                        </Button>
-                        {errors.password && (
-                          <FormMessage>*{errors.password.message}</FormMessage>
-                        )}
-                      </div>
-                      {/* </FormControl> */}
-                    </FormItem>
+                        </div>
+
+                      </FormControl>
+                      <FormControl className="m-1 w-full">
+                        <div className="mb-2">
+                          <Input
+                            className="placeholder:text-secondary-bg/25 text-center rounded-[20px] w-[109px] h-[109px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[40px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                            id="email"
+                            placeholder="0"
+                            type="text"
+                            {...register('email', {
+                              required: 'Please enter your email or phone.',
+                            })}
+                          //   disableUnderline
+                          />
+                          {errors.email && (
+                            <FormMessage>*{errors.email.message}</FormMessage>
+                          )}
+                        </div>
+
+                      </FormControl>
+                      <FormControl className="m-1 w-full">
+                        <div className="mb-2">
+                          <Input
+                            className="placeholder:text-secondary-bg/25 text-center rounded-[20px] w-[109px] h-[109px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[40px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                            id="email"
+                            placeholder="0"
+                            type="text"
+                            {...register('email', {
+                              required: 'Please enter your email or phone.',
+                            })}
+                          //   disableUnderline
+                          />
+                          {errors.email && (
+                            <FormMessage>*{errors.email.message}</FormMessage>
+                          )}
+                        </div>
+
+                      </FormControl>
+                      <FormControl className="m-1 w-full">
+                        <div className="mb-2">
+                          <Input
+                            className="placeholder:text-secondary-bg/25 text-center rounded-[20px] w-[109px] h-[109px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[40px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                            id="email"
+                            placeholder="0"
+                            type="text"
+                            {...register('email', {
+                              required: 'Please enter your email or phone.',
+                            })}
+                          //   disableUnderline
+                          />
+                          {errors.email && (
+                            <FormMessage>*{errors.email.message}</FormMessage>
+                          )}
+                        </div>
+
+                      </FormControl>
+                    </div>
+
                   </div>
+
                   <div className="form-group text-end">
-                    <NavLink
-                      className="font-open-sans text-[12px] font-medium text-tertiary-bg hover:underline"
-                      to="../forgot-password"
-                    >
-                      Forget Password?
-                    </NavLink>
+
                   </div>
                   <div className="mt-8 w-full ">
                     <Button
                       disabled={!!isLoader}
-                      className="btn-black-fill w-full bg-primary p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[60px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[20px]"
+                      className="btn-black-fill w-full p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[60px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[20px]"
                       color="inherit"
                       title="Login"
                       type="submit"
                     >
                       {isLoader && <Loader2 className="animate-spin" />}
-                      {'Login'}
+                      {'Next'}
                     </Button>
                   </div>
                 </div>
@@ -237,4 +252,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Otp;
