@@ -46,8 +46,8 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import userService from '@/services/adminapp/users';
 import { getItem } from '@/utils/storage';
-import UserCreationDialog from './UserCreateDialog';
-import UserUpdateDialog from './UserUpdateDialog';
+import OfficeUsersCreationDialog from './AddRolePermissionsPage';
+import OfficeUserUpdateDialog from './UpdateRolePermissionPage';
 
 export type Users = {
   id: string; // UUID
@@ -73,7 +73,7 @@ export type Users = {
   status: 'Active' | 'InActive';
 };
 
-const Users = () => {
+const RolePermissions = () => {
   const userDetails: any = getItem('USER');
   const { toast } = useToast();
 
@@ -370,12 +370,12 @@ const Users = () => {
 
   return (
     <div className="">
-      <TopBar title="Admin Users" />
+      <TopBar title="Role & Permissions" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="w-full">
           <div className="flex items-center py-4">
             <Input
-              placeholder="Search users..."
+              placeholder="Search roles..."
               value={search}
               onChange={handleChange}
               onKeyPress={handleKeyPress}
@@ -387,7 +387,7 @@ const Users = () => {
                 className="ml-auto"
                 variant={'outline'}
               >
-                Add User
+                Add Role
               </Button>
               <DropdownMenuContent align="end">
                 {table
@@ -483,7 +483,7 @@ const Users = () => {
         </div>
       </SidebarInset>
       {isOpen && (
-        <UserCreationDialog
+        <OfficeUsersCreationDialog
           isLoader={isLoader}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -491,7 +491,7 @@ const Users = () => {
         />
       )}
       {editOpen && (
-        <UserUpdateDialog
+        <OfficeUserUpdateDialog
           isLoader={isLoader}
           isOpen={editOpen}
           setIsOpen={setEditOpen}
@@ -513,4 +513,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default RolePermissions;

@@ -37,7 +37,7 @@ export function MainSidebar({
     navMain: [
       {
         title: 'Dashboard',
-        url: '/dashboard/home',
+        url: '/admin/dashboard',
         icon: SquareTerminal,
         items: [],
       },
@@ -48,17 +48,17 @@ export function MainSidebar({
         items: [
           {
             title: 'Admin Users',
-            url: '/dashboard/users/admin-users',
+            url: '/admin/users/admin-users',
           },
           {
             title: 'Employees',
-            url: '/dashboard/users/employees',
+            url: '/admin/users/employees',
           },
         ],
       },
       {
-        title: 'Cabins',
-        url: '/dashboard/cabins',
+        title: 'Roles & permissions',
+        url: '/admin/role-permissions',
         icon: Ratio,
         items: [],
       },

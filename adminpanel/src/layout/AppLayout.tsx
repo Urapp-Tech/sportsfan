@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 function AppLayout() {
   const authState: any = useSelector((state: any) => state.authState);
   if (!authState.user) {
-    return <Navigate to="/auth" />;
+    return <Navigate to="/admin/auth" />;
   }
 
   return (
