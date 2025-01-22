@@ -103,8 +103,12 @@ const Login = () => {
   return (
     <div className="bg-wrap w-full">
       <div className="flex items-center">
-        <div className='max-w-[795px] h-[889px]'>
-          <img src={assets.images.signBanner} alt='banner' className='w-full max-w-full h-full object-contain' />
+        <div className="max-w-[795px] h-[889px]">
+          <img
+            src={assets.images.signBanner}
+            alt="banner"
+            className="w-full max-w-full h-full object-contain"
+          />
         </div>
         <div className="w-full max-w-[528px] min-h-[776px] mx-auto  p-[30px] bg-quinary-bg rounded-[20px] sign-bg-wrap">
           <div className="w-full max-w-[122px] h-[40px] mx-auto">
@@ -114,15 +118,24 @@ const Login = () => {
               className="w-full max-w-full h-full object-contain"
             />
           </div>
-          <div className=' max-w-[242px] mx-auto mt-[100px] mb-5'>
-            <h1 className='text-[48px] font-semibold capitalize text-center leading-[normal] mb-4 text-tertiary-bg'>sign in</h1>
-            <p className='text-[10px] leading-normal text-center font-normal text-quaternary-bg'>By signing in, you agree to our <NavLink to="" className='font-semibold text-tertiary-bg'>Privacy Policy</NavLink> and <NavLink to="" className='font-semibold text-tertiary-bg'>Terms and Conditions</NavLink></p>
+          <div className=" max-w-[242px] mx-auto mt-[100px] mb-5">
+            <h1 className="text-[48px] font-semibold capitalize text-center leading-[normal] mb-4 text-tertiary-bg">
+              sign in
+            </h1>
+            <p className="text-[10px] leading-normal text-center font-normal text-quaternary-bg">
+              By signing in, you agree to our{' '}
+              <NavLink to="" className="font-semibold text-tertiary-bg">
+                Privacy Policy
+              </NavLink>{' '}
+              and{' '}
+              <NavLink to="" className="font-semibold text-tertiary-bg">
+                Terms and Conditions
+              </NavLink>
+            </p>
           </div>
           <div className="">
             <Form {...form}>
-              <form
-              // onSubmit={handleSubmit(loginHandler)}
-              >
+              <form onSubmit={handleSubmit(loginHandler)}>
                 <div className="">
                   <div className="form-group w-full">
                     <FormLabel
@@ -141,7 +154,7 @@ const Login = () => {
                           {...register('email', {
                             required: 'Please enter your email or phone.',
                           })}
-                        //   disableUnderline
+                          //   disableUnderline
                         />
                         {errors.email && (
                           <FormMessage>*{errors.email.message}</FormMessage>
