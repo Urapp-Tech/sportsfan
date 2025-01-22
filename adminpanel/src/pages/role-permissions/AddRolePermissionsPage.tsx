@@ -28,7 +28,7 @@ type Props = {
   callback: (...args: any[]) => any;
 };
 
-const UserCreationDialog = ({
+const OfficeUserCreateDialog = ({
   isOpen,
   setIsOpen,
   callback,
@@ -241,4 +241,4 @@ const UserCreationDialog = ({
   );
 };
 
-export default UserCreationDialog;
+export default OfficeUserCreateDialog;

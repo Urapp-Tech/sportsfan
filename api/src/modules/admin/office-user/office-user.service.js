@@ -21,7 +21,7 @@ const login = async (req) => {
 
   const isPasswordMatch = await req.bcrypt.compare(
     req.body.password,
-    result.password,
+    result.password
   );
 
   if (!isPasswordMatch) {
@@ -75,7 +75,25 @@ const logout = async (req) => {
   };
 };
 
+const list = async (req, params) => {
+  const promise = model.list(req, params);
+
+  const [error, result] = await promiseHandler(promise);
+
+  if (error) {
+    const err = new Error(error.detail ?? error.message);
+    err.code = error.code ?? HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw err;
+  }
+  return {
+    code: HTTP_STATUS.OK,
+    message: "Data has been fetched successfully.",
+    data: result,
+  };
+};
+
 export default {
   login,
   logout,
+  list,
 };

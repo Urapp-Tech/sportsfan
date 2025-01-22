@@ -9,7 +9,12 @@ const backOfficeUserRoutes = (fastify, options, done) => {
       schema: schema.logout,
       onRequest: [fastify.authenticateAccess],
     },
-    controller.logout,
+    controller.logout
+  );
+  fastify.get(
+    "/list",
+    { schema: schema.list, onRequest: [fastify.authenticateAccess] },
+    controller.list
   );
 
   done();

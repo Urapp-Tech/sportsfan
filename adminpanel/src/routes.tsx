@@ -5,27 +5,25 @@ import AppLayout from '@/layout/AppLayout';
 import AuthLayout from '@/layout/AuthLayout';
 import LayoutOutlet from '@/layout/LayoutOutlet';
 import Login from '@/pages/auth/Login';
-import Users from '@/pages/users/Users';
-import Cabins from '@/pages/cabins/Cabins';
 import Employees from '@/pages/employees/Employees';
 import EmployeeCabinHistory from '@/pages/employees/EmployeeCabinHistory';
 import PanelSetting from '@/pages/setting/panelSetting';
 import SystemConfiguration from '@/pages/setting/systemConfiguration';
-import CabinHistory from '@/pages/cabins/CabinHistory';
-import Categories from '@/pages/operations/categories/Categories';
-import CategoryItems from '@/pages/operations/category-items/CategoryItems';
-import Reports from '@/pages/operations/reports/Reports';
 
-const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
+const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
+const OfficeUsers = lazy(() => import('@/pages/office-users/OfficeUsers'));
+const RolePermissions = lazy(
+  () => import('@/pages/role-permissions/RolePermissions')
+);
 
 export const routeObjects: RouteObject[] = [
   {
-    path: '/',
+    path: '/admin',
     element: <LayoutOutlet />,
     children: [
       {
         index: true,
-        element: <Navigate to="/auth/login" replace />,
+        element: <Navigate to="auth" replace />,
       },
       {
         path: 'auth',
@@ -46,15 +44,15 @@ export const routeObjects: RouteObject[] = [
         ],
       },
       {
-        path: 'dashboard',
+        // path: '',
         element: <AppLayout />,
         children: [
           {
             index: true,
-            element: <Navigate to="home" replace />,
+            element: <Navigate to="dashboard" replace />,
           },
           {
-            path: 'home',
+            path: 'dashboard',
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <Dashboard />
@@ -72,7 +70,7 @@ export const routeObjects: RouteObject[] = [
                 path: 'admin-users',
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
-                    <Users />
+                    <OfficeUsers />
                   </Suspense>
                 ),
               },
@@ -93,6 +91,14 @@ export const routeObjects: RouteObject[] = [
                 ),
               },
             ],
+          },
+          {
+            path: 'role-permissions',
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <RolePermissions />
+              </Suspense>
+            ),
           },
           {
             path: 'setting',

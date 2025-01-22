@@ -3,7 +3,7 @@ export const BASE_URL =
   import.meta.env.VITE_BASE_URL || `${HOST}/api/v1/admin/`;
 export const BASE_SYSTEM_URL =
   import.meta.env.VITE_SYSTEM_BASE_URL || `${HOST}/api/v1/system/config/`;
-export const BACKOFFICE_PREFIX = 'back-office-user';
+export const BACKOFFICE_PREFIX = 'office-user';
 export const USER_PREFIX = 'user';
 export const EMPLOYEE_PREFIX = 'employee';
 export const CABIN_PREFIX = 'cabin';
