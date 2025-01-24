@@ -1,8 +1,8 @@
-import { Navigate, Outlet } from 'react-router-dom';
 import { MainSidebar } from '@/components/SideBar/index';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { useSelector } from 'react-redux';
 import { Toaster } from '@/components/ui/toaster';
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
 
 function AppLayout() {
   const authState: any = useSelector((state: any) => state.authState);
@@ -11,10 +11,11 @@ function AppLayout() {
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className='bg-panel'>
       <MainSidebar />
       <Toaster />
-      <div className="w-full mt-20">
+      <div className="w-full mt-10 p-5 bg-transparent">
+
         <Outlet />
       </div>
     </SidebarProvider>

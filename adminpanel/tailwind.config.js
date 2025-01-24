@@ -15,6 +15,13 @@ export default {
 				'tertiary-bg': 'rgb(var(--custom-tertiary), <alpha-value>)',
 				'quaternary-bg': 'rgb(var(--custom-grey), <alpha-value>)',
 				'quinary-bg': 'rgb(var(--custom-white), <alpha-value>)',
+				'lunar-bg': 'rgb(var(--custom-blue), <alpha-value>)',
+				'mars-bg': 'rgb(var(--custom-light-blue), <alpha-value>)',
+				'neptune-bg': 'rgb(var(--custom-green), <alpha-value>)',
+				'jupiter-bg': 'rgb(var(--custom-orange), <alpha-value>)',
+				'saturn-bg': 'rgb(var(--custom-light-green), <alpha-value>)',
+				'earth-bg': 'rgb(var(--custom-w-blue), <alpha-value>)',
+				'venus-bg': 'rgb(var(--custom-red), <alpha-value>)',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
