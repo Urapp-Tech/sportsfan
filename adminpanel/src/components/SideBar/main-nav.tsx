@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronRight, type LucideIcon } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,8 +14,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { NavLink } from 'react-router';
+import { ChevronRight, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
+import { NavLink } from 'react-router';
 
 export function NavMain({
   items,
@@ -72,10 +72,10 @@ export function NavMain({
                   to={item.url}
                   onClick={() => handleSubItemClick(item.title)}
                   className={({ isActive }) =>
-                    `${isActive ? 'text-blue-900 font-bold' : ''}`
+                    `${isActive ? 'text-quinary-bg text-[12px] font-semibold' : ''}`
                   }
                 >
-                  <span>{item.title}</span>
+                  <span className='text-mars-bg font-medium '>{item.title}</span>
                 </NavLink>
               </SidebarMenuButton>
             ) : (
@@ -92,11 +92,11 @@ export function NavMain({
                     <NavLink
                       key={item.url}
                       to={item.url}
-                      // className={({ isActive }) =>
-                      //   `${isActive ? 'text-blue-900 font-bold' : ''}`
-                      // }
+                    // className={({ isActive }) =>
+                    //   `${isActive ? 'text-blue-900 font-bold' : ''}`
+                    // }
                     >
-                      <span>{item.title}</span>
+                      <span className='text-mars-bg'>{item.title}</span>
                     </NavLink>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
@@ -114,7 +114,7 @@ export function NavMain({
                               onClick={() => handleSubItemClick(subItem.title)}
                               className={`${openSubItemUrl === subItem.title ? 'text-blue-900 font-bold' : ''}`}
                             >
-                              <span>{subItem.title}</span>
+                              <span className='text-mars-bg'>{subItem.title}</span>
                             </NavLink>
                             {/* <a href={subItem.url}>
                             </a> */}

@@ -1,6 +1,7 @@
 import { TopBar } from '@/components/TopBar';
 import { Button } from '@/components/ui/button';
 import { SidebarInset } from '@/components/ui/sidebar';
+
 import usersService from '@/services/adminapp/users';
 import {
   ColumnDef,
@@ -26,12 +27,11 @@ import DeleteDialog from '@/components/DeletePopup';
 import { Paginator } from '@/components/Paginator';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   //   DropdownMenuLabel,
   //   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
@@ -46,6 +46,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import userService from '@/services/adminapp/users';
 import { getItem } from '@/utils/storage';
+import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
 import OfficeUsersCreationDialog from './officeUserCreateDialog';
 import OfficeUserUpdateDialog from './officeUserUpdateDialog';
 
@@ -144,7 +145,7 @@ const OfficeUsers = () => {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ row }) => (
-        <div className="capitalize">
+        <div className="capitalize bg-neptune-bg/30 text-center w-[50px] h-[22px] rounded-[30px] text-[10px] leading-normal font-semibold text-saturn-bg py-[1px] border-neptune-bg border-2">
           {row.getValue('isActive') ? 'Active' : 'In-Active'}
         </div>
       ),
@@ -369,46 +370,63 @@ const OfficeUsers = () => {
   };
 
   return (
-    <div className="">
+    <div className=" bg-white p-2 rounded-[20px] overflow-y-scroll">
+      {/* <div className='flex gap-4'>
+        <NavLink to=''>
+          <div className='w-[45px] h-[45px]'>
+            <img src={assets.images.notifyIcon} alt='icon' className='w-full h-full object-contain' />
+          </div>
+        </NavLink>
+        <NavLink to=''>
+          <div className='w-[45px] h-[45px]'>
+            <img src={assets.images.avatarIcon} alt='icon' className='w-full h-full object-contain' />
+          </div>
+        </NavLink>
+      </div> */}
       <TopBar title="Admin Users" />
-      <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <SidebarInset className=" flex flex-1 flex-col gap-4 p-4 pt-0">
+        {/* admin content page height */}
         <div className="w-full">
-          <div className="flex items-center py-4">
-            <Input
-              placeholder="Search users..."
-              value={search}
-              onChange={handleChange}
-              onKeyPress={handleKeyPress}
-              className="max-w-sm"
-            />
-            <DropdownMenu>
-              <Button
-                onClick={() => setIsOpen(true)}
-                className="ml-auto"
-                variant={'outline'}
-              >
-                Add User
-              </Button>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex items-center py-4 justify-between">
+            <h2 className='text-tertiary-bg font-semibold text-[20px] leading-normal capitalize'>Admin Users</h2>
+            <div className='flex gap-3 items-center'>
+              <Input
+                placeholder="Search users..."
+                value={search}
+                onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                className="w-[461px] h-[35px] rounded-[23px] bg-mars-bg/50"
+              />
+              <DropdownMenu>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
+                  variant={'outline'}
+                >
+                  + Add New
+                </Button>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
           </div>
           <div className="rounded-md border">
             {mainIsLoader ? (
@@ -426,16 +444,16 @@ const OfficeUsers = () => {
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                           </TableHead>
                         );
                       })}
                     </TableRow>
                   ))}
                 </TableHeader>
-                <TableBody>
+                <TableBody className='bg-earth-bg'>
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
                       <TableRow
@@ -466,11 +484,28 @@ const OfficeUsers = () => {
               </Table>
             )}
           </div>
-          <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="flex items-center justify-center space-x-2 py-4">
             <div className="flex-1 text-sm text-muted-foreground">
-              {total} total - Page {page + 1} of {Math.ceil(total / pageSize)}
+              {/* {total} total - Page {page + 1} of {Math.ceil(total / pageSize)} */}
+              {/* <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination> */}
+
             </div>
-            <div className="flex justify-end">
+            <div className="my-5 flex justify-center w-full">
               <Paginator
                 pageSize={pageSize}
                 currentPage={page}

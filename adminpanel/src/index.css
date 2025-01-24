@@ -17,6 +17,13 @@
     --custom-tertiary: 7, 15, 43;
     --custom-grey: 102, 102, 102;
     --custom-white: 255, 255, 255;
+    --custom-blue: 27, 70, 223;
+    --custom-light-blue: 168, 187, 255;
+    --custom-green: 0, 223, 162;
+    --custom-orange: 237, 113, 60;
+    --custom-light-green: 0, 169, 123;
+    --custom-w-blue: 244, 247, 255;
+    --custom-red: 255, 48, 79;
     /* Sports Var End */
 
 
@@ -114,5 +121,12 @@
   background-image: url('assets/images/sign-bg.webp');
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
+}
+
+.bg-panel {
+  background: url('assets/images/dashboard-bg.webp');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   background-position: center;
 }
