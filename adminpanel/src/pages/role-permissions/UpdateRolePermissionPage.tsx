@@ -1,41 +1,36 @@
 import {
-  FormLabel,
-  FormControl,
-  FormMessage,
   Form,
+  FormControl,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
-import {
-  Dialog,
-  DialogContent,
-  //   DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  //   DialogTrigger,
-  DialogFooter,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { Fields } from '@/interfaces/role-permissions.interface';
 import { Loader2 } from 'lucide-react';
-import { Fields } from '@/interfaces/back-office-user.interface';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import service from '@/services/adminapp/role-permissions';
+import { breakCamelCase } from '@/utils/helper';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { useLocation, useNavigate } from 'react-router';
 
-type Props = {
-  isLoader: boolean;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  callback: (...args: any[]) => any;
-  formData: any;
-};
-
-const OfficeUserUpdateDialog = ({
-  isOpen,
-  setIsOpen,
-  callback,
-  isLoader,
-  formData,
-}: Props) => {
+const UpdateRolePermissionPage = () => {
   const form = useForm<Fields>();
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [list, setList] = useState<any>([]);
+  const [checkedIds, setCheckedIds] = useState<string[]>([]);
+
+  const [mainIsLoader, setMainIsLoader] = useState(true);
+  console.log('state', state);
 
   const {
     register,
@@ -43,148 +38,205 @@ const OfficeUserUpdateDialog = ({
     formState: { errors },
   } = form;
 
-  const onSubmit = async (data: Fields | any) => {
-    data.id = formData.id;
-    callback(data);
+  const ToastHandler = (text: string) => {
+    return toast({
+      description: text,
+      className: cn(
+        'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 z-[9999]'
+      ),
+      style: {
+        backgroundColor: '#FF5733',
+        color: 'white',
+        zIndex: 9999,
+      },
+    });
   };
 
+  const onSubmit = async (data: Fields) => {
+    if (checkedIds?.length <= 0) {
+      ToastHandler('Please select atleast one permission');
+      return;
+    }
+    let obj = {
+      name: data.name,
+      permissions: checkedIds,
+    };
+    try {
+      const response = await service.update(state.id, obj);
+      if (response.data.success) {
+        navigate('../list');
+      } else {
+        setMainIsLoader(false);
+        ToastHandler(response.data.message);
+        console.log('error: ', response.data.message);
+      }
+    } catch (error: Error | any) {
+      setMainIsLoader(false);
+      ToastHandler(error.response.data.message);
+      console.log('error: ', error);
+    }
+  };
+
+  const compilePermissions = (data: any) => {
+    const grouped: any = {};
+    data.forEach((item: any) => {
+      if (item.parent === null) {
+        // Parent item
+        grouped[item.id] = {
+          ...item,
+          child: [],
+        };
+      }
+    });
+
+    data.forEach((item: any) => {
+      if (item.parent) {
+        const parentId = item.parent;
+        if (grouped[parentId]) {
+          grouped[parentId].child.push(item);
+        }
+      }
+    });
+
+    return Object.values(grouped);
+  };
+
+  const fetch = async () => {
+    try {
+      const users = await service.permissionList();
+      if (users.data.success) {
+        setMainIsLoader(false);
+        const result = compilePermissions(users.data.data.list);
+        setList(result);
+        console.log('res', result);
+
+        const ids: any = [];
+        result?.forEach((x: any) => {
+          x.child.forEach((y: any) => {
+            if (state.permissions.includes(y.id)) {
+              return ids.push(y.id);
+            }
+          });
+        });
+        setCheckedIds(ids);
+        setTotal(users.data.data.total);
+      } else {
+        setMainIsLoader(false);
+        console.log('error: ', users.data.message);
+      }
+    } catch (error: Error | unknown) {
+      setMainIsLoader(false);
+      console.log('error: ', error);
+    }
+  };
+
+  const handleCheckboxChange = (id: string, isChecked: boolean) => {
+    setCheckedIds((prev) =>
+      isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
+    );
+    // console.log(
+    //   'Updated checked IDs:',
+    //   isChecked
+    //     ? [...checkedIds, id]
+    //     : checkedIds.filter((checkedId) => checkedId !== id)
+    // );
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent
-        className="sm:max-w-[600px]"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <DialogHeader>
-          <DialogTitle>Update Admin User</DialogTitle>
-        </DialogHeader>
+    <div className="grid grid-cols-12">
+      <div className="col-span-5 p-5">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="">
-              <div className="form-group w-full flex gap-3">
+              <div className="form-group w-full gap-3">
                 <FormControl className="m-1 w-full">
                   <div className="">
-                    <FormLabel
-                      htmlFor="firstName"
-                      className="text-sm font-medium"
-                    >
-                      First Name
+                    <FormLabel htmlFor="name" className="text-sm font-semibold">
+                      Name
                     </FormLabel>
                     <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="firstName"
-                      placeholder="john"
+                      className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      id="name"
+                      placeholder="manager"
                       type="text"
-                      {...register('firstName', {
-                        value: formData?.firstName,
-                        required: 'Please enter your first name',
+                      {...register('name', {
+                        required: 'Please enter your role name',
+                        value: state?.name ?? '',
                       })}
                     />
-                    {errors.firstName && (
-                      <FormMessage>*{errors.firstName.message}</FormMessage>
+                    {errors.name && (
+                      <FormMessage>*{errors.name.message}</FormMessage>
                     )}
                   </div>
                 </FormControl>
-                <FormControl className="m-1 w-full">
+                <FormLabel
+                  htmlFor="desc"
+                  className="text-sm font-semibold mt-6 block"
+                >
+                  Assign Permissions
+                </FormLabel>
+                <div className="mt-2">
+                  {list.map((item: any, index: number) => (
+                    <div className="mt-2" key={index}>
+                      <FormLabel
+                        htmlFor={item.name}
+                        className="text-sm font-medium underline underline-offset-2"
+                      >
+                        {item.name}
+                      </FormLabel>
+                      <div className="flex py-2">
+                        {item?.child?.map((child: any, i: number) => (
+                          <div key={i} className="flex items-center">
+                            <Checkbox
+                              id={child.id}
+                              checked={checkedIds.includes(child.id)}
+                              onCheckedChange={(isChecked: any) =>
+                                handleCheckboxChange(child.id, isChecked)
+                              }
+                            />
+                            <label
+                              htmlFor={child.id}
+                              className="text-sm font-medium pr-6 pl-2 leading-none"
+                            >
+                              {breakCamelCase(child.name)}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* <FormControl className="m-1 w-full">
                   <div className="">
-                    <FormLabel
-                      htmlFor="lastName"
-                      className="text-sm font-medium"
-                    >
-                      First Name
+                    <FormLabel htmlFor="desc" className="text-sm font-medium">
+                      Description
                     </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="lastName"
-                      placeholder="doe"
-                      type="text"
-                      {...register('lastName', {
-                        value: formData?.lastName,
-                        required: 'Please enter your last name',
-                      })}
+                    <Textarea
+                      className="rounded-[20px] h-[60px] p-3 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      id="desc"
+                      placeholder="Type your message here."
+                      {...register('description')}
                     />
-                    {errors.lastName && (
-                      <FormMessage>*{errors.lastName.message}</FormMessage>
-                    )}
                   </div>
-                </FormControl>
+                </FormControl> */}
               </div>
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="phone" className="text-sm font-medium">
-                      Phone
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="phone"
-                      placeholder="876543215"
-                      type="number"
-                      {...register('phone', {
-                        value: formData?.phone,
-                        required: 'Please enter your phone',
-                      })}
-                    />
-                    {errors.phone && (
-                      <FormMessage>*{errors.phone.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email', {
-                        value: formData?.email,
-                        required: 'Please enter your email',
-                      })}
-                    />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-              </div>
-              <div>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="address"
-                      className="text-sm font-medium"
-                    >
-                      Address
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="address"
-                      placeholder="Street 55"
-                      type="text"
-                      {...register('address', {
-                        value: formData?.address,
-                      })}
-                    />
-                    {errors.address && (
-                      <FormMessage>*{errors.address.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-              </div>
-              <DialogFooter className="mt-3">
-                <Button disabled={isLoader} type="submit" className="w-24">
-                  {isLoader && <Loader2 className="animate-spin" />} Update
-                </Button>
-              </DialogFooter>
+              <Button
+                type="submit"
+                className="mt-7 btn-black-fill w-[140px] p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[40px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[30px]"
+              >
+                {/* <Loader2 className="animate-spin" /> */}
+                Update
+              </Button>
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
-export default OfficeUserUpdateDialog;
+export default UpdateRolePermissionPage;

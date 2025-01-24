@@ -1,7 +1,8 @@
 import { TopBar } from '@/components/TopBar';
 import { Button } from '@/components/ui/button';
 import { SidebarInset } from '@/components/ui/sidebar';
-import usersService from '@/services/adminapp/users';
+import usersService from '@/services/adminapp/role-permissions';
+import { Pencil, Trash2 } from 'lucide-react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -48,6 +49,8 @@ import userService from '@/services/adminapp/users';
 import { getItem } from '@/utils/storage';
 import OfficeUsersCreationDialog from './AddRolePermissionsPage';
 import OfficeUserUpdateDialog from './UpdateRolePermissionPage';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router';
 
 export type Users = {
   id: string; // UUID
@@ -76,7 +79,7 @@ export type Users = {
 const RolePermissions = () => {
   const userDetails: any = getItem('USER');
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [pageSize] = React.useState(10);
@@ -110,34 +113,10 @@ const RolePermissions = () => {
 
   const columns: ColumnDef<Users>[] = [
     {
-      accessorKey: 'firstName',
+      accessorKey: 'name',
       header: 'Name',
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('firstName')}</div>
-      ),
-    },
-    {
-      accessorKey: 'email',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Email
-            <ArrowUpDown />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('email')}</div>
-      ),
-    },
-    {
-      accessorKey: 'phone',
-      header: 'Phone',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('phone')}</div>
+        <div className="capitalize">{row.getValue('name')}</div>
       ),
     },
     {
@@ -150,11 +129,11 @@ const RolePermissions = () => {
       ),
     },
     {
-      accessorKey: 'address',
-      header: 'Address',
+      accessorKey: 'createdAt',
+      header: 'Created Date',
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue('address') ? row.getValue('address') : '---'}
+          {dayjs(row.getValue('createdAt')).format('YYYY-MM-DD hh:mm A')}
         </div>
       ),
     },
@@ -162,52 +141,64 @@ const RolePermissions = () => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        // const payment = row.original;
         const { id } = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => handleActionMenu('edit', id)}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => handleActionMenu('delete', id)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex justify-center items-center">
+            <div>
+              <Pencil
+                onClick={() =>
+                  navigate(`../edit/${id}`, { state: row.original })
+                }
+                size={20}
+              />
+            </div>
+            <div className="pl-3">
+              <Trash2 size={20} />
+            </div>
+          </div>
+          // <DropdownMenu>
+          //   <DropdownMenuTrigger asChild>
+          //     <Button variant="ghost" className="h-8 w-8 p-0">
+          //       <span className="sr-only">Open menu</span>
+          //       <MoreHorizontal />
+          //     </Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent align="end">
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('edit', id)}
+          //     >
+          //       Edit
+          //     </DropdownMenuItem>
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('delete', id)}
+          //     >
+          //       Delete
+          //     </DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
         );
       },
     },
   ];
 
-  const handleActionMenu = (type: string, actionId: string) => {
-    if (type === 'edit') {
-      const editData = list.find((item: any) => item.id === actionId);
-      setEditFormData(editData);
-      setEditOpen(true);
-    }
-    if (type === 'delete') {
-      const editData = list.find((item: any) => item.id === actionId);
-      setEditFormData(editData);
-      setDeleteOpen(true);
-    }
-  };
+  // const handleActionMenu = (type: string, actionId: string) => {
+  //   if (type === 'edit') {
+  //     const editData = list.find((item: any) => item.id === actionId);
+  //     setEditFormData(editData);
+  //     setEditOpen(true);
+  //   }
+  //   if (type === 'delete') {
+  //     const editData = list.find((item: any) => item.id === actionId);
+  //     setEditFormData(editData);
+  //     setDeleteOpen(true);
+  //   }
+  // };
 
   const fetchUsers = async () => {
     try {
-      const users = await usersService.list(search, page, pageSize);
+      const users = await usersService.list({ search, page, size: pageSize });
       if (users.data.success) {
         setMainIsLoader(false);
         setList(users.data.data.list);
@@ -383,7 +374,7 @@ const RolePermissions = () => {
             />
             <DropdownMenu>
               <Button
-                onClick={() => setIsOpen(true)}
+                onClick={() => navigate('../add')}
                 className="ml-auto"
                 variant={'outline'}
               >
@@ -482,23 +473,6 @@ const RolePermissions = () => {
           </div>
         </div>
       </SidebarInset>
-      {isOpen && (
-        <OfficeUsersCreationDialog
-          isLoader={isLoader}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          callback={createEmployeeHandler}
-        />
-      )}
-      {editOpen && (
-        <OfficeUserUpdateDialog
-          isLoader={isLoader}
-          isOpen={editOpen}
-          setIsOpen={setEditOpen}
-          formData={editFormData}
-          callback={updateEmployeeHandler}
-        />
-      )}
       {deleteOpen && (
         <DeleteDialog
           isLoader={isLoader}

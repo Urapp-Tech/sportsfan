@@ -3,7 +3,7 @@ import rolePermissionsRoutes from "./role-permissions/role-permissions.routes.js
 
 const adminRoutes = (fastify, options, done) => {
   fastify.register(backOfficeUserRoutes, { prefix: "/office-user" });
-  fastify.register(rolePermissionsRoutes, { prefix: "/role-permission" });
+  fastify.register(rolePermissionsRoutes, { prefix: "/role" });
 
   done();
 };

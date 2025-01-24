@@ -1,13 +1,4 @@
 import {
-  Dialog,
-  DialogContent,
-  //   DialogTrigger,
-  DialogFooter,
-  //   DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
   Form,
   FormControl,
   FormLabel,
@@ -15,28 +6,30 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { Fields } from '@/interfaces/back-office-user.interface';
+import { Fields } from '@/interfaces/role-permissions.interface';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Textarea } from '@/components/ui/textarea';
+import service from '@/services/adminapp/role-permissions';
+import { breakCamelCase } from '@/utils/helper';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router';
 
-type Props = {
-  isLoader: boolean;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  callback: (...args: any[]) => any;
-};
-
-const OfficeUserCreateDialog = ({
-  isOpen,
-  setIsOpen,
-  callback,
-  isLoader,
-}: Props) => {
+const AddRolePermissionsPage = () => {
   const form = useForm<Fields>();
+  const navigate = useNavigate();
 
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [list, setList] = useState<any>([]);
+  const [checkedIds, setCheckedIds] = useState<string[]>([]);
+
+  const [mainIsLoader, setMainIsLoader] = useState(true);
 
   const {
     register,
@@ -44,201 +37,196 @@ const OfficeUserCreateDialog = ({
     formState: { errors },
   } = form;
 
+  const ToastHandler = (text: string) => {
+    return toast({
+      description: text,
+      className: cn(
+        'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 z-[9999]'
+      ),
+      style: {
+        backgroundColor: '#FF5733',
+        color: 'white',
+        zIndex: 9999,
+      },
+    });
+  };
+
   const onSubmit = async (data: Fields) => {
-    callback(data);
+    if (checkedIds?.length <= 0) {
+      ToastHandler('Please select atleast one permission');
+      return;
+    }
+    let obj = {
+      name: data.name,
+      permissions: checkedIds,
+    };
+    try {
+      const response = await service.create(obj);
+      if (response.data.success) {
+        navigate('../list');
+      } else {
+        setMainIsLoader(false);
+        ToastHandler(response.data.message);
+        console.log('error: ', response);
+      }
+    } catch (error: Error | any) {
+      setMainIsLoader(false);
+      ToastHandler(error.response.data.message);
+      console.log('error: ', error);
+    }
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
+  const compilePermissions = (data: any) => {
+    const grouped: any = {};
+    data.forEach((item: any) => {
+      if (item.parent === null) {
+        // Parent item
+        grouped[item.id] = {
+          ...item,
+          child: [],
+        };
+      }
+    });
+
+    data.forEach((item: any) => {
+      if (item.parent) {
+        const parentId = item.parent;
+        if (grouped[parentId]) {
+          grouped[parentId].child.push(item);
+        }
+      }
+    });
+
+    return Object.values(grouped);
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent
-        className="sm:max-w-[600px]"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <DialogHeader>
-          <DialogTitle>Add New Admin User</DialogTitle>
-        </DialogHeader>
+  const fetch = async () => {
+    try {
+      const users = await service.permissionList();
+      if (users.data.success) {
+        setMainIsLoader(false);
+        const result = compilePermissions(users.data.data.list);
+        setList(result);
+        setTotal(users.data.data.total);
+      } else {
+        setMainIsLoader(false);
+        console.log('error: ', users.data.message);
+      }
+    } catch (error: Error | unknown) {
+      setMainIsLoader(false);
+      console.log('error: ', error);
+    }
+  };
+
+  const handleCheckboxChange = (id: string, isChecked: boolean) => {
+    setCheckedIds((prev) =>
+      isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
+    );
+    console.log(
+      'Updated checked IDs:',
+      isChecked
+        ? [...checkedIds, id]
+        : checkedIds.filter((checkedId) => checkedId !== id)
+    );
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  return mainIsLoader ? (
+    <div className="flex justify-center h-[80%] items-center">
+      <Loader2 className="animate-spin" />
+    </div>
+  ) : (
+    <div className="grid grid-cols-12">
+      <div className="col-span-5 p-5">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="">
-              <div className="form-group w-full flex gap-3">
+              <div className="form-group w-full gap-3">
                 <FormControl className="m-1 w-full">
                   <div className="">
-                    <FormLabel
-                      htmlFor="firstName"
-                      className="text-sm font-medium"
-                    >
-                      First Name
+                    <FormLabel htmlFor="name" className="text-sm font-semibold">
+                      Name
                     </FormLabel>
                     <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="firstName"
-                      placeholder="john"
+                      className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      id="name"
+                      placeholder="manager"
                       type="text"
-                      {...register('firstName', {
-                        required: 'Please enter your first name',
+                      {...register('name', {
+                        required: 'Please enter your role name',
                       })}
                     />
-                    {errors.firstName && (
-                      <FormMessage>*{errors.firstName.message}</FormMessage>
+                    {errors.name && (
+                      <FormMessage>*{errors.name.message}</FormMessage>
                     )}
                   </div>
                 </FormControl>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="lastName"
-                      className="text-sm font-medium"
-                    >
-                      First Name
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="lastName"
-                      placeholder="doe"
-                      type="text"
-                      {...register('lastName', {
-                        required: 'Please enter your last name',
-                      })}
-                    />
-                    {errors.lastName && (
-                      <FormMessage>*{errors.lastName.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
+                <FormLabel
+                  htmlFor="desc"
+                  className="text-sm font-semibold mt-6 block"
+                >
+                  Assign Permissions
+                </FormLabel>
+                <div className="mt-2">
+                  {list.map((item: any, index: number) => (
+                    <div className="mt-2" key={index}>
+                      <FormLabel
+                        htmlFor={item.name}
+                        className="text-sm font-medium underline underline-offset-2"
+                      >
+                        {item.name}
+                      </FormLabel>
+                      <div className="flex py-2">
+                        {item?.child?.map((child: any, i: number) => (
+                          <div key={i} className="flex items-center">
+                            <Checkbox
+                              id={child.id}
+                              onCheckedChange={(isChecked: any) =>
+                                handleCheckboxChange(child.id, isChecked)
+                              }
+                            />
+                            <label
+                              htmlFor={child.id}
+                              className="text-sm font-medium pr-6 pl-2 leading-none"
+                            >
+                              {breakCamelCase(child.name)}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
                 {/* <FormControl className="m-1 w-full">
                   <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
+                    <FormLabel htmlFor="desc" className="text-sm font-medium">
+                      Description
                     </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email')}
+                    <Textarea
+                      className="rounded-[20px] h-[60px] p-3 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      id="desc"
+                      placeholder="Type your message here."
+                      {...register('description')}
                     />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
-                    )}
                   </div>
                 </FormControl> */}
               </div>
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email', {
-                        required: 'Please enter your email',
-                      })}
-                    />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-                {/* <div className="form-group w-full"> */}
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="password"
-                      className="text-sm font-medium"
-                    >
-                      Password
-                    </FormLabel>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        placeholder="********"
-                        type={passwordVisible ? 'text' : 'password'}
-                        className="text-sm pr-10 mt-2"
-                        {...register('password', {
-                          required: 'Please enter your password.',
-                        })}
-                      />
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {passwordVisible ? (
-                          <EyeOff color="black" />
-                        ) : (
-                          <Eye color="black" />
-                        )}
-                      </Button>
-                      {errors.password && (
-                        <p>s</p>
-                        // <FormMessage>*{errors.password.message}</FormMessage>
-                      )}
-                    </div>
-                  </div>
-                </FormControl>
-                {/* </div> */}
-              </div>
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="address"
-                      className="text-sm font-medium"
-                    >
-                      Address
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="address"
-                      placeholder="Street 55"
-                      type="text"
-                      {...register('address')}
-                    />
-                    {errors.address && (
-                      <FormMessage>*{errors.address.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="phone" className="text-sm font-medium">
-                      Phone
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="phone"
-                      placeholder="876543215"
-                      type="number"
-                      {...register('phone', {
-                        required: 'Please enter your phone',
-                      })}
-                    />
-                    {errors.phone && (
-                      <FormMessage>*{errors.phone.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-              </div>
-              <DialogFooter className="mt-3">
-                <Button disabled={isLoader} type="submit" className="w-24">
-                  {isLoader && <Loader2 className="animate-spin" />} Add
-                </Button>
-              </DialogFooter>
+              <Button
+                type="submit"
+                className="mt-7 btn-black-fill w-[140px] p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[40px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[30px]"
+              >
+                {/* <Loader2 className="animate-spin" /> */}
+                Save
+              </Button>
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
-export default OfficeUserCreateDialog;
+export default AddRolePermissionsPage;

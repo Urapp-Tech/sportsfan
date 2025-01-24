@@ -104,3 +104,10 @@ export function errorHandler(text, code) {
   newError.code = code;
   throw newError;
 }
+
+export function toUpperSnakeCase(text) {
+  return text
+    .split(" ")
+    .map((word) => word.toUpperCase())
+    .join("_");
+}

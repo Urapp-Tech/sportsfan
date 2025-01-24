@@ -10,6 +10,8 @@ import SystemConfiguration from '@/pages/setting/systemConfiguration';
 import { lazy, Suspense } from 'react';
 import { Navigate, RouteObject } from 'react-router';
 import Otp from './pages/auth/Otp';
+import AddRolePermissionsPage from '@/pages/role-permissions/AddRolePermissionsPage';
+import UpdateRolePermissionPage from '@/pages/role-permissions/UpdateRolePermissionPage';
 
 const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
 const OfficeUsers = lazy(() => import('@/pages/office-users/OfficeUsers'));
@@ -104,11 +106,36 @@ export const routeObjects: RouteObject[] = [
           },
           {
             path: 'role-permissions',
-            element: (
-              <Suspense fallback={<div>Loading...</div>}>
-                <RolePermissions />
-              </Suspense>
-            ),
+            children: [
+              {
+                index: true,
+                element: <Navigate to="list" replace />,
+              },
+              {
+                path: 'list',
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <RolePermissions />
+                  </Suspense>
+                ),
+              },
+              {
+                path: 'add',
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <AddRolePermissionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: 'edit/:roleId',
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <UpdateRolePermissionPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           {
             path: 'setting',
