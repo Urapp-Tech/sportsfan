@@ -52,23 +52,11 @@ const login = async (req) => {
   const tokens = await generateUserTokens(req, { id, tenant });
 
   const officeUSerRole = await officeUserRoleModel.officeUserRole(req, id);
-  let roles = [];
-
-  if (officeUSerRole.role.key === SUPER_ADMIN) {
-    const permissions = await rolePermissionModel.getPermissions(
-      req,
-      officeUSerRole.role.id,
-      officeUSerRole.role.key
-    );
-    roles = permissions;
-  } else {
-    const permissions = await rolePermissionModel.getPermissions(
-      req,
-      officeUSerRole.role.id,
-      officeUSerRole.role.key
-    );
-    roles = permissions;
-  }
+  const roles = await rolePermissionModel.getPermissions(
+    req,
+    officeUSerRole.role.id,
+    officeUSerRole.role.key
+  );
 
   return {
     code: HTTP_STATUS.OK,
