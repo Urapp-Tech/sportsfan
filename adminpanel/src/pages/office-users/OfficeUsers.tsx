@@ -20,6 +20,8 @@ import {
   Loader2,
   // ChevronDown,
   MoreHorizontal,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // import { Checkbox } from '@/components/ui/checkbox';
@@ -31,7 +33,7 @@ import {
   DropdownMenuItem,
   //   DropdownMenuLabel,
   //   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
@@ -47,8 +49,8 @@ import { cn } from '@/lib/utils';
 import userService from '@/services/adminapp/users';
 import { getItem } from '@/utils/storage';
 import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
-import OfficeUsersCreationDialog from './officeUserCreateDialog';
-import OfficeUserUpdateDialog from './officeUserUpdateDialog';
+import OfficeUsersCreationDialog from './OfficeUserCreateDialog';
+import OfficeUserUpdateDialog from './OfficeUserUpdateDialog';
 
 export type Users = {
   id: string; // UUID
@@ -166,28 +168,44 @@ const OfficeUsers = () => {
         // const payment = row.original;
         const { id } = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                className="cursor-pointer"
+          <div className="flex justify-center items-center">
+            <div>
+              <Pencil
+                className="text-lunar-bg cursor-pointer"
                 onClick={() => handleActionMenu('edit', id)}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
+                size={20}
+              />
+            </div>
+            <div className="pl-3">
+              <Trash2
+                className="text-lunar-bg cursor-pointer"
+                size={20}
                 onClick={() => handleActionMenu('delete', id)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              />
+            </div>
+          </div>
+          // <DropdownMenu>
+          //   <DropdownMenuTrigger asChild>
+          //     <Button variant="ghost" className="h-8 w-8 p-0">
+          //       <span className="sr-only">Open menu</span>
+          //       <MoreHorizontal />
+          //     </Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent align="end">
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('edit', id)}
+          //     >
+          //       Edit
+          //     </DropdownMenuItem>
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('delete', id)}
+          //     >
+          //       Delete
+          //     </DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
         );
       },
     },
@@ -370,7 +388,7 @@ const OfficeUsers = () => {
   };
 
   return (
-    <div className=" bg-white p-2 rounded-[20px] overflow-y-scroll">
+    <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
       {/* <div className='flex gap-4'>
         <NavLink to=''>
           <div className='w-[45px] h-[45px]'>
@@ -384,12 +402,14 @@ const OfficeUsers = () => {
         </NavLink>
       </div> */}
       <TopBar title="Admin Users" />
-      <SidebarInset className=" flex flex-1 flex-col gap-4 p-4 pt-0">
+      <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* admin content page height */}
         <div className="w-full">
           <div className="flex items-center py-4 justify-between">
-            <h2 className='text-tertiary-bg font-semibold text-[20px] leading-normal capitalize'>Admin Users</h2>
-            <div className='flex gap-3 items-center'>
+            <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
+              Admin Users
+            </h2>
+            <div className="flex gap-3 items-center">
               <Input
                 placeholder="Search users..."
                 value={search}
@@ -426,7 +446,6 @@ const OfficeUsers = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-
           </div>
           <div className="rounded-md border">
             {mainIsLoader ? (
@@ -444,16 +463,16 @@ const OfficeUsers = () => {
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
                           </TableHead>
                         );
                       })}
                     </TableRow>
                   ))}
                 </TableHeader>
-                <TableBody className='bg-earth-bg'>
+                <TableBody className="bg-earth-bg">
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
                       <TableRow
@@ -484,26 +503,9 @@ const OfficeUsers = () => {
               </Table>
             )}
           </div>
-          <div className="flex items-center justify-center space-x-2 py-4">
+          <div className="flex items-center justify-center space-x-2 pt-4">
             <div className="flex-1 text-sm text-muted-foreground">
               {/* {total} total - Page {page + 1} of {Math.ceil(total / pageSize)} */}
-              {/* <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination> */}
-
             </div>
             <div className="my-5 flex justify-center w-full">
               <Paginator

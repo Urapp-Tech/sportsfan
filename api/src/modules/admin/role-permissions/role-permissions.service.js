@@ -60,7 +60,7 @@ const update = async (req, params) => {
 };
 
 const deleteRole = async (req, params) => {
-  const promise = model.deleteEmp(req, params);
+  const promise = model.deleteRole(req, params);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {

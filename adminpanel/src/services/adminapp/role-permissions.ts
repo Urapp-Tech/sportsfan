@@ -13,9 +13,9 @@ const update = (id: string, data: any) => {
   return network.post(`${ROLE_PREFIX}/update/${id}`, data);
 };
 
-// const deleteCat = (id: string) => {
-//   return network.post(`${OPERATON_REPORT_PREFIX}/delete/${id}`, {});
-// };
+const deleteRole = (id: string) => {
+  return network.post(`${ROLE_PREFIX}/delete/${id}`, {});
+};
 
 // PERMISSIONS
 const permissionList = () => {
@@ -26,6 +26,6 @@ export default {
   list,
   create,
   update,
-  // deleteCat,
+  deleteRole,
   permissionList,
 };

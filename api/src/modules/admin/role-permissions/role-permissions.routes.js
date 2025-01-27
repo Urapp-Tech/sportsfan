@@ -20,7 +20,7 @@ const rolePermissionsRoutes = (fastify, options, done) => {
   fastify.post(
     "/delete/:roleId",
     { schema: schema.delete, onRequest: [fastify.authenticateAccess] },
-    controller.deleteEmp
+    controller.deleteRole
   );
   fastify.get(
     "/lov",

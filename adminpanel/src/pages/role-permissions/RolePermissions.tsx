@@ -1,7 +1,7 @@
 import { TopBar } from '@/components/TopBar';
 import { Button } from '@/components/ui/button';
 import { SidebarInset } from '@/components/ui/sidebar';
-import usersService from '@/services/adminapp/role-permissions';
+import service from '@/services/adminapp/role-permissions';
 import { Pencil, Trash2 } from 'lucide-react';
 import {
   ColumnDef,
@@ -85,7 +85,7 @@ const RolePermissions = () => {
   const [pageSize] = React.useState(10);
   const [total, setTotal] = useState(0);
   const [list, setList] = useState<any>([]);
-  const [editFormData, setEditFormData] = useState();
+  const [editFormData, setEditFormData] = useState<any>();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -123,8 +123,8 @@ const RolePermissions = () => {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ row }) => (
-        <div className="capitalize">
-          {row.getValue('isActive') ? 'Active' : 'In-Active'}
+        <div className="capitalize bg-neptune-bg/30 text-center w-[50px] h-[22px] rounded-[30px] text-[10px] leading-normal font-semibold text-saturn-bg py-[1px] border-neptune-bg border-2">
+          {row.getValue('isActive') ? 'Active' : 'Inactive'}
         </div>
       ),
     },
@@ -146,6 +146,7 @@ const RolePermissions = () => {
           <div className="flex justify-center items-center">
             <div>
               <Pencil
+                className="text-lunar-bg cursor-pointer"
                 onClick={() =>
                   navigate(`../edit/${id}`, { state: row.original })
                 }
@@ -153,31 +154,16 @@ const RolePermissions = () => {
               />
             </div>
             <div className="pl-3">
-              <Trash2 size={20} />
+              <Trash2
+                onClick={() => {
+                  setDeleteOpen(true);
+                  setEditFormData(row.original);
+                }}
+                className="text-lunar-bg cursor-pointer"
+                size={20}
+              />
             </div>
           </div>
-          // <DropdownMenu>
-          //   <DropdownMenuTrigger asChild>
-          //     <Button variant="ghost" className="h-8 w-8 p-0">
-          //       <span className="sr-only">Open menu</span>
-          //       <MoreHorizontal />
-          //     </Button>
-          //   </DropdownMenuTrigger>
-          //   <DropdownMenuContent align="end">
-          //     <DropdownMenuItem
-          //       className="cursor-pointer"
-          //       onClick={() => handleActionMenu('edit', id)}
-          //     >
-          //       Edit
-          //     </DropdownMenuItem>
-          //     <DropdownMenuItem
-          //       className="cursor-pointer"
-          //       onClick={() => handleActionMenu('delete', id)}
-          //     >
-          //       Delete
-          //     </DropdownMenuItem>
-          //   </DropdownMenuContent>
-          // </DropdownMenu>
         );
       },
     },
@@ -198,7 +184,7 @@ const RolePermissions = () => {
 
   const fetchUsers = async () => {
     try {
-      const users = await usersService.list({ search, page, size: pageSize });
+      const users = await service.list({ search, page, size: pageSize });
       if (users.data.success) {
         setMainIsLoader(false);
         setList(users.data.data.list);
@@ -230,8 +216,8 @@ const RolePermissions = () => {
   const deleteUserHandler = (data: any) => {
     const userId = data.id;
     setIsLoader(true);
-    userService
-      .deleteUser(userId)
+    service
+      .deleteRole(userId)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setDeleteOpen(false);
@@ -263,17 +249,25 @@ const RolePermissions = () => {
 
   const handlePageChange = async (newPage: any) => {
     table.setPageIndex(newPage);
+    setMainIsLoader(true);
     try {
-      const users = await userService.list(search, newPage, pageSize);
+      const users = await service.list({
+        search,
+        page: newPage,
+        size: pageSize,
+      });
       if (users.data.success) {
+        setMainIsLoader(false);
         setPage(newPage);
         setList(users.data.data.list);
         setTotal(users.data.data.total);
       } else {
+        setMainIsLoader(false);
         ToastHandler(users.data.message);
         console.log('error: ', users.data.message);
       }
     } catch (error: Error | unknown) {
+      setMainIsLoader(false);
       console.log('error: ', error);
     }
   };
@@ -297,109 +291,52 @@ const RolePermissions = () => {
     },
   });
 
-  const createEmployeeHandler = (data: any) => {
-    setIsLoader(true);
-    data.tenant = userDetails?.tenant;
-    data.branch = userDetails?.branch;
-    data.userType = 'USER';
-    userService
-      .create(data)
-      .then((item) => {
-        if (item.data.success) {
-          setIsOpen(false);
-          setIsLoader(false);
-          setList([item.data.data, ...list]);
-          let newtotal = total;
-          setTotal((newtotal += 1));
-        } else {
-          setIsLoader(false);
-          ToastHandler(item.data.message);
-        }
-      })
-      .catch((err: Error | any) => {
-        console.log('error: ', err);
-        ToastHandler(err?.response?.data?.message);
-        setIsLoader(false);
-      });
-  };
-
-  const updateEmployeeHandler = (data: any) => {
-    const userId = data.id;
-    data.username = data.email;
-    delete data.id;
-    setIsLoader(true);
-    userService
-      .update(userId, data)
-      .then((updateItem) => {
-        if (updateItem.data.success) {
-          setEditOpen(false);
-          setIsLoader(false);
-          setList((newArr: any) => {
-            return newArr.map((item: any) => {
-              if (item.id === updateItem.data.data.id) {
-                item.firstName = updateItem.data.data.firstName;
-                item.lastName = updateItem.data.data.lastName;
-                item.email = updateItem.data.data.email;
-                item.phone = updateItem.data.data.phone;
-                item.address = updateItem.data.data.address;
-              }
-              return { ...item };
-            });
-          });
-          ToastHandler(updateItem.data.message);
-        } else {
-          setIsLoader(false);
-          ToastHandler(updateItem.data.message);
-        }
-      })
-      .catch((err: Error | any) => {
-        console.log('error: ', err);
-        ToastHandler(err?.response?.data?.message);
-        setIsLoader(false);
-      });
-  };
-
   return (
-    <div className="">
+    <div className="bg-white p-2 rounded-[20px] shadow-2xl mt-5">
       <TopBar title="Role & Permissions" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="w-full">
-          <div className="flex items-center py-4">
-            <Input
-              placeholder="Search roles..."
-              value={search}
-              onChange={handleChange}
-              onKeyPress={handleKeyPress}
-              className="max-w-sm"
-            />
-            <DropdownMenu>
-              <Button
-                onClick={() => navigate('../add')}
-                className="ml-auto"
-                variant={'outline'}
-              >
-                Add Role
-              </Button>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex items-center py-4 justify-between">
+            <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
+              Roles & Permissions
+            </h2>
+            <div className="flex gap-3 items-center">
+              <Input
+                placeholder="Search roles..."
+                value={search}
+                onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                className="w-[461px] h-[35px] rounded-[23px] bg-mars-bg/50"
+              />
+              <DropdownMenu>
+                <Button
+                  onClick={() => navigate('../add')}
+                  className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
+                  variant={'outline'}
+                >
+                  + Add Role
+                </Button>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <div className="rounded-md border">
             {mainIsLoader ? (
@@ -426,7 +363,7 @@ const RolePermissions = () => {
                     </TableRow>
                   ))}
                 </TableHeader>
-                <TableBody>
+                <TableBody className="bg-earth-bg">
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
                       <TableRow
@@ -457,11 +394,11 @@ const RolePermissions = () => {
               </Table>
             )}
           </div>
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="flex-1 text-sm text-muted-foreground">
+          <div className="flex items-center justify-end space-x-2 pt-4">
+            {/* <div className="flex-1 text-sm text-muted-foreground">
               {total} total - Page {page + 1} of {Math.ceil(total / pageSize)}
-            </div>
-            <div className="flex justify-end">
+            </div> */}
+            <div className="my-5 flex justify-center w-full">
               <Paginator
                 pageSize={pageSize}
                 currentPage={page}
@@ -478,7 +415,7 @@ const RolePermissions = () => {
           isLoader={isLoader}
           isOpen={deleteOpen}
           setIsOpen={setDeleteOpen}
-          title={'User'}
+          title={'Role'}
           formData={editFormData}
           callback={deleteUserHandler}
         />

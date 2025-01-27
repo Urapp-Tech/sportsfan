@@ -30,7 +30,8 @@ const UpdateRolePermissionPage = () => {
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
 
   const [mainIsLoader, setMainIsLoader] = useState(true);
-  console.log('state', state);
+  const [isLoader, setIsLoader] = useState(false);
+  // console.log('state', state);
 
   const {
     register,
@@ -57,6 +58,7 @@ const UpdateRolePermissionPage = () => {
       ToastHandler('Please select atleast one permission');
       return;
     }
+    setIsLoader(true);
     let obj = {
       name: data.name,
       permissions: checkedIds,
@@ -64,13 +66,16 @@ const UpdateRolePermissionPage = () => {
     try {
       const response = await service.update(state.id, obj);
       if (response.data.success) {
+        setIsLoader(false);
         navigate('../list');
       } else {
+        setIsLoader(false);
         setMainIsLoader(false);
         ToastHandler(response.data.message);
         console.log('error: ', response.data.message);
       }
     } catch (error: Error | any) {
+      setIsLoader(false);
       setMainIsLoader(false);
       ToastHandler(error.response.data.message);
       console.log('error: ', error);
@@ -146,20 +151,30 @@ const UpdateRolePermissionPage = () => {
     fetch();
   }, []);
 
-  return (
-    <div className="grid grid-cols-12">
+  return mainIsLoader ? (
+    <div className="flex justify-center bg-white h-[80%] rounded-[20px]  items-center">
+      <Loader2 className="animate-spin" />
+    </div>
+  ) : (
+    <div className="grid grid-cols-12 bg-white p-2 rounded-[20px]">
       <div className="col-span-5 p-5">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="">
               <div className="form-group w-full gap-3">
+                <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
+                  Roles & Permissions
+                </h2>
+                <h5 className="text-lunar-bg font-semibold text-[14px] leading-normal capitalize mt-8 mb-4">
+                  Update Role
+                </h5>
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel htmlFor="name" className="text-sm font-semibold">
                       Name
                     </FormLabel>
                     <Input
-                      className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      className="rounded-[20px] h-[60px] px-2 bg-earth-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
                       id="name"
                       placeholder="manager"
                       type="text"
@@ -225,11 +240,11 @@ const UpdateRolePermissionPage = () => {
                 </FormControl> */}
               </div>
               <Button
+                disabled={isLoader}
                 type="submit"
-                className="mt-7 btn-black-fill w-[140px] p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[40px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[30px]"
+                className="mt-7 ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
               >
-                {/* <Loader2 className="animate-spin" /> */}
-                Update
+                {isLoader ? <Loader2 className="animate-spin" /> : 'Update'}
               </Button>
             </div>
           </form>

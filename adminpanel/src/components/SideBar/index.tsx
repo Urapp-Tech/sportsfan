@@ -39,45 +39,72 @@ export function MainSidebar({
       {
         title: 'Dashboard',
         url: '/admin/dashboard',
-        icon: SquareTerminal,
+        icon: assets.images.dashboardSidebarIcon,
         items: [],
       },
       {
         title: 'Users',
-        url: '#',
-        icon: Users,
-        items: [
-          {
-            title: 'Admin Users',
-            url: '/admin/users/admin-users',
-          },
-          {
-            title: 'Employees',
-            url: '/admin/users/employees',
-          },
-        ],
+        url: '/admin/users/employees',
+        icon: assets.images.usersSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Admin Users',
+        url: '/admin/users/admin-users',
+        icon: assets.images.adminUsersSidebarIcon,
+        items: [],
       },
       {
         title: 'Roles & permissions',
         url: '/admin/role-permissions',
-        icon: Ratio,
+        icon: assets.images.rolePermissionsSidebarIcon,
         items: [],
       },
       {
-        title: 'Operations',
-        url: '#',
-        icon: Users,
-        items: [
-          {
-            title: 'Categories',
-            url: '/dashboard/operations/categories',
-          },
-          {
-            title: 'Reports',
-            url: '/dashboard/operations/reports',
-          },
-        ],
+        title: 'Blogs',
+        url: '/admin/blogs',
+        icon: assets.images.rolePermissionsSidebarIcon,
+        items: [],
       },
+      {
+        title: 'Pages',
+        url: '/admin/pages',
+        icon: assets.images.pagesSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Help & Feedback',
+        url: '/admin/feedback',
+        icon: assets.images.helpFeedbackSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Notifications',
+        url: '/admin/notifications',
+        icon: assets.images.notificationSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Reports',
+        url: '/admin/reports',
+        icon: assets.images.notificationSidebarIcon,
+        items: [],
+      },
+      // {
+      //   title: 'Operations',
+      //   url: '#',
+      //   icon: Users,
+      //   items: [
+      //     {
+      //       title: 'Categories',
+      //       url: '/dashboard/operations/categories',
+      //     },
+      //     {
+      //       title: 'Reports',
+      //       url: '/dashboard/operations/reports',
+      //     },
+      //   ],
+      // },
       {
         title: 'Settings',
         url: '#',
@@ -85,28 +112,22 @@ export function MainSidebar({
         items: [
           {
             title: 'Panel Settings',
-            url: '/dashboard/setting/panel-settings',
+            url: '/admin/setting/panel-settings',
           },
-          // {
-          //   title: 'System Configuration',
-          //   url: '/dashboard/setting/system-configuration',
-          // },
         ],
       },
     ],
   };
 
-
   return (
-    <Sidebar className='bg-transparent' collapsible="icon" {...props} >
+    <Sidebar className="bg-transparent" collapsible="icon" {...props}>
       <SidebarHeader className=" flex items-center justify-center my-2 ">
-        <div className='max-w-[110px] ml-5 mr-auto mt-2'>
+        <div className="max-w-[110px] ml-5 mr-auto mt-2">
           <img
             src={assets.images.whiteLogo}
             className="max-w-full w-full h-full object-contain"
           />
         </div>
-
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

@@ -12,7 +12,7 @@ import promiseHandler from "#utilities/promise-handler";
 const list = async (req, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
-
+  console.log("params :>> ", params);
   const query = knex
     .from(`${MODULE.ADMIN.ROLE} as role`)
     .where({
@@ -32,17 +32,22 @@ const list = async (req, params) => {
         ) AS permissions`
       )
     )
-    .groupBy("role.id");
-
-  const promise = query
-    .clone()
+    .groupBy("role.id")
     .orderBy("role.created_at", "desc")
     .offset(params.page * params.size)
     .limit(params.size);
 
-  const countPromise = query.clone().countDistinct("role.id as total");
+  const countPromise = knex
+    .from(`${MODULE.ADMIN.ROLE} as role`)
+    .where({
+      "role.tenant": params.tenant,
+      "role.is_deleted": false,
+      "role.is_active": true,
+    })
+    .modify(textFilterHelper(params.search, ["role.name"]))
+    .countDistinct("role.id as total");
 
-  const [error, result] = await promiseHandler(promise);
+  const [error, result] = await promiseHandler(query);
   const [countError, countResult] = await promiseHandler(countPromise);
 
   if (error || countError) {

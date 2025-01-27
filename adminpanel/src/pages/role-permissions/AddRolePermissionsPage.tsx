@@ -18,6 +18,7 @@ import { breakCamelCase } from '@/utils/helper';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router';
+import { TopBar } from '@/components/TopBar';
 
 const AddRolePermissionsPage = () => {
   const form = useForm<Fields>();
@@ -30,6 +31,7 @@ const AddRolePermissionsPage = () => {
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
 
   const [mainIsLoader, setMainIsLoader] = useState(true);
+  const [isLoader, setIsLoader] = useState(false);
 
   const {
     register,
@@ -56,6 +58,7 @@ const AddRolePermissionsPage = () => {
       ToastHandler('Please select atleast one permission');
       return;
     }
+    setIsLoader(true);
     let obj = {
       name: data.name,
       permissions: checkedIds,
@@ -64,13 +67,16 @@ const AddRolePermissionsPage = () => {
       const response = await service.create(obj);
       if (response.data.success) {
         navigate('../list');
+        setIsLoader(false);
       } else {
         setMainIsLoader(false);
+        setIsLoader(false);
         ToastHandler(response.data.message);
         console.log('error: ', response);
       }
     } catch (error: Error | any) {
       setMainIsLoader(false);
+      setIsLoader(false);
       ToastHandler(error.response.data.message);
       console.log('error: ', error);
     }
@@ -122,12 +128,26 @@ const AddRolePermissionsPage = () => {
     setCheckedIds((prev) =>
       isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
     );
-    console.log(
-      'Updated checked IDs:',
-      isChecked
-        ? [...checkedIds, id]
-        : checkedIds.filter((checkedId) => checkedId !== id)
+  };
+
+  const handleSelectAll = (isChecked: boolean) => {
+    if (isChecked) {
+      // Add all permission IDs to `checkedIds`
+      const allIds = list.flatMap((item: any) =>
+        item.child.map((child: any) => child.id)
+      );
+      setCheckedIds(allIds); // Set all IDs
+    } else {
+      setCheckedIds([]); // Clear all IDs
+    }
+  };
+
+  const isAllSelected = () => {
+    const allIds = list.flatMap((item: any) =>
+      item.child.map((child: any) => child.id)
     );
+
+    return allIds.every((id: any) => checkedIds.includes(id));
   };
 
   useEffect(() => {
@@ -135,28 +155,35 @@ const AddRolePermissionsPage = () => {
   }, []);
 
   return mainIsLoader ? (
-    <div className="flex justify-center h-[80%] items-center">
+    <div className="flex justify-center h-[80%] bg-white rounded-[20px] items-center">
       <Loader2 className="animate-spin" />
     </div>
   ) : (
-    <div className="grid grid-cols-12">
+    <div className="grid grid-cols-12 bg-white p-2 rounded-[20px]">
+      <TopBar title="Roles & Permissions" />
       <div className="col-span-5 p-5">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="">
               <div className="form-group w-full gap-3">
+                <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
+                  Roles & Permissions
+                </h2>
+                <h5 className="text-lunar-bg font-semibold text-[14px] leading-normal capitalize mt-8 mb-4">
+                  Add New Role
+                </h5>
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel htmlFor="name" className="text-sm font-semibold">
                       Name
                     </FormLabel>
                     <Input
-                      className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
+                      className="rounded-[20px] h-[60px] px-5 bg-earth-bg  text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
                       id="name"
-                      placeholder="manager"
+                      placeholder="Manager"
                       type="text"
                       {...register('name', {
-                        required: 'Please enter your role name',
+                        required: 'Please enter role name',
                       })}
                     />
                     {errors.name && (
@@ -164,12 +191,29 @@ const AddRolePermissionsPage = () => {
                     )}
                   </div>
                 </FormControl>
-                <FormLabel
-                  htmlFor="desc"
-                  className="text-sm font-semibold mt-6 block"
-                >
-                  Assign Permissions
-                </FormLabel>
+                <div className="flex items-center justify-between mt-6">
+                  <FormLabel
+                    htmlFor="desc"
+                    className="text-sm font-semibold block"
+                  >
+                    Assign Permissions
+                  </FormLabel>
+                  <div className="flex items-center">
+                    <Checkbox
+                      id="select-all"
+                      onCheckedChange={(isChecked: boolean) =>
+                        handleSelectAll(isChecked)
+                      }
+                      checked={isAllSelected()}
+                    />
+                    <label
+                      htmlFor="select-all"
+                      className="text-sm font-medium pl-2 leading-none"
+                    >
+                      Select All
+                    </label>
+                  </div>
+                </div>
                 <div className="mt-2">
                   {list.map((item: any, index: number) => (
                     <div className="mt-2" key={index}>
@@ -187,6 +231,7 @@ const AddRolePermissionsPage = () => {
                               onCheckedChange={(isChecked: any) =>
                                 handleCheckboxChange(child.id, isChecked)
                               }
+                              checked={checkedIds.includes(child.id)}
                             />
                             <label
                               htmlFor={child.id}
@@ -200,26 +245,13 @@ const AddRolePermissionsPage = () => {
                     </div>
                   ))}
                 </div>
-                {/* <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="desc" className="text-sm font-medium">
-                      Description
-                    </FormLabel>
-                    <Textarea
-                      className="rounded-[20px] h-[60px] p-3 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
-                      id="desc"
-                      placeholder="Type your message here."
-                      {...register('description')}
-                    />
-                  </div>
-                </FormControl> */}
               </div>
               <Button
+                disabled={isLoader}
                 type="submit"
-                className="mt-7 btn-black-fill w-[140px] p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[40px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[30px]"
+                className="mt-7 ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
               >
-                {/* <Loader2 className="animate-spin" /> */}
-                Save
+                {isLoader ? <Loader2 className="animate-spin" /> : 'Save'}
               </Button>
             </div>
           </form>

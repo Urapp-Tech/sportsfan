@@ -110,7 +110,7 @@ const update = async (req, res) => {
   });
 };
 
-const deleteEmp = async (req, res) => {
+const deleteRole = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
   const params = {
@@ -118,7 +118,7 @@ const deleteEmp = async (req, res) => {
     ...req.params,
     ...req.query,
   };
-  const promise = service.deleteEmp(req, params);
+  const promise = service.deleteRole(req, params);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(
@@ -223,7 +223,7 @@ export default {
   list,
   create,
   update,
-  deleteEmp,
+  deleteRole,
   lov,
   permissionList,
 };
