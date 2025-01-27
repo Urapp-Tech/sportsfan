@@ -1,6 +1,6 @@
 function multipartConfig() {
   return {
-    attachFieldsToBody: "keyValues",
+    attachFieldsToBody: 'keyValues',
     async onFile(part) {
       const buffer = await part.toBuffer();
       part.value = {

@@ -1,6 +1,6 @@
-import model from "#models/system.config.model";
-import HTTP_STATUS from "#utilities/http-status";
-import promiseHandler from "#utilities/promise-handler";
+import model from '#models/system.config.model';
+import HTTP_STATUS from '#utilities/http-status';
+import promiseHandler from '#utilities/promise-handler';
 
 const get = async (req, params) => {
   const promise = model.get(req, params);
@@ -14,7 +14,7 @@ const get = async (req, params) => {
   }
   return {
     code: HTTP_STATUS.OK,
-    message: "System Config has been fetched successfully.",
+    message: 'System Config has been fetched successfully.',
     data: result,
   };
 };

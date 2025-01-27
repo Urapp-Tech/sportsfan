@@ -1,5 +1,5 @@
-import promiseHandler from "#utilities/promise-handler";
-import service from "./office-user.service.js";
+import promiseHandler from '#utilities/promise-handler';
+import service from './office-user.service.js';
 
 const login = async (req, res) => {
   const log = req.logger;

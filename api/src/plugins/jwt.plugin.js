@@ -1,8 +1,8 @@
-import HTTP_STATUS from "#utilities/http-status";
-import createRedisFunctions from "#utilities/redis-helpers";
-import { getAccessTokenKey, getRefreshTokenKey } from "#utilities/redis-keys";
-import fastifyJWT from "@fastify/jwt";
-import fastifyPlugin from "fastify-plugin";
+import HTTP_STATUS from '#utilities/http-status';
+import createRedisFunctions from '#utilities/redis-helpers';
+import { getAccessTokenKey, getRefreshTokenKey } from '#utilities/redis-keys';
+import fastifyJWT from '@fastify/jwt';
+import fastifyPlugin from 'fastify-plugin';
 
 function noTokenInHeaderError() {
   const error = new Error(`No Authorization was found in request.headers`);
@@ -20,7 +20,7 @@ function tokenExpiredError() {
 }
 function tokenInvalidError() {
   const error = new Error(
-    `Authorization token is invalid. format is Bearer 01234567-89ab-4cde-8f01-23456789abcd:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`,
+    `Authorization token is invalid. format is Bearer 01234567-89ab-4cde-8f01-23456789abcd:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`
   );
   error.statusCode = HTTP_STATUS.UNAUTHORIZED;
   error.code = `FST_JWT_AUTHORIZATION_TOKEN_INVALID`;
@@ -37,13 +37,13 @@ async function myFastifyJWT(fastify, opts) {
 
   const { get, del } = createRedisFunctions(fastify.redis);
 
-  fastify.decorate("authenticateAccess", async function (request, reply) {
+  fastify.decorate('authenticateAccess', async function (request, reply) {
     try {
       if (!request.headers.authorization) {
         noTokenInHeaderError();
       }
       const regExpExecArray = TOKEN_PATTERN.exec(
-        request.headers.authorization.replace("Bearer ", ""),
+        request.headers.authorization.replace('Bearer ', '')
       );
       if (!regExpExecArray) {
         tokenInvalidError();
@@ -61,14 +61,14 @@ async function myFastifyJWT(fastify, opts) {
       reply.send(err);
     }
   });
-  fastify.decorate("authenticateRefresh", async function (request, reply) {
+  fastify.decorate('authenticateRefresh', async function (request, reply) {
     try {
       if (!request.headers.authorization) {
         noTokenInHeaderError();
       }
 
       const regExpExecArray = TOKEN_PATTERN.exec(
-        request.headers.authorization.replace("Bearer ", ""),
+        request.headers.authorization.replace('Bearer ', '')
       );
       if (!regExpExecArray) {
         tokenInvalidError();

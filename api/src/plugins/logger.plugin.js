@@ -1,7 +1,7 @@
-import fastifyPlugin from "fastify-plugin";
+import fastifyPlugin from 'fastify-plugin';
 
 async function fastifyLogger(fastify, opts) {
-  await fastify.addHook("onRequest", async function (request) {
+  await fastify.addHook('onRequest', async function (request) {
     const rawURL = request.raw.url;
     for (const logger of opts.loggers) {
       if (rawURL) {
