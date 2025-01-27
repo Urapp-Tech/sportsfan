@@ -72,7 +72,7 @@ export async function script(knex) {
         username: userEmail,
         address: 'test road abc',
         phone: userPhone,
-        user_type: 'USER',
+        user_type: 'SUPER_USER',
       })
       .returning('*');
 

@@ -229,13 +229,6 @@ export async function seed(knex) {
         sequence: 3,
         permission_type: 'CHILD',
       },
-      {
-        tenant: tenant,
-        name: 'deleteOrder',
-        parent: parent.id,
-        sequence: 4,
-        permission_type: 'CHILD',
-      },
     ]);
   })();
   // await (async () => {

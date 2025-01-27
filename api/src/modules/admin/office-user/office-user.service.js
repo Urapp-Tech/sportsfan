@@ -1,13 +1,16 @@
-import model from "#models/office-user.model";
-import generateUserTokens from "#utilities/generate-user-tokens";
-import HTTP_STATUS from "#utilities/http-status";
-import promiseHandler from "#utilities/promise-handler";
-import createRedisFunctions from "#utilities/redis-helpers";
+import officeUserRoleModel from '#models/office-user-role.model';
+import rolePermissionModel from '#models/role-permission.model';
+import model from '#models/office-user.model';
+import generateUserTokens from '#utilities/generate-user-tokens';
+import HTTP_STATUS from '#utilities/http-status';
+import promiseHandler from '#utilities/promise-handler';
+import createRedisFunctions from '#utilities/redis-helpers';
 import {
   getAccessTokenKey,
   getKeysPattern,
   getRefreshTokenKey,
-} from "#utilities/redis-keys";
+} from '#utilities/redis-keys';
+import { SUPER_ADMIN } from '#utilities/constants';
 
 const login = async (req) => {
   const promise = model.login(req);
@@ -16,6 +19,18 @@ const login = async (req) => {
   if (error) {
     const err = new Error(error.detail ?? error.message);
     err.code = error.code ?? HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw err;
+  }
+
+  if (result.isDeleted) {
+    const err = new Error(`User does not exist`);
+    err.code = HTTP_STATUS.UNAUTHORIZED;
+    throw err;
+  }
+
+  if (!result.isActive) {
+    const err = new Error(`User is suspended`);
+    err.code = HTTP_STATUS.UNAUTHORIZED;
     throw err;
   }
 
@@ -36,12 +51,32 @@ const login = async (req) => {
 
   const tokens = await generateUserTokens(req, { id, tenant });
 
+  const officeUSerRole = await officeUserRoleModel.officeUserRole(req, id);
+  let roles = [];
+
+  if (officeUSerRole.role.key === SUPER_ADMIN) {
+    const permissions = await rolePermissionModel.getPermissions(
+      req,
+      officeUSerRole.role.id,
+      officeUSerRole.role.key
+    );
+    roles = permissions;
+  } else {
+    const permissions = await rolePermissionModel.getPermissions(
+      req,
+      officeUSerRole.role.id,
+      officeUSerRole.role.key
+    );
+    roles = permissions;
+  }
+
   return {
     code: HTTP_STATUS.OK,
-    message: "signed in successfully.",
+    message: 'signed in successfully.',
     data: {
       ...result,
       ...tokens,
+      roles: roles,
     },
   };
 };
@@ -58,7 +93,7 @@ const logout = async (req) => {
 
     return {
       code: HTTP_STATUS.OK,
-      message: "signed out successfully.",
+      message: 'signed out successfully.',
     };
   }
 
@@ -71,7 +106,7 @@ const logout = async (req) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: "signed out successfully.",
+    message: 'signed out successfully.',
   };
 };
 
@@ -87,7 +122,7 @@ const list = async (req, params) => {
   }
   return {
     code: HTTP_STATUS.OK,
-    message: "Data has been fetched successfully.",
+    message: 'Data has been fetched successfully.',
     data: result,
   };
 };

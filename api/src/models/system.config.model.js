@@ -1,7 +1,7 @@
-import { errorHandler } from "#utilities/db-query-helpers";
-import HTTP_STATUS from "#utilities/http-status";
-import MODULE from "#utilities/module-names";
-import promiseHandler from "#utilities/promise-handler";
+import { errorHandler } from '#utilities/db-query-helpers';
+import HTTP_STATUS from '#utilities/http-status';
+import MODULE from '#utilities/module-names';
+import promiseHandler from '#utilities/promise-handler';
 
 const get = async (req, params) => {
   /** @type {import('knex').Knex} */
@@ -18,7 +18,7 @@ const get = async (req, params) => {
     )
     .leftJoin(
       `${MODULE.ADMIN.TENANT_CONFIG} as tc`,
-      "tc.tenant",
+      'tc.tenant',
       `${MODULE.ADMIN.SYSTEM_CONFIG}.tenant`
     )
     .from(MODULE.ADMIN.SYSTEM_CONFIG)
@@ -27,7 +27,6 @@ const get = async (req, params) => {
     })
     .first();
   const [error, result] = await promiseHandler(promise);
-  console.log("result :>> ", result, error);
   if (error) {
     errorHandler(`something went wrong`, HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }

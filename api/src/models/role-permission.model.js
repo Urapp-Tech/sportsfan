@@ -1,29 +1,30 @@
+import { SUPER_ADMIN } from '#utilities/constants';
 import {
   errorHandler,
   textFilterHelper,
   toUpperSnakeCase,
-} from "#utilities/db-query-helpers";
-import HTTP_STATUS from "#utilities/http-status";
-import MODULE from "#utilities/module-names";
-import promiseHandler from "#utilities/promise-handler";
+} from '#utilities/db-query-helpers';
+import HTTP_STATUS from '#utilities/http-status';
+import MODULE from '#utilities/module-names';
+import promiseHandler from '#utilities/promise-handler';
 
 // ROLE SERVICES
 
 const list = async (req, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
-  console.log("params :>> ", params);
+  // console.log('params :>> ', params);
   const query = knex
     .from(`${MODULE.ADMIN.ROLE} as role`)
     .where({
-      "role.tenant": params.tenant,
-      "role.is_deleted": false,
-      "role.is_active": true,
+      'role.tenant': params.tenant,
+      'role.is_deleted': false,
+      'role.is_active': true,
     })
-    .modify(textFilterHelper(params.search, ["role.name"]))
-    .leftJoin(`${MODULE.ADMIN.ROLE_PERMISSION} as rp`, "role.id", "rp.role")
+    .modify(textFilterHelper(params.search, ['role.name']))
+    .leftJoin(`${MODULE.ADMIN.ROLE_PERMISSION} as rp`, 'role.id', 'rp.role')
     .select(
-      "role.*",
+      'role.*',
       knex.raw(
         `COALESCE(
           JSON_AGG(DISTINCT rp.permissions) 
@@ -32,20 +33,20 @@ const list = async (req, params) => {
         ) AS permissions`
       )
     )
-    .groupBy("role.id")
-    .orderBy("role.created_at", "desc")
+    .groupBy('role.id')
+    .orderBy('role.created_at', 'desc')
     .offset(params.page * params.size)
     .limit(params.size);
 
   const countPromise = knex
     .from(`${MODULE.ADMIN.ROLE} as role`)
     .where({
-      "role.tenant": params.tenant,
-      "role.is_deleted": false,
-      "role.is_active": true,
+      'role.tenant': params.tenant,
+      'role.is_deleted': false,
+      'role.is_active': true,
     })
-    .modify(textFilterHelper(params.search, ["role.name"]))
-    .countDistinct("role.id as total");
+    .modify(textFilterHelper(params.search, ['role.name']))
+    .countDistinct('role.id as total');
 
   const [error, result] = await promiseHandler(query);
   const [countError, countResult] = await promiseHandler(countPromise);
@@ -101,7 +102,7 @@ const create = async (req, params) => {
           tenant: params.tenant,
           key: toUpperSnakeCase(body.name),
         })
-        .returning("*");
+        .returning('*');
 
       if (body.permissions && Array.isArray(body.permissions)) {
         const rolePermissions = body.permissions.map((permissionId) => ({
@@ -141,7 +142,7 @@ const update = async (req, params) => {
               .andWhere({ isDeleted: false });
           }
         })
-        .andWhereNot("id", params.roleId)
+        .andWhereNot('id', params.roleId)
         .first();
 
       if (existing) {
@@ -150,13 +151,13 @@ const update = async (req, params) => {
 
       const [updatedRole] = await trx(MODULE.ADMIN.ROLE)
         .update({ name })
-        .where("id", params.roleId)
-        .returning("*");
+        .where('id', params.roleId)
+        .returning('*');
 
       if (Array.isArray(permissions)) {
         const existingPermissions = await trx(
           MODULE.ADMIN.ROLE_PERMISSION
-        ).where("role", params.roleId);
+        ).where('role', params.roleId);
 
         const existingPermissionsMap = new Map(
           existingPermissions.map((perm) => [perm.permissions, perm])
@@ -172,8 +173,8 @@ const update = async (req, params) => {
         );
 
         await trx(MODULE.ADMIN.ROLE_PERMISSION)
-          .where("role", params.roleId)
-          .whereIn("permissions", permissionsToDeactivate)
+          .where('role', params.roleId)
+          .whereIn('permissions', permissionsToDeactivate)
           .update({ is_active: false });
 
         for (const permissionId of permissions) {
@@ -181,7 +182,7 @@ const update = async (req, params) => {
 
           if (existingPermission) {
             await trx(MODULE.ADMIN.ROLE_PERMISSION)
-              .where("id", existingPermission.id)
+              .where('id', existingPermission.id)
               .update({ is_active: true });
           } else {
             await trx(MODULE.ADMIN.ROLE_PERMISSION).insert({
@@ -209,7 +210,7 @@ const deleteRole = async (req, params) => {
   const knex = req.knex;
 
   return knex(MODULE.ADMIN.ROLE)
-    .where("id", params.roleId)
+    .where('id', params.roleId)
     .update({ isDeleted: true });
 };
 
@@ -219,10 +220,10 @@ const lov = async (req, params) => {
 
   try {
     const roles = await knex
-      .select("id", "name")
+      .select('id', 'name')
       .from(MODULE.ADMIN.ROLE)
       .where({ tenant: params.tenant, isDeleted: false, isActive: true })
-      .orderBy("name", "asc");
+      .orderBy('name', 'asc');
 
     return roles;
   } catch (error) {
@@ -245,7 +246,7 @@ const permissionList = async (req, params) => {
     is_active: true,
   });
 
-  const countPromise = query.clone().count("* as total");
+  const countPromise = query.clone().count('* as total');
 
   const [error, result] = await promiseHandler(query);
   const [countError, countResult] = await promiseHandler(countPromise);
@@ -264,6 +265,39 @@ const permissionList = async (req, params) => {
   };
 };
 
+const getPermissions = async (req, role, type) => {
+  const knex = req.knex;
+  let permissions = [];
+  if (type === SUPER_ADMIN) {
+    permissions = knex
+      .select('id', 'name')
+      .from(MODULE.ADMIN.PERMISSION)
+      .where({ is_active: true })
+      .whereNotNull('parent');
+  } else {
+    const promise = knex
+      .select('permissions')
+      .from(MODULE.ADMIN.ROLE_PERMISSION)
+      .where({ role: role, is_active: true });
+
+    permissions = knex
+      .select('id', 'name')
+      .from(MODULE.ADMIN.PERMISSION)
+      .whereIn('id', promise);
+  }
+
+  const [error, result] = await promiseHandler(permissions);
+
+  if (error) {
+    const newError = new Error(`something went wrong`);
+    newError.detail = `something went wrong`;
+    newError.code = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw newError;
+  }
+
+  return result;
+};
+
 export default {
   list,
   create,
@@ -271,4 +305,5 @@ export default {
   deleteRole,
   lov,
   permissionList,
+  getPermissions,
 };

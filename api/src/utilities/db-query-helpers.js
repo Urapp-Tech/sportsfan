@@ -1,4 +1,4 @@
-import snakeCase from "lodash/snakeCase.js";
+import snakeCase from 'lodash/snakeCase.js';
 
 export function jsonAggregate(tableName, columns = [], as = undefined) {
   const alias = as ? snakeCase(as) : undefined;
@@ -8,13 +8,13 @@ export function jsonAggregate(tableName, columns = [], as = undefined) {
         (columns) =>
           `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`
       )
-      .join(", ");
+      .join(', ');
     return `
     CASE WHEN COUNT(${tableName}.*) = 0 THEN
       '[]'::json
     ELSE
       JSON_AGG(JSON_BUILD_OBJECT(${formattedColumns}))
-    END AS ${alias ?? tableName + "s"}
+    END AS ${alias ?? tableName + 's'}
     `;
   }
   return `
@@ -22,7 +22,7 @@ export function jsonAggregate(tableName, columns = [], as = undefined) {
       '[]'::json
     ELSE
       JSON_AGG(${tableName}.*)
-    END AS ${alias ?? tableName + "s"}
+    END AS ${alias ?? tableName + 's'}
   `;
 }
 
@@ -34,7 +34,7 @@ export function jsonBuildObject(tableName, columns = [], as = undefined) {
         (columns) =>
           `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`
       )
-      .join(", ");
+      .join(', ');
     return `
     CASE WHEN ${tableName}.id IS NULL THEN
       NULL
@@ -54,7 +54,7 @@ export function jsonBuildObject(tableName, columns = [], as = undefined) {
 
 export function addTableNamePrefixOnProperties(object, tableName) {
   if (!tableName) {
-    throw new Error("parameter table name is required");
+    throw new Error('parameter table name is required');
   }
   const newObject = {};
   Object.entries(object).forEach(([key, value]) => {
@@ -86,7 +86,7 @@ export function textFilterHelper(text, columns) {
     if (!text) {
       return qb;
     }
-    const searchText = text.replaceAll("%", "\\%");
+    const searchText = text.replaceAll('%', '\\%');
     if (isColumnsArray) {
       return qb.andWhere((qb2) => {
         columns.forEach((column) => {
@@ -107,7 +107,7 @@ export function errorHandler(text, code) {
 
 export function toUpperSnakeCase(text) {
   return text
-    .split(" ")
+    .split(' ')
     .map((word) => word.toUpperCase())
-    .join("_");
+    .join('_');
 }
