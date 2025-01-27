@@ -76,7 +76,7 @@ const login = async (req) => {
     data: {
       ...result,
       ...tokens,
-      roles: roles,
+      roles,
     },
   };
 };
