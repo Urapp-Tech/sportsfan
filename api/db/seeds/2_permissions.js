@@ -3,10 +3,11 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
+  const tenant = "cdcf8a4c-1b72-4451-8386-315ff610ea34";
   // id	tenant	name	description	parent	"sequence"	permission_type	is_active	is_deleted	created_at	updated_at
   const [userParent] = await knex("permissions")
     .insert({
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "User",
       permission_type: "PARENT",
     })
@@ -14,21 +15,21 @@ export async function seed(knex) {
 
   await knex("permissions").insert([
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "viewUser",
       parent: userParent.id,
       sequence: 1,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "editUser",
       parent: userParent.id,
       sequence: 2,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "deleteUser",
       parent: userParent.id,
       sequence: 3,
@@ -37,7 +38,7 @@ export async function seed(knex) {
   ]);
   const [adminParent] = await knex("permissions")
     .insert({
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "Admin",
       permission_type: "PARENT",
     })
@@ -45,21 +46,21 @@ export async function seed(knex) {
 
   await knex("permissions").insert([
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "viewAdminUser",
       parent: adminParent.id,
       sequence: 1,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "editAdminUser",
       parent: adminParent.id,
       sequence: 2,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "deleteAdminUser",
       parent: adminParent.id,
       sequence: 3,
@@ -68,7 +69,7 @@ export async function seed(knex) {
   ]);
   const [pageParent] = await knex("permissions")
     .insert({
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "Page",
       permission_type: "PARENT",
     })
@@ -76,21 +77,21 @@ export async function seed(knex) {
 
   await knex("permissions").insert([
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "viewPage",
       parent: pageParent.id,
       sequence: 1,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "editPage",
       parent: pageParent.id,
       sequence: 2,
       permission_type: "CHILD",
     },
     {
-      tenant: "50a3ed23-6d5c-4dc1-b40d-274793f6b255",
+      tenant: tenant,
       name: "deletePage",
       parent: pageParent.id,
       sequence: 3,

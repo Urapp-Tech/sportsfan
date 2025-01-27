@@ -1,8 +1,8 @@
-import eslint from "@eslint/js";
-import eslintPluginImport from "eslint-plugin-import";
-import pluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import eslintPluginPromise from "eslint-plugin-promise";
-import eslintGlobals from "globals";
+import eslint from '@eslint/js';
+import eslintPluginImport from 'eslint-plugin-import';
+import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintPluginPromise from 'eslint-plugin-promise';
+import eslintGlobals from 'globals';
 
 const { configs } = eslint;
 const { flatConfigs } = eslintPluginImport;
@@ -13,38 +13,39 @@ export default [
   {
     languageOptions: {
       globals: node,
-      ecmaVersion: "latest",
+      ecmaVersion: 'latest',
       parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: 'latest',
+        sourceType: 'module',
       },
     },
   },
   configs.recommended,
   flatConfigs.recommended,
-  promiseConfigs["flat/recommended"],
+  promiseConfigs['flat/recommended'],
   pluginPrettierRecommended,
   {
     rules: {
-      "no-console": "warn",
-      "import/no-unresolved": "off",
-      "import/named": "off",
-      "import/namespace": "off",
-      "import/no-named-as-default": "off",
-      "import/default": "off",
-      "import/no-named-as-default-member": "off",
-      "prettier/prettier": [
-        "error",
+      'no-console': 'warn',
+      'import/no-unresolved': 'off',
+      'import/named': 'off',
+      'import/namespace': 'off',
+      'import/no-named-as-default': 'off',
+      'import/default': 'off',
+      'import/no-named-as-default-member': 'off',
+      'prettier/prettier': [
+        'error',
         {
-          endOfLine: "auto",
+          endOfLine: 'auto',
+          trailingComma: 'es5',
         },
       ],
-      "no-unused-vars": [
-        "error",
+      'no-unused-vars': [
+        'error',
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
     },

@@ -17,7 +17,7 @@ export function up(knex) {
       table.timestamp("dob").nullable();
       table.text("phone").nullable();
       table.uuid("team").nullable();
-      table.text("image").nullable();
+      table.text("avatar").nullable();
       table.boolean("interested_gambling").defaultTo(false);
       table.boolean("is_active").defaultTo(true);
       table.boolean("is_deleted").defaultTo(false);
