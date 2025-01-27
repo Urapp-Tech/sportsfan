@@ -1,5 +1,6 @@
 import avatarIcon from './avatar.webp';
 import notifyIcon from './bell-icon.webp';
+import skelImg from './img-skel.png';
 import mainLogo from './main-logo.webp';
 import otpBanner from './otp-banner.png';
 import siddiqsonsBlackLogo from './siddiqsons-logo-black.png';
@@ -40,6 +41,7 @@ const assets = {
     reportSidebarIcon,
     settingSidebarIcon,
     logoutSidebarIcon,
+    skelImg,
   },
 } as const;
 

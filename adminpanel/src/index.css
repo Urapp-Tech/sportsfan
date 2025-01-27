@@ -24,6 +24,7 @@
     --custom-light-green: 0, 169, 123;
     --custom-w-blue: 244, 247, 255;
     --custom-red: 255, 48, 79;
+    --custom-placeholder: 197, 201, 213;
     /* Sports Var End */
 
 
@@ -124,9 +125,153 @@
   background-position: center;
 }
 
+.side--border {
+  border: none;
+}
+
+.side--bar {
+  display: none;
+}
+
 .bg-panel {
   background: url('assets/images/dashboard-bg.webp');
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
+}
+
+/* form fields */
+
+.custom-form-section label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  @apply text-tertiary-bg;
+}
+
+.custom-form-section input,
+.custom-form-section select {
+  height: 60px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  @apply text-tertiary-bg;
+  padding: 10px 12px;
+  border: none;
+}
+
+.custom-form-section input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: unset !important;
+}
+
+.custom-form-section input::placeholder {
+  @apply text-palceholder-bg;
+
+
+}
+
+/* .select-field button:focus {
+  border: none !important;
+  outline: none !important;
+} */
+
+.select-field select:focus {
+  border: none !important;
+  outline: none !important;
+
+}
+
+.select-field button {
+  height: 60px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  @apply text-tertiary-bg;
+  padding: 10px 12px;
+  border: none;
+}
+
+.select-field button::placeholder {
+  @apply text-palceholder-bg;
+
+
+}
+
+.select-field option {
+  @apply bg-mars-bg !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  @apply text-tertiary-bg;
+}
+
+.cs-dialog-box {
+  height: 90vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.cs-dialog-box::-webkit-scrollbar {
+  width: 18px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+}
+
+.cs-dialog-box::-webkit-scrollbar-track {
+
+  border-radius: 20px;
+}
+
+.cs-dialog-box::-webkit-scrollbar-thumb {
+  width: 24px;
+  @apply bg-mars-bg;
+  border: 5px solid #CCEEF4;
+  border-radius: 15px;
+}
+
+.cs-radio-wrap button[aria-checked="false"] {
+  @apply border-lunar-bg !important;
+  border: 2px solid;
+
+}
+
+.cs-radio-wrap button[aria-checked="true"] {
+  @apply border-lunar-bg !important;
+  border: 2px solid;
+
+  @apply bg-earth-bg !important;
+}
+
+.cs-radio-wrap button[aria-checked="true"] svg {
+  fill: rgb(114, 149, 246) !important;
+  stroke: none;
+  width: 10px;
+  height: 10px;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* border-radius: 0; */
+  /* stroke-linecap: square;
+  stroke-linejoin: unset;
+  background: #ffff00; */
+}
+
+.custom--checkbox button[aria-checked="false"] {
+  border: 2px solid #1b46df;
+  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.custom--checkbox button[aria-checked="true"] {
+  border: 2px solid rgb(27, 70, 223);
+  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+  @apply bg-lunar-bg !important;
 }

@@ -1,29 +1,44 @@
-import { useState } from 'react';
-import {
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  Form,
-} from '@/components/ui/form';
 import {
   Dialog,
   DialogContent,
+  //   DialogTrigger,
+  DialogFooter,
   //   DialogDescription,
   DialogHeader,
   DialogTitle,
-  //   DialogTrigger,
-  DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 // import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { Fields } from '@/interfaces/employee.interface';
-import { useForm } from 'react-hook-form';
 import DragDropFile from '@/components/DragDropImgFile';
+import { Button } from '@/components/ui/button';
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Label } from "@/components/ui/label";
+
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+import { Checkbox } from "@/components/ui/checkbox";
+
 import { toast } from '@/hooks/use-toast';
+import { Fields } from '@/interfaces/employee.interface';
 import { cn } from '@/lib/utils';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 type Props = {
   isLoader: boolean;
@@ -41,7 +56,7 @@ const EmployeeCreationDialog = ({
   const form = useForm<Fields>();
   const [file, setFile] = useState<any>(null);
   const [selectedImg, setSelectedImg] = useState<any>(null);
-
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const ToastHandler = (text: string) => {
     return toast({
       description: text,
@@ -67,11 +82,13 @@ const EmployeeCreationDialog = ({
     if (file) data.avatar = file;
     callback(data);
   };
-
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="sm:max-w-[600px]"
+        className="sm:max-w-[600px] cs-dialog-box"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
@@ -79,7 +96,7 @@ const EmployeeCreationDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="">
+            <div className="custom-form-section ">
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
                   <div className="">
@@ -103,7 +120,7 @@ const EmployeeCreationDialog = ({
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
+                      Email
                     </FormLabel>
                     <Input
                       className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
@@ -119,6 +136,75 @@ const EmployeeCreationDialog = ({
                     )}
                   </div>
                 </FormControl>
+
+              </div>
+              <div className='form-group w-full my-2'>
+                <FormControl className="m-1 w-full">
+                  <div className="">
+                    <FormLabel
+                      htmlFor="password"
+                      className="text-sm font-medium"
+                    >
+                      Password
+                    </FormLabel>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        placeholder="********"
+                        type={passwordVisible ? 'text' : 'password'}
+                        className="text-sm pr-10 mt-2 text-tertiary-bg"
+                        {...register('password', {
+                          required: 'Please enter your password.',
+                        })}
+                      />
+                      <Button
+                        variant="ghost"
+                        type="button"
+                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3 h-[60px] hover:bg-transparent"
+                        onClick={togglePasswordVisibility}
+                      >
+                        {passwordVisible ? (
+                          <EyeOff color="black" />
+                        ) : (
+                          <Eye color="black" />
+                        )}
+                      </Button>
+                      {<errors className="password"></errors> && (
+                        <p></p>
+                        // <FormMessage>*{errors.password.message}</FormMessage>
+                      )}
+                    </div>
+                  </div>
+                </FormControl>
+              </div>
+              <div className='form-group w-full my-2 cs-radio-wrap'>
+
+                <RadioGroup defaultValue="option-one">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="option-one" id="option-one" />
+                    <Label htmlFor="option-one">Option One</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="option-two" id="option-two" />
+                    <Label htmlFor="option-two">Option Two</Label>
+                  </div>
+                </RadioGroup>
+
+
+              </div>
+              <div className='form-group w-full my-2'>
+                <div className='flex gap-2 items-center custom--checkbox'>
+                  <Checkbox />  <label>i agree terms</label>
+                </div>
+
+              </div>
+              <div className='form-group w-full my-2'>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+
+
               </div>
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
@@ -183,6 +269,32 @@ const EmployeeCreationDialog = ({
                   </div>
                 </FormControl>
               </div>
+
+              <div>
+                <div className="flex justify-between">
+                  <FormLabel
+                    htmlFor="address"
+                    className="text-sm font-medium my-3"
+                  >
+                    Select Theme
+                  </FormLabel>
+                </div>
+                <div className="w-full my-2 select-field">
+
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent className='bg-mars-bg select-contents'>
+                      <SelectItem value="light" >Light</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+
+                </div>
+              </div>
               <div>
                 <div className="flex justify-between">
                   <FormLabel
@@ -201,17 +313,17 @@ const EmployeeCreationDialog = ({
                     />
                   </div>
                   {selectedImg ? (
-                    <div className="col-span-6 flex items-center xl:justify-center 2xl:justify-start">
+                    <div className="col-span-6 flex items-center justify-center xl:justify-center 2xl:justify-start">
                       <img
-                        className="max-h-[100px] max-w-[150px] rounded-md"
+                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
                         src={selectedImg}
                         alt="Shop Logo"
                       />
                     </div>
                   ) : getValues('avatar') ? (
-                    <div className="col-span-6 flex items-center xl:justify-center 2xl:justify-start">
+                    <div className="col-span-6 flex items-center justify-center  xl:justify-center 2xl:justify-start">
                       <img
-                        className="max-h-[100px] max-w-[150px] rounded-md"
+                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
                         src={getValues('avatar')}
                         alt="Shop Logo"
                       />
@@ -229,6 +341,7 @@ const EmployeeCreationDialog = ({
         </Form>
       </DialogContent>
     </Dialog>
+
   );
 };
 
