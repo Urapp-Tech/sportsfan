@@ -16,6 +16,21 @@ const backOfficeUserRoutes = (fastify, options, done) => {
     { schema: schema.list, onRequest: [fastify.authenticateAccess] },
     controller.list
   );
+  // fastify.post(
+  //   "/create",
+  //   { schema: schema.create, onRequest: [fastify.authenticateAccess] },
+  //   controller.create
+  // );
+  // fastify.post(
+  //   "/update/:userId",
+  //   { schema: schema.update, onRequest: [fastify.authenticateAccess] },
+  //   controller.update
+  // );
+  // fastify.post(
+  //   "/delete/:userId",
+  //   { schema: schema.delete, onRequest: [fastify.authenticateAccess] },
+  //   controller.deleteUser
+  // );
 
   done();
 };

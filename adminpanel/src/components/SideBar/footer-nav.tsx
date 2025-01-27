@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/redux/features/authSlice';
+import { NavLink } from 'react-router';
+import assets from '@/assets/images';
 
 export function FooterNavUser({
   user,
@@ -41,10 +43,6 @@ export function FooterNavUser({
 }) {
   const { isMobile } = useSidebar();
   const dispatch = useDispatch();
-
-  const logoutHandler = () => {
-    dispatch(logout());
-  };
 
   const handleSocialLinks = () => {
     const socialMediaMap = {
@@ -76,63 +74,35 @@ export function FooterNavUser({
     );
   };
 
+  const handleLogout = () => dispatch(logout());
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="outline-none border-0 focus:outline-none focus:border-none focus-visible:ring-offset-0 focus-visible:ring-0 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
-                  {user.avatar}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
-            align="end"
-            sideOffset={4}
+        <SidebarMenuButton tooltip="setting">
+          <img src={assets.images.settingSidebarIcon} />
+          <NavLink
+            to={'/admin/settings'}
+            className={({ isActive }) =>
+              `${isActive ? 'text-quinary-bg text-[12px] font-semibold' : ''}`
+            }
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    {user.avatar}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {handleSocialLinks()}
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {/* <DropdownMenuItem>
-                <User2 />
-                View Profile
-              </DropdownMenuItem> */}
-            </DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => logoutHandler()}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <span className="text-mars-bg font-medium ">Setting</span>
+          </NavLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem onClick={() => handleLogout()}>
+        <SidebarMenuButton tooltip="logout">
+          <img src={assets.images.logoutSidebarIcon} />
+          {/* <NavLink
+            onClick={() => handleLogout()}
+            className={({ isActive }) =>
+              `${isActive ? 'text-quinary-bg text-[12px] font-semibold' : ''}`
+            }
+          > */}
+          <span className="text-mars-bg font-medium ">Logout</span>
+          {/* </NavLink> */}
+        </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
   );

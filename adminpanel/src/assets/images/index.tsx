@@ -16,6 +16,8 @@ import pagesSidebarIcon from './pages-icon.svg';
 import helpFeedbackSidebarIcon from './help-feedback-icon.svg';
 import notificationSidebarIcon from './notification-icon.svg';
 import reportSidebarIcon from './reports-icon.svg';
+import settingSidebarIcon from './setting-icon.svg';
+import logoutSidebarIcon from './logout-icon.svg';
 
 const assets = {
   images: {
@@ -36,6 +38,8 @@ const assets = {
     helpFeedbackSidebarIcon,
     notificationSidebarIcon,
     reportSidebarIcon,
+    settingSidebarIcon,
+    logoutSidebarIcon,
   },
 } as const;
 
