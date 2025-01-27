@@ -1,13 +1,6 @@
-import model from "#models/role-permission.model";
-import generateUserTokens from "#utilities/generate-user-tokens";
-import HTTP_STATUS from "#utilities/http-status";
-import promiseHandler from "#utilities/promise-handler";
-import createRedisFunctions from "#utilities/redis-helpers";
-import {
-  getAccessTokenKey,
-  getKeysPattern,
-  getRefreshTokenKey,
-} from "#utilities/redis-keys";
+import model from '#models/role-permission.model';
+import HTTP_STATUS from '#utilities/http-status';
+import promiseHandler from '#utilities/promise-handler';
 
 const list = async (req, params) => {
   // console.log("params :>> ", params);
@@ -20,7 +13,7 @@ const list = async (req, params) => {
   }
   return {
     code: HTTP_STATUS.OK,
-    message: "Data has been fetched successfully.",
+    message: 'Data has been fetched successfully.',
     data: result,
   };
 };
@@ -37,7 +30,7 @@ const create = async (req, params) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: "Role has been created successfully.",
+    message: 'Role has been created successfully.',
     data: { ...result },
   };
 };
@@ -54,7 +47,7 @@ const update = async (req, params) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: "Role has been updated successfully.",
+    message: 'Role has been updated successfully.',
     data: { ...result },
   };
 };
@@ -71,7 +64,7 @@ const deleteRole = async (req, params) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: "Role has been deleted successfully.",
+    message: 'Role has been deleted successfully.',
     data: { ...result },
   };
 };
@@ -88,7 +81,7 @@ const lov = async (req, params) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: "Role Lov has been fetched successfully.",
+    message: 'Role Lov has been fetched successfully.',
     data: result,
   };
 };
@@ -103,7 +96,7 @@ const permissionList = async (req, params) => {
   }
   return {
     code: HTTP_STATUS.OK,
-    message: "Data has been fetched successfully.",
+    message: 'Data has been fetched successfully.',
     data: result,
   };
 };

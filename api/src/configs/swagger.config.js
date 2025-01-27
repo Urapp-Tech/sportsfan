@@ -2,20 +2,20 @@ export function swaggerConfig() {
   return {
     swagger: {
       info: {
-        title: "My Fastify App Documentation Title",
-        description: "My FirstApp Backend Documentation Description",
-        version: "1.0.0",
+        title: 'My Fastify App Documentation Title',
+        description: 'My FirstApp Backend Documentation Description',
+        version: '1.0.0',
       },
       securityDefinitions: {
         AuthorizationAccess: {
-          type: "apiKey",
-          name: "Authorization",
-          in: "header",
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
         },
         AuthorizationRefresh: {
-          type: "apiKey",
-          name: "Authorization",
-          in: "header",
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
         },
       },
     },
@@ -35,17 +35,17 @@ const CSS_CONTENT = `
 
 export function swaggerUIConfig() {
   return {
-    routePrefix: "/documentation",
+    routePrefix: '/documentation',
     theme: {
       css: [
         {
-          filename: "custom-font-and-input-field-size.css",
+          filename: 'custom-font-and-input-field-size.css',
           content: CSS_CONTENT,
         },
       ],
     },
     uiConfig: {
-      docExpansion: "list",
+      docExpansion: 'list',
       deepLinking: true,
       persistAuthorization: true,
     },

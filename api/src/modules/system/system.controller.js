@@ -1,5 +1,5 @@
-import promiseHandler from "#utilities/promise-handler";
-import service from "./system.service.js";
+import promiseHandler from '#utilities/promise-handler';
+import service from './system.service.js';
 
 const get = async (req, res) => {
   const log = req.logger;
@@ -10,7 +10,7 @@ const get = async (req, res) => {
     ...req.query,
   };
 
-  console.log("🚀 ~ get ~ ̥:", params);
+  console.log('🚀 ~ get ~ ̥:', params);
   const promise = service.get(req, params);
   const [error, result] = await promiseHandler(promise);
   if (error) {

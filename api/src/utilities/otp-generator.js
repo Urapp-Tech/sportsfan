@@ -7,42 +7,42 @@ function arraySample(array) {
 }
 
 const NUMBERS_AND_LETTERS = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
 ];
 
 function getLetterOrNumber() {
@@ -52,7 +52,7 @@ function getLetterOrNumber() {
 function generate(amount = 1) {
   if (amount > NUMBERS_AND_LETTERS.length) {
     throw new Error(
-      `amount can not be greater than ${NUMBERS_AND_LETTERS.length}`,
+      `amount can not be greater than ${NUMBERS_AND_LETTERS.length}`
     );
   }
 
@@ -60,7 +60,7 @@ function generate(amount = 1) {
   while (randomNumbersAndLetters.size !== amount) {
     randomNumbersAndLetters.add(getLetterOrNumber());
   }
-  return [...randomNumbersAndLetters].join("");
+  return [...randomNumbersAndLetters].join('');
 }
 
 export default generate;

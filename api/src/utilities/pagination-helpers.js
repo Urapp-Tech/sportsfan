@@ -1,9 +1,9 @@
 function getLimitAndOffset({ page = 1, size = 10 }) {
   if (isNaN(parseInt(page))) {
-    throw new Error("getPaginationObject Error: page must be a number.");
+    throw new Error('getPaginationObject Error: page must be a number.');
   }
   if (isNaN(parseInt(size))) {
-    throw new Error("getPaginationObject Error: size must be a number.");
+    throw new Error('getPaginationObject Error: size must be a number.');
   }
 
   if (page < 1) {
@@ -18,13 +18,13 @@ function getLimitAndOffset({ page = 1, size = 10 }) {
 
 function getPaginationObject({ page = 1, size = 10, total = 0 }) {
   if (isNaN(parseInt(page))) {
-    throw new Error("getPaginationObject Error: page must be a number.");
+    throw new Error('getPaginationObject Error: page must be a number.');
   }
   if (isNaN(parseInt(size))) {
-    throw new Error("getPaginationObject Error: size must be a number.");
+    throw new Error('getPaginationObject Error: size must be a number.');
   }
   if (isNaN(parseInt(total))) {
-    throw new Error("getPaginationObject Error: total must be a number.");
+    throw new Error('getPaginationObject Error: total must be a number.');
   }
 
   if (page < 1) {

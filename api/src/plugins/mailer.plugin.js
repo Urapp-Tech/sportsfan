@@ -1,5 +1,5 @@
-import sendgridMail from "@sendgrid/mail";
-import fastifyPlugin from "fastify-plugin";
+import sendgridMail from '@sendgrid/mail';
+import fastifyPlugin from 'fastify-plugin';
 
 async function fastifyMailer(fastify, opts) {
   sendgridMail.setApiKey(opts.apiKey);
@@ -14,7 +14,7 @@ async function fastifyMailer(fastify, opts) {
       attachments: data.attachments,
     });
   };
-  fastify.decorateRequest("sendEmail", handler);
+  fastify.decorateRequest('sendEmail', handler);
 }
 
 export default fastifyPlugin(fastifyMailer);

@@ -1,23 +1,23 @@
-import snakeCase from "lodash/snakeCase.js";
-import { camelCaseKeys } from "../utilities/case-converter.js";
+import snakeCase from 'lodash/snakeCase.js';
+import { camelCaseKeys } from '../utilities/case-converter.js';
 
 function transformKnexResponse(result) {
   if (!result) {
     return result;
   }
-  if (result.command === "INSERT") {
+  if (result.command === 'INSERT') {
     if (result.rows.length) {
       return camelCaseKeys(result.rows);
     }
     return result.rowCount;
   }
-  if (result.command === "SELECT") {
+  if (result.command === 'SELECT') {
     return camelCaseKeys(result.rows);
   }
-  if (result.command === "DELETE") {
+  if (result.command === 'DELETE') {
     return result.rowCount;
   }
-  if (result.command === "UPDATE") {
+  if (result.command === 'UPDATE') {
     if (result.rows.length) {
       return camelCaseKeys(result.rows);
     }
@@ -31,15 +31,15 @@ function transformKnexResponse(result) {
  */
 function knexConfig(config) {
   return {
-    client: "pg",
-    version: "14.10",
+    client: 'pg',
+    version: '14.10',
     connection: {
       host: config.DB_HOST,
       port: config.DB_PORT,
       user: config.DB_USER,
       password: config.DB_PASSWORD,
       database: config.DATABASE,
-      timezone: "UTC",
+      timezone: 'UTC',
     },
     pool: {
       min: 0,
@@ -54,7 +54,7 @@ function knexConfig(config) {
       },
     },
     wrapIdentifier: (value, origImpl) => {
-      if (value === "*") return value;
+      if (value === '*') return value;
       return origImpl(snakeCase(value));
     },
     postProcessResponse: (result) => {

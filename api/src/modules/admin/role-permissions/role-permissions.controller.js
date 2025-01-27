@@ -1,5 +1,5 @@
-import promiseHandler from "#utilities/promise-handler";
-import service from "./role-permissions.service.js";
+import promiseHandler from '#utilities/promise-handler';
+import service from './role-permissions.service.js';
 
 const list = async (req, res) => {
   const log = req.logger;

@@ -1,7 +1,7 @@
-import camelCase from "lodash/camelCase.js";
-import isArray from "lodash/isArray.js";
-import isPlainObject from "lodash/isPlainObject.js";
-import snakeCase from "lodash/snakeCase.js";
+import camelCase from 'lodash/camelCase.js';
+import isArray from 'lodash/isArray.js';
+import isPlainObject from 'lodash/isPlainObject.js';
+import snakeCase from 'lodash/snakeCase.js';
 
 export function camelCaseKeys(object) {
   if (isArray(object)) return object.map(camelCaseKeys);

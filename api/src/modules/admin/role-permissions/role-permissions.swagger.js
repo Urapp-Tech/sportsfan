@@ -1,12 +1,12 @@
-import { Type } from "@sinclair/typebox";
+import { Type } from '@sinclair/typebox';
 
 const swagger = {
   list: {
     schema: {
       description: `this will list roles`,
-      tags: ["ADMIN|RolePermission"],
+      tags: ['ADMIN|RolePermission'],
       summary: `role with pagination`,
-      operationId: "FetchRole",
+      operationId: 'FetchRole',
       querystring: Type.Object(
         {
           page: Type.Integer({ default: 0, minimum: 0 }),
@@ -18,30 +18,30 @@ const swagger = {
     },
   },
   create: {
-    description: "this will create role",
-    tags: ["ADMIN|Role"],
-    summary: "create role",
-    operationId: "CreateRole",
+    description: 'this will create role',
+    tags: ['ADMIN|Role'],
+    summary: 'create role',
+    operationId: 'CreateRole',
     body: Type.Object(
       {
         name: Type.String(),
         description: Type.Optional(Type.String()),
         permissions: Type.Array(),
       },
-      { required: ["name", "permissions"] },
+      { required: ['name', 'permissions'] },
       { additionalProperties: false }
     ),
   },
   update: {
-    description: "this will update role",
-    tags: ["ADMIN|Role"],
-    summary: "update role",
-    operationId: "UpdateRole",
+    description: 'this will update role',
+    tags: ['ADMIN|Role'],
+    summary: 'update role',
+    operationId: 'UpdateRole',
     params: Type.Object(
       {
-        roleId: Type.String({ format: "uuid" }),
+        roleId: Type.String({ format: 'uuid' }),
       },
-      { required: "roleId" },
+      { required: 'roleId' },
       { additionalProperties: false }
     ),
     body: Type.Object(
@@ -54,32 +54,32 @@ const swagger = {
     ),
   },
   delete: {
-    description: "this will delete role",
-    tags: ["ADMIN|Role"],
-    summary: "delete role",
-    operationId: "DeleteRole",
+    description: 'this will delete role',
+    tags: ['ADMIN|Role'],
+    summary: 'delete role',
+    operationId: 'DeleteRole',
     params: Type.Object(
       {
-        roleId: Type.String({ format: "uuid" }),
+        roleId: Type.String({ format: 'uuid' }),
       },
-      { required: "roleId" },
+      { required: 'roleId' },
       { additionalProperties: false }
     ),
   },
   lov: {
     schema: {
       description: `this will list lov roles`,
-      tags: ["ADMIN|Role"],
+      tags: ['ADMIN|Role'],
       summary: `Roles with lov`,
-      operationId: "FetchRoleLov",
+      operationId: 'FetchRoleLov',
     },
   },
   permissionList: {
     schema: {
       description: `this will list permissions`,
-      tags: ["ADMIN|Permission"],
+      tags: ['ADMIN|Permission'],
       summary: `permissions with pagination`,
-      operationId: "FetchPermissions",
+      operationId: 'FetchPermissions',
       querystring: Type.Object(
         {
           page: Type.Integer({ default: 0, minimum: 0 }),

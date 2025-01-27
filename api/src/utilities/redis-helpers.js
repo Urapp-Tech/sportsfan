@@ -15,7 +15,7 @@ function createRedisFunctions(redis) {
   async function set(key, value, expiryInSeconds) {
     const stringifiedJson = JSON.stringify(value);
     if (expiryInSeconds) {
-      return redis.set(key, stringifiedJson, "EX", expiryInSeconds);
+      return redis.set(key, stringifiedJson, 'EX', expiryInSeconds);
     }
     return redis.set(key, stringifiedJson);
   }

@@ -1,7 +1,7 @@
-import { parse } from "@lukeed/ms";
-import getSha256Hash from "./hash.js";
-import createRedisFunctions from "./redis-helpers.js";
-import { getAccessTokenKey, getRefreshTokenKey } from "./redis-keys.js";
+import { parse } from '@lukeed/ms';
+import getSha256Hash from './hash.js';
+import createRedisFunctions from './redis-helpers.js';
+import { getAccessTokenKey, getRefreshTokenKey } from './redis-keys.js';
 
 async function generateUserTokens(req, payload) {
   const { id, tenant } = payload;

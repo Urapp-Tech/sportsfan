@@ -1,9 +1,9 @@
-import fastifyPlugin from "fastify-plugin";
-import knex from "knex";
+import fastifyPlugin from 'fastify-plugin';
+import knex from 'knex';
 
 async function fastifyKnexJS(fastify, opts) {
   const handler = knex(opts);
-  fastify.decorateRequest("knex", handler).addHook("onClose", (instance) => {
+  fastify.decorateRequest('knex', handler).addHook('onClose', (instance) => {
     /* istanbul ignore else */
     if (instance.knex === handler) {
       instance.knex.destroy();
@@ -12,4 +12,4 @@ async function fastifyKnexJS(fastify, opts) {
   });
 }
 
-export default fastifyPlugin(fastifyKnexJS, ">=0.30.0");
+export default fastifyPlugin(fastifyKnexJS, '>=0.30.0');

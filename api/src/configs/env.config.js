@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type } from '@sinclair/typebox';
 
 const ENV_SCHEMA = Type.Object({
   WEB_SERVER_PORT: Type.Integer({
@@ -40,7 +40,7 @@ const ENV_SCHEMA = Type.Object({
 
 function envConfig() {
   return {
-    confKey: "config",
+    confKey: 'config',
     dotenv: {
       path: `.env.${process.env.NODE_ENV}`,
     },

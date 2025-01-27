@@ -1,29 +1,29 @@
-import controller from "./role-permissions.controller.js";
-import schema from "./role-permissions.swagger.js";
+import controller from './role-permissions.controller.js';
+import schema from './role-permissions.swagger.js';
 
 const rolePermissionsRoutes = (fastify, options, done) => {
   fastify.get(
-    "/list",
+    '/list',
     { schema: schema.list, onRequest: [fastify.authenticateAccess] },
     controller.list
   );
   fastify.post(
-    "/create",
+    '/create',
     { schema: schema.create, onRequest: [fastify.authenticateAccess] },
     controller.create
   );
   fastify.post(
-    "/update/:roleId",
+    '/update/:roleId',
     { schema: schema.update, onRequest: [fastify.authenticateAccess] },
     controller.update
   );
   fastify.post(
-    "/delete/:roleId",
+    '/delete/:roleId',
     { schema: schema.delete, onRequest: [fastify.authenticateAccess] },
     controller.deleteRole
   );
   fastify.get(
-    "/lov",
+    '/lov',
     { schema: schema.lov, onRequest: [fastify.authenticateAccess] },
     controller.lov
   );
@@ -31,7 +31,7 @@ const rolePermissionsRoutes = (fastify, options, done) => {
   // PERMISSIONS
 
   fastify.get(
-    "/permission/list",
+    '/permission/list',
     { schema: schema.permissionList, onRequest: [fastify.authenticateAccess] },
     controller.permissionList
   );
