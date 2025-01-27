@@ -132,13 +132,12 @@ const AddRolePermissionsPage = () => {
 
   const handleSelectAll = (isChecked: boolean) => {
     if (isChecked) {
-      // Add all permission IDs to `checkedIds`
       const allIds = list.flatMap((item: any) =>
         item.child.map((child: any) => child.id)
       );
-      setCheckedIds(allIds); // Set all IDs
+      setCheckedIds(allIds);
     } else {
-      setCheckedIds([]); // Clear all IDs
+      setCheckedIds([]);
     }
   };
 
@@ -193,7 +192,7 @@ const AddRolePermissionsPage = () => {
                 </FormControl>
                 <div className="flex items-center justify-between mt-6">
                   <FormLabel
-                    htmlFor="desc"
+                    htmlFor="permissions"
                     className="text-sm font-semibold block"
                   >
                     Assign Permissions

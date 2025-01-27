@@ -139,12 +139,25 @@ const UpdateRolePermissionPage = () => {
     setCheckedIds((prev) =>
       isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
     );
-    // console.log(
-    //   'Updated checked IDs:',
-    //   isChecked
-    //     ? [...checkedIds, id]
-    //     : checkedIds.filter((checkedId) => checkedId !== id)
-    // );
+  };
+
+  const handleSelectAll = (isChecked: boolean) => {
+    if (isChecked) {
+      const allIds = list.flatMap((item: any) =>
+        item.child.map((child: any) => child.id)
+      );
+      setCheckedIds(allIds);
+    } else {
+      setCheckedIds([]);
+    }
+  };
+
+  const isAllSelected = () => {
+    const allIds = list.flatMap((item: any) =>
+      item.child.map((child: any) => child.id)
+    );
+
+    return allIds.every((id: any) => checkedIds.includes(id));
   };
 
   useEffect(() => {
@@ -188,12 +201,29 @@ const UpdateRolePermissionPage = () => {
                     )}
                   </div>
                 </FormControl>
-                <FormLabel
-                  htmlFor="desc"
-                  className="text-sm font-semibold mt-6 block"
-                >
-                  Assign Permissions
-                </FormLabel>
+                <div className="flex items-center justify-between mt-6">
+                  <FormLabel
+                    htmlFor="permissions"
+                    className="text-sm font-semibold block"
+                  >
+                    Assign Permissions
+                  </FormLabel>
+                  <div className="flex items-center">
+                    <Checkbox
+                      id="select-all"
+                      onCheckedChange={(isChecked: boolean) =>
+                        handleSelectAll(isChecked)
+                      }
+                      checked={isAllSelected()}
+                    />
+                    <label
+                      htmlFor="select-all"
+                      className="text-sm font-medium pl-2 leading-none"
+                    >
+                      Select All
+                    </label>
+                  </div>
+                </div>
                 <div className="mt-2">
                   {list.map((item: any, index: number) => (
                     <div className="mt-2" key={index}>

@@ -22,6 +22,7 @@ export default {
 				'saturn-bg': 'rgb(var(--custom-light-green), <alpha-value>)',
 				'earth-bg': 'rgb(var(--custom-w-blue), <alpha-value>)',
 				'venus-bg': 'rgb(var(--custom-red), <alpha-value>)',
+				'palceholder-bg': 'rgb(var(--custom-placeholder), <alpha-value>)',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {

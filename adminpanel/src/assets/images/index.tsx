@@ -1,5 +1,6 @@
 import avatarIcon from './avatar.webp';
 import notifyIcon from './bell-icon.webp';
+import skelImg from './img-skel.png';
 import mainLogo from './main-logo.webp';
 import otpBanner from './otp-banner.png';
 import siddiqsonsBlackLogo from './siddiqsons-logo-black.png';
@@ -16,6 +17,8 @@ import pagesSidebarIcon from './pages-icon.svg';
 import helpFeedbackSidebarIcon from './help-feedback-icon.svg';
 import notificationSidebarIcon from './notification-icon.svg';
 import reportSidebarIcon from './reports-icon.svg';
+import settingSidebarIcon from './setting-icon.svg';
+import logoutSidebarIcon from './logout-icon.svg';
 
 const assets = {
   images: {
@@ -36,6 +39,9 @@ const assets = {
     helpFeedbackSidebarIcon,
     notificationSidebarIcon,
     reportSidebarIcon,
+    settingSidebarIcon,
+    logoutSidebarIcon,
+    skelImg,
   },
 } as const;
 

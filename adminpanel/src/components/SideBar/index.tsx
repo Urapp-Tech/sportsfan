@@ -87,8 +87,13 @@ export function MainSidebar({
       {
         title: 'Reports',
         url: '/admin/reports',
-        icon: assets.images.notificationSidebarIcon,
-        items: [],
+        icon: assets.images.reportSidebarIcon,
+        items: [
+          {
+            title: 'Operational',
+            url: '/admin/operational',
+          },
+        ],
       },
       // {
       //   title: 'Operations',
@@ -105,17 +110,17 @@ export function MainSidebar({
       //     },
       //   ],
       // },
-      {
-        title: 'Settings',
-        url: '#',
-        icon: Settings2,
-        items: [
-          {
-            title: 'Panel Settings',
-            url: '/admin/setting/panel-settings',
-          },
-        ],
-      },
+      // {
+      //   title: 'Settings',
+      //   url: '#',
+      //   icon: Settings2,
+      //   items: [
+      //     {
+      //       title: 'Panel Settings',
+      //       url: '/admin/setting/panel-settings',
+      //     },
+      //   ],
+      // },
     ],
   };
 

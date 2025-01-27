@@ -61,7 +61,7 @@ export function NavMain({
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item: any) => (
-          <SidebarMenuItem key={item.title}>
+          <SidebarMenuItem className="my-1" key={item.title}>
             {/* If there are no sub-items, just show the button */}
             {item.items && item.items.length === 0 ? (
               <SidebarMenuButton tooltip={item.title}>
@@ -101,7 +101,7 @@ export function NavMain({
                     >
                       <span className="text-mars-bg">{item.title}</span>
                     </NavLink>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    <ChevronRight className="ml-auto text-white transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 {/* Render child items if available */}
