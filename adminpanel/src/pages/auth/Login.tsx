@@ -1,25 +1,39 @@
+// import { useToast } from '@/hooks/use-toast';
+// import { cn } from '@/lib/utils';
+// import { useState } from 'react';
+// import { button } from '@/components/ui/button';
+import { setShopTenantState } from '@/redux/features/appSlice';
+import { login } from '@/redux/features/authSlice';
+import { useAppDispatch } from '@/redux/redux-hooks';
+import authService from '@/services/adminapp/admin';
+import { getItem } from '@/utils/storage';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+
 import {
+  Form,
+  FormControl,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  Form,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 // import { button } from '@/components/ui/button';
-import { NavLink } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
+import assets from '@/assets/images';
 import { Button } from '@/components/ui/button';
-import authService from '@/services/adminapp/admin';
-import { login } from '@/redux/features/authSlice';
-import { useAppDispatch } from '@/redux/redux-hooks';
-import { setShopTenantState } from '@/redux/features/appSlice';
-import { useSelector } from 'react-redux';
-import { getItem } from '@/utils/storage';
+import { Input } from '@/components/ui/input';
+import { NavLink } from 'react-router-dom';
+// import { useForm } from 'react-hook-form';
+// import { Button } from '@/components/ui/button';
+// import authService from '@/services/adminapp/admin';
+// import { login } from '@/redux/features/authSlice';
+// import { useAppDispatch } from '@/redux/redux-hooks';
+// import { setShopTenantState } from '@/redux/features/appSlice';
+// import { useSelector } from 'react-redux';
+// import { getItem } from '@/utils/storage';
 
 interface LoginFields {
   email: string;
@@ -87,37 +101,53 @@ const Login = () => {
   };
 
   return (
-    <div className="flex  h-full w-full items-center justify-center bg-background">
-      <div className="mx-auto flex w-full items-start justify-around max-[1560px]:items-center">
-        <div className="w-[30%] self-start px-[30px]">
-          <div className="flex max-h-[29px] w-full max-w-[600px] items-center justify-center px-[25px] py-[40px]">
+    <div className="bg-wrap w-full">
+      <div className="flex items-center">
+        <div className="max-w-[795px] h-[889px]">
+          <img
+            src={assets.images.signBanner}
+            alt="banner"
+            className="w-full max-w-full h-full object-contain"
+          />
+        </div>
+        <div className="w-full max-w-[528px] min-h-[776px] mx-auto  p-[30px] bg-quinary-bg rounded-[20px] sign-bg-wrap">
+          <div className="w-full max-w-[122px] h-[40px] mx-auto">
             <img
-              src={
-                systemConfig?.tenantLogo
-                  ? systemConfig?.tenantLogo
-                  : localSysConfig?.tenantLogo
-                    ? localSysConfig?.tenantLogo
-                    : 'Image is not uploaded'
-              }
+              src={assets.images.mainLogo}
               alt="login avatar"
-              className="mt-10 h-auto w-[150px] object-contain"
+              className="w-full max-w-full h-full object-contain"
             />
           </div>
-          <div className="xl:pt-[50px] 2xl:pt-[150px]">
+          <div className=" max-w-[242px] mx-auto mt-[100px] mb-5">
+            <h1 className="text-[48px] font-semibold capitalize text-center leading-[normal] mb-4 text-tertiary-bg">
+              sign in
+            </h1>
+            <p className="text-[10px] leading-normal text-center font-normal text-quaternary-bg">
+              By signing in, you agree to our{' '}
+              <NavLink to="" className="font-semibold text-tertiary-bg">
+                Privacy Policy
+              </NavLink>{' '}
+              and{' '}
+              <NavLink to="" className="font-semibold text-tertiary-bg">
+                Terms and Conditions
+              </NavLink>
+            </p>
+          </div>
+          <div className="">
             <Form {...form}>
               <form onSubmit={handleSubmit(loginHandler)}>
                 <div className="">
                   <div className="form-group w-full">
                     <FormLabel
                       htmlFor="password"
-                      className="text-sm font-medium"
+                      className="text-[14px] font-medium ml-1 text-tertiary-bg"
                     >
                       Email / Phone
                     </FormLabel>
                     <FormControl className="m-1 w-full">
                       <div className="mb-2">
                         <Input
-                          className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
+                          className="rounded-[20px] h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0"
                           id="email"
                           placeholder="Enter email or phone"
                           type="text"
@@ -136,7 +166,7 @@ const Login = () => {
                     <FormItem>
                       <FormLabel
                         htmlFor="password"
-                        className="text-sm font-medium"
+                        className="text-[14px] font-medium ml-1 text-tertiary-bg"
                       >
                         Password
                       </FormLabel>
@@ -146,7 +176,7 @@ const Login = () => {
                           id="password"
                           placeholder="********"
                           type={passwordVisible ? 'text' : 'password'}
-                          className="text-sm pr-10"
+                          className="h-[60px] px-2 bg-primary-bg text-secondary-bg mt-2 text-[14px] font-medium outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[0] focus-visible:ring-0 rounded-[20px]"
                           {...register('password', {
                             required: 'Please enter your password.',
                           })}
@@ -154,7 +184,7 @@ const Login = () => {
                         <Button
                           variant="ghost"
                           type="button"
-                          className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3"
+                          className="bg-transparent absolute inset-y-0 top-[6px] right-[6px] flex items-center pr-3 hover:bg-primary-bg"
                           onClick={togglePasswordVisibility}
                         >
                           {passwordVisible ? (
@@ -172,16 +202,16 @@ const Login = () => {
                   </div>
                   <div className="form-group text-end">
                     <NavLink
-                      className="font-open-sans text-[11px] font-normal text-neutral-900 hover:underline"
+                      className="font-open-sans text-[12px] font-medium text-tertiary-bg hover:underline"
                       to="../forgot-password"
                     >
                       Forget Password?
                     </NavLink>
                   </div>
-                  <div className="mt-8 w-full px-4">
+                  <div className="mt-8 w-full ">
                     <Button
                       disabled={!!isLoader}
-                      className="btn-black-fill w-full bg-primary px-16 py-2 text-gray-50"
+                      className="btn-black-fill w-full bg-primary p-0 py-2 text-quinary-bg bg-secondary-bg/75 h-[60px] text-[16px] font-semibold hover:bg-secondary-bg rounded-[20px]"
                       color="inherit"
                       title="Login"
                       type="submit"
@@ -195,41 +225,7 @@ const Login = () => {
             </Form>
           </div>
         </div>
-        <div className="w-[60%] px-3 py-2">
-          {/* <div className="mx-auto max-w-[800px] overflow-hidden rounded-lg flex justify-center items-center min-h-[800px] min-[1600px]:max-w-[934px] "> */}
-          <div className="mx-auto  flex max-h-[834px] items-center justify-center overflow-hidden rounded-lg max-[1560px]:max-h-[96vh]">
-            {/* <div className="flex flex-col items-center justify-center">
-              <p className="text-xl font-semibold">Image is not uploaded yet</p>
-              <span className="text-sm font-medium">
-                Hint: You can upload under setting module from setting config
-                tab
-              </span>
-            </div> */}
-            {systemConfig?.tenantBanner || localSysConfig?.tenantBanner ? (
-              <img
-                src={
-                  systemConfig?.tenantBanner
-                    ? systemConfig?.tenantBanner
-                    : localSysConfig?.tenantBanner
-                      ? localSysConfig?.tenantBanner
-                      : 'Image is not uploaded yet'
-                }
-                alt="urlaundry"
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-xl font-semibold">
-                  Image is not uploaded yet
-                </p>
-                <span className="text-sm font-medium">
-                  Hint: You can upload under setting module from setting config
-                  tab
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
+
         {/* {notification && (
               <Notify
                 isOpen
@@ -239,6 +235,18 @@ const Login = () => {
             )} */}
       </div>
     </div>
+    // <>
+    //   <div className='bg-wrap w-full'>
+    //     <div className='max-w-[795px] h-[889px]'>
+    //       <img src={assets.images.signBanner} alt='banner' className='w-full max-w-full h-full object-contain' />
+    //     </div>
+    //     <div className='max-w-[528px] min-h-[776px]'>
+    //       <div className='w-[122px] h-[40px]'>
+    //         <img src={assets.images.mainLogo} alt='logo' />
+    //       </div>
+    //     </div>
+    //   </div>
+    // </>
   );
 };
 

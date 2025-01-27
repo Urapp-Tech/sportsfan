@@ -1,24 +1,23 @@
 import {
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Form,
+} from '@/components/ui/form';
+import {
   Dialog,
   DialogContent,
-  //   DialogTrigger,
-  DialogFooter,
   //   DialogDescription,
   DialogHeader,
   DialogTitle,
+  //   DialogTrigger,
+  DialogFooter,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 import { Fields } from '@/interfaces/back-office-user.interface';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 type Props = {
@@ -26,17 +25,17 @@ type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   callback: (...args: any[]) => any;
+  formData: any;
 };
 
-const UserCreationDialog = ({
+const OfficeUserUpdateDialog = ({
   isOpen,
   setIsOpen,
   callback,
   isLoader,
+  formData,
 }: Props) => {
   const form = useForm<Fields>();
-
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const {
     register,
@@ -44,12 +43,9 @@ const UserCreationDialog = ({
     formState: { errors },
   } = form;
 
-  const onSubmit = async (data: Fields) => {
+  const onSubmit = async (data: Fields | any) => {
+    data.id = formData.id;
     callback(data);
-  };
-
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -59,7 +55,7 @@ const UserCreationDialog = ({
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Add New Admin User</DialogTitle>
+          <DialogTitle>Update Admin User</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,6 +75,7 @@ const UserCreationDialog = ({
                       placeholder="john"
                       type="text"
                       {...register('firstName', {
+                        value: formData?.firstName,
                         required: 'Please enter your first name',
                       })}
                     />
@@ -101,6 +98,7 @@ const UserCreationDialog = ({
                       placeholder="doe"
                       type="text"
                       {...register('lastName', {
+                        value: formData?.lastName,
                         required: 'Please enter your last name',
                       })}
                     />
@@ -109,25 +107,28 @@ const UserCreationDialog = ({
                     )}
                   </div>
                 </FormControl>
-                {/* <FormControl className="m-1 w-full">
+              </div>
+              <div className="form-group w-full flex gap-3">
+                <FormControl className="m-1 w-full">
                   <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
+                    <FormLabel htmlFor="phone" className="text-sm font-medium">
+                      Phone
                     </FormLabel>
                     <Input
                       className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email')}
+                      id="phone"
+                      placeholder="876543215"
+                      type="number"
+                      {...register('phone', {
+                        value: formData?.phone,
+                        required: 'Please enter your phone',
+                      })}
                     />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
+                    {errors.phone && (
+                      <FormMessage>*{errors.phone.message}</FormMessage>
                     )}
                   </div>
-                </FormControl> */}
-              </div>
-              <div className="form-group w-full flex gap-3">
+                </FormControl>
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel htmlFor="email" className="text-sm font-medium">
@@ -139,6 +140,7 @@ const UserCreationDialog = ({
                       placeholder="johndoe@gmail.com"
                       type="text"
                       {...register('email', {
+                        value: formData?.email,
                         required: 'Please enter your email',
                       })}
                     />
@@ -147,47 +149,8 @@ const UserCreationDialog = ({
                     )}
                   </div>
                 </FormControl>
-                {/* <div className="form-group w-full"> */}
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="password"
-                      className="text-sm font-medium"
-                    >
-                      Password
-                    </FormLabel>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        placeholder="********"
-                        type={passwordVisible ? 'text' : 'password'}
-                        className="text-sm pr-10 mt-2"
-                        {...register('password', {
-                          required: 'Please enter your password.',
-                        })}
-                      />
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {passwordVisible ? (
-                          <EyeOff color="black" />
-                        ) : (
-                          <Eye color="black" />
-                        )}
-                      </Button>
-                      {errors.password && (
-                        <p>s</p>
-                        // <FormMessage>*{errors.password.message}</FormMessage>
-                      )}
-                    </div>
-                  </div>
-                </FormControl>
-                {/* </div> */}
               </div>
-              <div className="form-group w-full flex gap-3">
+              <div>
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel
@@ -201,36 +164,19 @@ const UserCreationDialog = ({
                       id="address"
                       placeholder="Street 55"
                       type="text"
-                      {...register('address')}
+                      {...register('address', {
+                        value: formData?.address,
+                      })}
                     />
                     {errors.address && (
                       <FormMessage>*{errors.address.message}</FormMessage>
                     )}
                   </div>
                 </FormControl>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="phone" className="text-sm font-medium">
-                      Phone
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="phone"
-                      placeholder="876543215"
-                      type="number"
-                      {...register('phone', {
-                        required: 'Please enter your phone',
-                      })}
-                    />
-                    {errors.phone && (
-                      <FormMessage>*{errors.phone.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
               </div>
               <DialogFooter className="mt-3">
                 <Button disabled={isLoader} type="submit" className="w-24">
-                  {isLoader && <Loader2 className="animate-spin" />} Add
+                  {isLoader && <Loader2 className="animate-spin" />} Update
                 </Button>
               </DialogFooter>
             </div>
@@ -241,4 +187,4 @@ const UserCreationDialog = ({
   );
 };
 
-export default UserCreationDialog;
+export default OfficeUserUpdateDialog;

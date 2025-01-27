@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronRight, type LucideIcon } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,8 +14,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { NavLink } from 'react-router';
+import { ChevronRight, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
+import { NavLink } from 'react-router';
 
 export function NavMain({
   items,
@@ -24,7 +24,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: any;
     isActive?: boolean;
     items?: {
       title: string;
@@ -60,22 +60,24 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
+        {items.map((item: any) => (
           <SidebarMenuItem key={item.title}>
             {/* If there are no sub-items, just show the button */}
             {item.items && item.items.length === 0 ? (
               <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
+                {item.icon && <img src={item.icon} />}
                 {/* <span>{item.title}</span> */}
                 <NavLink
                   key={item.url}
                   to={item.url}
                   onClick={() => handleSubItemClick(item.title)}
                   className={({ isActive }) =>
-                    `${isActive ? 'text-blue-900 font-bold' : ''}`
+                    `${isActive ? 'text-quinary-bg text-[12px] font-semibold' : ''}`
                   }
                 >
-                  <span>{item.title}</span>
+                  <span className="text-mars-bg font-medium ">
+                    {item.title}
+                  </span>
                 </NavLink>
               </SidebarMenuButton>
             ) : (
@@ -87,7 +89,8 @@ export function NavMain({
               >
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
+                    {item.icon && <img src={item.icon} />}
+                    {/* {item.icon && <item.icon />} */}
                     {/* <span>{item.title}</span> */}
                     <NavLink
                       key={item.url}
@@ -96,7 +99,7 @@ export function NavMain({
                       //   `${isActive ? 'text-blue-900 font-bold' : ''}`
                       // }
                     >
-                      <span>{item.title}</span>
+                      <span className="text-mars-bg">{item.title}</span>
                     </NavLink>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
@@ -105,7 +108,7 @@ export function NavMain({
                 {item.items && item.items.length > 0 && (
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items.map((subItem) => (
+                      {item.items.map((subItem: any) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             <NavLink
@@ -114,7 +117,9 @@ export function NavMain({
                               onClick={() => handleSubItemClick(subItem.title)}
                               className={`${openSubItemUrl === subItem.title ? 'text-blue-900 font-bold' : ''}`}
                             >
-                              <span>{subItem.title}</span>
+                              <span className="text-mars-bg">
+                                {subItem.title}
+                              </span>
                             </NavLink>
                             {/* <a href={subItem.url}>
                             </a> */}

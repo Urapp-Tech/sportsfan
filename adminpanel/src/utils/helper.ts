@@ -8,3 +8,10 @@ export const getInitials = (name: string) => {
 
   return `${firstInitial}${secondInitial}`;
 };
+
+export function breakCamelCase(text: string): string {
+  const result = text
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^./, (str) => str.toUpperCase());
+  return result;
+}

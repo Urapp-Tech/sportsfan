@@ -1,12 +1,12 @@
 import snakeCase from "lodash/snakeCase.js";
 
-function jsonAggregate(tableName, columns = [], as = undefined) {
+export function jsonAggregate(tableName, columns = [], as = undefined) {
   const alias = as ? snakeCase(as) : undefined;
   if (columns.length) {
     const formattedColumns = columns
       .map(
         (columns) =>
-          `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`,
+          `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`
       )
       .join(", ");
     return `
@@ -26,13 +26,13 @@ function jsonAggregate(tableName, columns = [], as = undefined) {
   `;
 }
 
-function jsonBuildObject(tableName, columns = [], as = undefined) {
+export function jsonBuildObject(tableName, columns = [], as = undefined) {
   const alias = as ? snakeCase(as) : undefined;
   if (columns.length) {
     const formattedColumns = columns
       .map(
         (columns) =>
-          `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`,
+          `'${snakeCase(columns)}', ${tableName}."${snakeCase(columns)}"`
       )
       .join(", ");
     return `
@@ -52,7 +52,7 @@ function jsonBuildObject(tableName, columns = [], as = undefined) {
   `;
 }
 
-function addTableNamePrefixOnProperties(object, tableName) {
+export function addTableNamePrefixOnProperties(object, tableName) {
   if (!tableName) {
     throw new Error("parameter table name is required");
   }
@@ -74,7 +74,7 @@ function addTableNamePrefixOnProperties(object, tableName) {
  * @throws {Error} If no columns are provided.
  * @throws {Error} If an empty array of columns is provided.
  */
-function textFilterHelper(text, columns) {
+export function textFilterHelper(text, columns) {
   if (!columns) {
     throw new Error(`columns parameter is required`);
   }
@@ -98,9 +98,16 @@ function textFilterHelper(text, columns) {
   };
 }
 
-export default {
-  jsonAggregate,
-  jsonBuildObject,
-  addTableNamePrefixOnProperties,
-  textFilterHelper,
-};
+export function errorHandler(text, code) {
+  const newError = new Error(text);
+  newError.detail = text;
+  newError.code = code;
+  throw newError;
+}
+
+export function toUpperSnakeCase(text) {
+  return text
+    .split(" ")
+    .map((word) => word.toUpperCase())
+    .join("_");
+}

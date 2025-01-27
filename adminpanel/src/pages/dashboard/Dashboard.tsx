@@ -19,7 +19,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-white p-2 rounded-[20px] mt-5">
       <SidebarInset>
         <TopBar title="Dashboard" />
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

@@ -24,7 +24,7 @@ async function buildLogger(LOGGER_NAME) {
     format: combine(
       timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
       errors({ stack: true }),
-      logFormat,
+      logFormat
     ),
     transports: [
       new transports.Console(consoleTransportOptions),

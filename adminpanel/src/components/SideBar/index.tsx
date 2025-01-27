@@ -1,12 +1,13 @@
 'use client';
+import { Ratio, Settings2, SquareTerminal, Users } from 'lucide-react';
 import * as React from 'react';
-import { Settings2, SquareTerminal, Users, Ratio, Image } from 'lucide-react';
 
 import { FooterNavUser } from '@/components/SideBar/footer-nav';
 import { NavMain } from '@/components/SideBar/main-nav';
 // import { NavProjects } from "@/components/nav-projects"
 // import { NavUser } from "@/components/nav-user"
 // import { TeamSwitcher } from "@/components/team-switcher"
+import assets from '@/assets/images';
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +15,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { useSelector } from 'react-redux';
 import { getItem } from '@/utils/storage';
+import { useSelector } from 'react-redux';
 
 export function MainSidebar({
   ...props
@@ -37,46 +38,73 @@ export function MainSidebar({
     navMain: [
       {
         title: 'Dashboard',
-        url: '/dashboard/home',
-        icon: SquareTerminal,
+        url: '/admin/dashboard',
+        icon: assets.images.dashboardSidebarIcon,
         items: [],
       },
       {
         title: 'Users',
-        url: '#',
-        icon: Users,
-        items: [
-          {
-            title: 'Admin Users',
-            url: '/dashboard/users/admin-users',
-          },
-          {
-            title: 'Employees',
-            url: '/dashboard/users/employees',
-          },
-        ],
-      },
-      {
-        title: 'Cabins',
-        url: '/dashboard/cabins',
-        icon: Ratio,
+        url: '/admin/users/employees',
+        icon: assets.images.usersSidebarIcon,
         items: [],
       },
       {
-        title: 'Operations',
-        url: '#',
-        icon: Users,
-        items: [
-          {
-            title: 'Categories',
-            url: '/dashboard/operations/categories',
-          },
-          {
-            title: 'Reports',
-            url: '/dashboard/operations/reports',
-          },
-        ],
+        title: 'Admin Users',
+        url: '/admin/users/admin-users',
+        icon: assets.images.adminUsersSidebarIcon,
+        items: [],
       },
+      {
+        title: 'Roles & permissions',
+        url: '/admin/role-permissions',
+        icon: assets.images.rolePermissionsSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Blogs',
+        url: '/admin/blogs',
+        icon: assets.images.rolePermissionsSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Pages',
+        url: '/admin/pages',
+        icon: assets.images.pagesSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Help & Feedback',
+        url: '/admin/feedback',
+        icon: assets.images.helpFeedbackSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Notifications',
+        url: '/admin/notifications',
+        icon: assets.images.notificationSidebarIcon,
+        items: [],
+      },
+      {
+        title: 'Reports',
+        url: '/admin/reports',
+        icon: assets.images.notificationSidebarIcon,
+        items: [],
+      },
+      // {
+      //   title: 'Operations',
+      //   url: '#',
+      //   icon: Users,
+      //   items: [
+      //     {
+      //       title: 'Categories',
+      //       url: '/dashboard/operations/categories',
+      //     },
+      //     {
+      //       title: 'Reports',
+      //       url: '/dashboard/operations/reports',
+      //     },
+      //   ],
+      // },
       {
         title: 'Settings',
         url: '#',
@@ -84,24 +112,22 @@ export function MainSidebar({
         items: [
           {
             title: 'Panel Settings',
-            url: '/dashboard/setting/panel-settings',
+            url: '/admin/setting/panel-settings',
           },
-          // {
-          //   title: 'System Configuration',
-          //   url: '/dashboard/setting/system-configuration',
-          // },
         ],
       },
     ],
   };
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex items-center justify-center my-2">
-        <img
-          src={shop ? shop.logo : logo ? logo : <Image size={20} />}
-          className="max-w-[100px]"
-        />
+    <Sidebar className="bg-transparent" collapsible="icon" {...props}>
+      <SidebarHeader className=" flex items-center justify-center my-2 ">
+        <div className="max-w-[110px] ml-5 mr-auto mt-2">
+          <img
+            src={assets.images.whiteLogo}
+            className="max-w-full w-full h-full object-contain"
+          />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

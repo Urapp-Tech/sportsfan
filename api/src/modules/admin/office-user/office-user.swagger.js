@@ -11,7 +11,7 @@ const swagger = {
         identifier: Type.String(),
         password: Type.String({ minLength: 8 }),
       },
-      { additionalProperties: false },
+      { additionalProperties: false }
     ),
   },
   logout: {
@@ -23,7 +23,7 @@ const swagger = {
       {
         invalidateAllTokens: Type.Boolean(),
       },
-      { additionalProperties: false },
+      { additionalProperties: false }
     ),
   },
 };

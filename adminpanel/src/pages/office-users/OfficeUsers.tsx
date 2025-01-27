@@ -1,6 +1,7 @@
 import { TopBar } from '@/components/TopBar';
 import { Button } from '@/components/ui/button';
 import { SidebarInset } from '@/components/ui/sidebar';
+
 import usersService from '@/services/adminapp/users';
 import {
   ColumnDef,
@@ -19,6 +20,8 @@ import {
   Loader2,
   // ChevronDown,
   MoreHorizontal,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // import { Checkbox } from '@/components/ui/checkbox';
@@ -26,7 +29,6 @@ import DeleteDialog from '@/components/DeletePopup';
 import { Paginator } from '@/components/Paginator';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   //   DropdownMenuLabel,
@@ -46,8 +48,9 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import userService from '@/services/adminapp/users';
 import { getItem } from '@/utils/storage';
-import UserCreationDialog from './UserCreateDialog';
-import UserUpdateDialog from './UserUpdateDialog';
+import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
+import OfficeUsersCreationDialog from './OfficeUserCreateDialog';
+import OfficeUserUpdateDialog from './OfficeUserUpdateDialog';
 
 export type Users = {
   id: string; // UUID
@@ -73,7 +76,7 @@ export type Users = {
   status: 'Active' | 'InActive';
 };
 
-const Users = () => {
+const OfficeUsers = () => {
   const userDetails: any = getItem('USER');
   const { toast } = useToast();
 
@@ -144,7 +147,7 @@ const Users = () => {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ row }) => (
-        <div className="capitalize">
+        <div className="capitalize bg-neptune-bg/30 text-center w-[50px] h-[22px] rounded-[30px] text-[10px] leading-normal font-semibold text-saturn-bg py-[1px] border-neptune-bg border-2">
           {row.getValue('isActive') ? 'Active' : 'In-Active'}
         </div>
       ),
@@ -165,28 +168,44 @@ const Users = () => {
         // const payment = row.original;
         const { id } = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                className="cursor-pointer"
+          <div className="flex justify-center items-center">
+            <div>
+              <Pencil
+                className="text-lunar-bg cursor-pointer"
                 onClick={() => handleActionMenu('edit', id)}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
+                size={20}
+              />
+            </div>
+            <div className="pl-3">
+              <Trash2
+                className="text-lunar-bg cursor-pointer"
+                size={20}
                 onClick={() => handleActionMenu('delete', id)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              />
+            </div>
+          </div>
+          // <DropdownMenu>
+          //   <DropdownMenuTrigger asChild>
+          //     <Button variant="ghost" className="h-8 w-8 p-0">
+          //       <span className="sr-only">Open menu</span>
+          //       <MoreHorizontal />
+          //     </Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent align="end">
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('edit', id)}
+          //     >
+          //       Edit
+          //     </DropdownMenuItem>
+          //     <DropdownMenuItem
+          //       className="cursor-pointer"
+          //       onClick={() => handleActionMenu('delete', id)}
+          //     >
+          //       Delete
+          //     </DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
         );
       },
     },
@@ -369,46 +388,64 @@ const Users = () => {
   };
 
   return (
-    <div className="">
+    <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
+      {/* <div className='flex gap-4'>
+        <NavLink to=''>
+          <div className='w-[45px] h-[45px]'>
+            <img src={assets.images.notifyIcon} alt='icon' className='w-full h-full object-contain' />
+          </div>
+        </NavLink>
+        <NavLink to=''>
+          <div className='w-[45px] h-[45px]'>
+            <img src={assets.images.avatarIcon} alt='icon' className='w-full h-full object-contain' />
+          </div>
+        </NavLink>
+      </div> */}
       <TopBar title="Admin Users" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        {/* admin content page height */}
         <div className="w-full">
-          <div className="flex items-center py-4">
-            <Input
-              placeholder="Search users..."
-              value={search}
-              onChange={handleChange}
-              onKeyPress={handleKeyPress}
-              className="max-w-sm"
-            />
-            <DropdownMenu>
-              <Button
-                onClick={() => setIsOpen(true)}
-                className="ml-auto"
-                variant={'outline'}
-              >
-                Add User
-              </Button>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex items-center py-4 justify-between">
+            <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
+              Admin Users
+            </h2>
+            <div className="flex gap-3 items-center">
+              <Input
+                placeholder="Search users..."
+                value={search}
+                onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                className="w-[461px] h-[35px] rounded-[23px] bg-mars-bg/50"
+              />
+              <DropdownMenu>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
+                  variant={'outline'}
+                >
+                  + Add New
+                </Button>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <div className="rounded-md border">
             {mainIsLoader ? (
@@ -435,7 +472,7 @@ const Users = () => {
                     </TableRow>
                   ))}
                 </TableHeader>
-                <TableBody>
+                <TableBody className="bg-earth-bg">
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
                       <TableRow
@@ -466,11 +503,11 @@ const Users = () => {
               </Table>
             )}
           </div>
-          <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="flex items-center justify-center space-x-2 pt-4">
             <div className="flex-1 text-sm text-muted-foreground">
-              {total} total - Page {page + 1} of {Math.ceil(total / pageSize)}
+              {/* {total} total - Page {page + 1} of {Math.ceil(total / pageSize)} */}
             </div>
-            <div className="flex justify-end">
+            <div className="my-5 flex justify-center w-full">
               <Paginator
                 pageSize={pageSize}
                 currentPage={page}
@@ -483,7 +520,7 @@ const Users = () => {
         </div>
       </SidebarInset>
       {isOpen && (
-        <UserCreationDialog
+        <OfficeUsersCreationDialog
           isLoader={isLoader}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -491,7 +528,7 @@ const Users = () => {
         />
       )}
       {editOpen && (
-        <UserUpdateDialog
+        <OfficeUserUpdateDialog
           isLoader={isLoader}
           isOpen={editOpen}
           setIsOpen={setEditOpen}
@@ -513,4 +550,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default OfficeUsers;
