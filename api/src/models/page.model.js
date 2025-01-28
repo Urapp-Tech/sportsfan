@@ -13,14 +13,14 @@ const list = async (req) => {
       tenant: req.session.tenant,
       is_deleted: false,
     })
-    .modify(textFilterHelper(req.params.search, ['title']));
+    .modify(textFilterHelper(req.query.search, ['title']));
 
   const promise = query
     .clone()
     .select('*')
     .orderBy('created_at', 'desc')
-    .offset(req.params.page * req.params.size)
-    .limit(req.params.size);
+    .offset(req.query.page * req.query.size)
+    .limit(req.query.size);
 
   const countPromise = query.clone().count('* as total');
 

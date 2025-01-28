@@ -25,7 +25,6 @@ const swagger = {
         title: Type.String(),
         body: Type.Optional(Type.String()),
       },
-      { required: ['title', 'body'] },
       { additionalProperties: false }
     ),
   },
@@ -38,7 +37,6 @@ const swagger = {
       {
         id: Type.String({ format: 'uuid' }),
       },
-      { required: 'id' },
       { additionalProperties: false }
     ),
     body: Type.Object(
@@ -46,7 +44,6 @@ const swagger = {
         title: Type.String(),
         body: Type.Optional(Type.String()),
       },
-      { required: ['title', 'body'] },
       { additionalProperties: false }
     ),
   },
@@ -59,7 +56,6 @@ const swagger = {
       {
         id: Type.String({ format: 'uuid' }),
       },
-      { required: 'id' },
       { additionalProperties: false }
     ),
   },

@@ -1,5 +1,5 @@
 import model from '#models/blog.model';
-import { uploadFile } from '#utilities/helper';
+import { uploadFiles } from '#utilities/helper';
 import HTTP_STATUS from '#utilities/http-status';
 import promiseHandler from '#utilities/promise-handler';
 
@@ -22,11 +22,9 @@ const list = async (req) => {
 
 const create = async (req) => {
   const newData = req.body;
-  console.log('reqq', req.body);
-  return;
-  // await uploadFile()
+  newData.images = JSON.stringify(await uploadFiles(req, req.body['images[]']));
+  delete newData['images[]'];
   const promise = model.create(req, newData);
-
   const [error, result] = await promiseHandler(promise);
   if (error) {
     const err = new Error(error.detail ?? error.message);
@@ -41,8 +39,11 @@ const create = async (req) => {
   };
 };
 
-const update = async (req, params) => {
-  const promise = model.update(req, req.body, params);
+const update = async (req) => {
+  const newData = req.body;
+  newData.images = JSON.stringify(await uploadFiles(req, req.body['images[]']));
+  delete newData['images[]'];
+  const promise = model.update(req, newData);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {
