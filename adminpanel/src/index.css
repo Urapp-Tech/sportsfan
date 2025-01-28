@@ -275,3 +275,8 @@
   height: 20px;
   @apply bg-lunar-bg !important;
 }
+
+
+.cs-main-wrap {
+  border-radius: 20px;
+}

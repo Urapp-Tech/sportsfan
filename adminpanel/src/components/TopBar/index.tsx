@@ -9,7 +9,7 @@ type Props = {
 
 export const TopBar = ({ title }: Props) => {
   return (
-    <header className=" bg-transparent w-full fixed top-0 left-50 z-50 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className=" bg-[#1b46e0] w-full fixed top-0 left-50 z-50 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className='w-full fixed top-0 left-0 flex'>
         <div className="flex items-center gap-2 px-4 w-[50%] justify-center">
           <SidebarTrigger className="-ml-1 hidden max-[767.98px]:block" />
