@@ -1,21 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
-const uploadFile = async (req, file) => {
+export const uploadFile = async (req, file) => {
+  let logoUrl = null;
   if ((file && file != null) || file !== undefined || file !== '') {
-    let logoUrl;
     const fileData = {
       Key: `menu/${uuidv4()}-${file.filename}`,
       Body: file.buffer,
       'Content-Type': file.mimetype,
     };
-    try {
-      logoUrl = await req.s3Upload(fileData);
-      return logoUrl;
-    } catch (error) {
-      throw new Error(`Failed to upload file to S3 ${error.message}`);
-    }
+    const temp = await req.s3Upload(fileData);
+    if (temp) logoUrl = temp;
   }
-};
-
-export default {
-  uploadFile,
+  return logoUrl;
 };

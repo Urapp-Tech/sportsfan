@@ -5,7 +5,7 @@ import generateUserTokens from '#utilities/generate-user-tokens';
 import HTTP_STATUS from '#utilities/http-status';
 import promiseHandler from '#utilities/promise-handler';
 import createRedisFunctions from '#utilities/redis-helpers';
-import { v4 as uuidv4 } from 'uuid';
+import { uploadFile } from '#utilities/helper';
 import {
   getAccessTokenKey,
   getKeysPattern,
@@ -119,24 +119,23 @@ const list = async (req, params) => {
 };
 
 const create = async (req, params) => {
-  let logoUrl;
-  console.log('req', req.body);
+  // if (req.body.avatar) {
+  const file = await uploadFile(req, req.body.avatar);
 
-  if (req.body.avatar) {
-    const fileData = {
-      Key: `menu/${uuidv4()}-${req.body.avatar.filename}`,
-      Body: req.body.avatar.buffer,
-      'Content-Type': req.body.avatar.mimetype,
-    };
-    try {
-      logoUrl = await req.s3Upload(fileData);
-    } catch (error) {
-      throw new Error(`Failed to upload logo to S3 ${error.message}`);
-    }
-  }
+  // const fileData = {
+  //   Key: `menu/${uuidv4()}-${req.body.avatar.filename}`,
+  //   Body: req.body.avatar.buffer,
+  //   'Content-Type': req.body.avatar.mimetype,
+  // };
+  // try {
+  //   logoUrl = await req.s3Upload(fileData);
+  // } catch (error) {
+  //   throw new Error(`Failed to upload logo to S3 ${error.message}`);
+  // }
+  // }
   const updatedData = {
     ...req.body,
-    avatar: logoUrl,
+    avatar: file,
   };
   const promise = model.create(req, updatedData, params);
 
