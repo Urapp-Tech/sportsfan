@@ -33,6 +33,33 @@ const officeUserRole = async (req, officeUser) => {
   return result;
 };
 
+const getBranchByUserId = async (req, id) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  const promise = knex
+    .select('branch')
+    .from(MODULE.ADMIN.OFFICE_USER_ROLE)
+    .where({
+      officeUser: id,
+    });
+  const [error, result] = await promiseHandler(promise);
+  if (error) {
+    const newError = new Error(`something went wrong`);
+    newError.detail = `something went wrong`;
+    newError.code = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw newError;
+  }
+  if (!result) {
+    const newError = new Error(`No branch found`);
+    newError.detail = `No branch found`;
+    newError.code = HTTP_STATUS.BAD_REQUEST;
+    throw newError;
+  }
+  return result;
+};
+
 export default {
   officeUserRole,
+  getBranchByUserId,
 };

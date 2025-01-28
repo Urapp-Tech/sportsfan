@@ -10,11 +10,11 @@ const list = (search: string, page: number, size: number) => {
 };
 
 const create = (data: any) => {
-  return network.post(`${BACKOFFICE_PREFIX}/create`, data);
+  return network.postMultipart(`${BACKOFFICE_PREFIX}/create`, data);
 };
 
 const update = (id: string, data: any) => {
-  return network.post(`${BACKOFFICE_PREFIX}/update/${id}`, data);
+  return network.postMultipart(`${BACKOFFICE_PREFIX}/update/${id}`, data);
 };
 
 const deleteUser = (id: string) => {

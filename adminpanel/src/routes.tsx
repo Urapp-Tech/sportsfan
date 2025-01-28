@@ -166,4 +166,8 @@ export const routeObjects: RouteObject[] = [
       },
     ],
   },
+  {
+    path: '/',
+    element: <Navigate to="/admin/auth" replace />,
+  },
 ];

@@ -18,11 +18,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Fields } from '@/interfaces/back-office-user.interface';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DragDropFile from '@/components/DragDropImgFile';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { SingleSelectDropDown } from '@/components/DropDown/SingleSelectDropDown';
+import service from '@/services/adminapp/role-permissions';
 
 type Props = {
   isLoader: boolean;
@@ -55,24 +57,51 @@ const OfficeUserCreateDialog = ({
 
   const [file, setFile] = useState<any>(null);
   const [selectedImg, setSelectedImg] = useState<any>(null);
+  const [selectedRole, setSelectedRole] = useState<any>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [roleLov, setRoleLov] = useState([]);
 
   const {
     register,
     handleSubmit,
     getValues,
+    control,
     formState: { errors },
   } = form;
 
   const onSubmit = async (data: Fields) => {
     if (file) data.avatar = file;
-    // callback(data);
-    console.log('s', data);
+    data.userType = 'USER';
+    callback(data);
+    // console.log('s', data);
   };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+
+  const fetchRoleLov = async () => {
+    try {
+      const roles = await service.lov();
+      if (roles.data.success) {
+        const lov = roles.data.data.map((el: any) => {
+          return {
+            name: el.name,
+            id: el.id,
+          };
+        });
+        setRoleLov(lov);
+      } else {
+        console.log('error: ', roles.data.message);
+      }
+    } catch (error: Error | unknown) {
+      console.log('error: ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRoleLov();
+  }, []);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -122,32 +151,13 @@ const OfficeUserCreateDialog = ({
                       id="lastName"
                       placeholder="doe"
                       type="text"
-                      {...register('lastName', {
-                        required: 'Please enter your last name',
-                      })}
+                      {...register('lastName')}
                     />
-                    {errors.lastName && (
+                    {/* {errors.lastName && (
                       <FormMessage>*{errors.lastName.message}</FormMessage>
-                    )}
+                    )} */}
                   </div>
                 </FormControl>
-                {/* <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email')}
-                    />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl> */}
               </div>
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
@@ -208,27 +218,23 @@ const OfficeUserCreateDialog = ({
                 </FormControl>
                 {/* </div> */}
               </div>
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="address"
-                      className="text-sm font-medium"
-                    >
-                      Address
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="address"
-                      placeholder="Street 55"
-                      type="text"
-                      {...register('address')}
-                    />
-                    {errors.address && (
-                      <FormMessage>*{errors.address.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
+              <div className="form-group w-full flex items-center justify-center gap-3 m-1">
+                <div className="w-full">
+                  <FormLabel
+                    htmlFor="phone"
+                    className="text-sm font-medium my-2 block"
+                  >
+                    Roles
+                  </FormLabel>
+                  <SingleSelectDropDown
+                    control={control}
+                    name="role"
+                    label=""
+                    items={roleLov}
+                    placeholder="Choose an option"
+                    rules={{ required: 'This field is required' }}
+                  />
+                </div>
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel htmlFor="phone" className="text-sm font-medium">
@@ -249,6 +255,23 @@ const OfficeUserCreateDialog = ({
                   </div>
                 </FormControl>
               </div>
+              <FormControl className="m-1 w-full">
+                <div className="">
+                  <FormLabel htmlFor="address" className="text-sm font-medium">
+                    Address
+                  </FormLabel>
+                  <Input
+                    className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
+                    id="address"
+                    placeholder="Street 55"
+                    type="text"
+                    {...register('address')}
+                  />
+                  {errors.address && (
+                    <FormMessage>*{errors.address.message}</FormMessage>
+                  )}
+                </div>
+              </FormControl>
               <div>
                 <div className="flex justify-between">
                   <FormLabel

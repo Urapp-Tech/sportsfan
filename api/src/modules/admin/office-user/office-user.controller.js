@@ -108,10 +108,11 @@ const create = async (req, res) => {
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
   const params = {
     ...req.user,
+    ...req.session,
     ...req.params,
     ...req.query,
   };
-  // console.log('req', req.body, params);
+  console.log('req', params);
 
   const promise = service.create(req, params);
   const [error, result] = await promiseHandler(promise);

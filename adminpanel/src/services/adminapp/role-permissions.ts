@@ -17,6 +17,10 @@ const deleteRole = (id: string) => {
   return network.post(`${ROLE_PREFIX}/delete/${id}`, {});
 };
 
+const lov = () => {
+  return network.get(`${ROLE_PREFIX}/lov`);
+};
+
 // PERMISSIONS
 const permissionList = () => {
   return network.get(`${ROLE_PREFIX}/permission/list`);
@@ -27,5 +31,6 @@ export default {
   create,
   update,
   deleteRole,
+  lov,
   permissionList,
 };
