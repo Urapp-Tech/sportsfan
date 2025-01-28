@@ -119,20 +119,7 @@ const list = async (req, params) => {
 };
 
 const create = async (req, params) => {
-  // if (req.body.avatar) {
   const file = await uploadFile(req, req.body.avatar);
-
-  // const fileData = {
-  //   Key: `menu/${uuidv4()}-${req.body.avatar.filename}`,
-  //   Body: req.body.avatar.buffer,
-  //   'Content-Type': req.body.avatar.mimetype,
-  // };
-  // try {
-  //   logoUrl = await req.s3Upload(fileData);
-  // } catch (error) {
-  //   throw new Error(`Failed to upload logo to S3 ${error.message}`);
-  // }
-  // }
   const updatedData = {
     ...req.body,
     avatar: file,
@@ -154,7 +141,12 @@ const create = async (req, params) => {
 };
 
 const update = async (req, params) => {
-  const promise = model.update(req, req.body, params);
+  const file = await uploadFile(req, req.body.avatar);
+  const updatedData = {
+    ...req.body,
+    avatar: file,
+  };
+  const promise = model.update(req, updatedData, params);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {

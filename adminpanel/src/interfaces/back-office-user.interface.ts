@@ -6,5 +6,5 @@ export interface Fields {
   phone: string;
   address: string;
   userType: string;
-  avatar: any;
+  avatar: string;
 }

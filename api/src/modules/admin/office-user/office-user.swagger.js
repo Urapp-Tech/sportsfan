@@ -76,10 +76,12 @@ const swagger = {
     body: Type.Object(
       {
         firstName: Type.String(),
-        lastName: Type.String(),
+        lastName: Type.Optional(Type.String()),
         email: Type.String({ format: 'email' }),
         phone: Type.String(),
         address: Type.Optional(Type.String()),
+        role: Type.String(),
+        avatar: Type.Optional(Type.Any({ isFile: true })),
       },
       {
         additionalProperties: false,

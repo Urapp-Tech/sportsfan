@@ -46,11 +46,11 @@ import {
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import userService from '@/services/adminapp/users';
+import service from '@/services/adminapp/blogs';
 import { getItem } from '@/utils/storage';
 import { DropdownMenuCheckboxItem } from '@radix-ui/react-dropdown-menu';
-import OfficeUsersCreationDialog from './OfficeUserCreateDialog';
-import OfficeUserUpdateDialog from './OfficeUserUpdateDialog';
+import OfficeUsersCreationDialog from './BlogsCreateDialog';
+import OfficeUserUpdateDialog from './BlogsUpdateDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getInitials } from '@/utils/helper';
 
@@ -78,7 +78,7 @@ export type Users = {
   status: 'Active' | 'InActive';
 };
 
-const OfficeUsers = () => {
+const Blogs = () => {
   const userDetails: any = getItem('USER');
   const { toast } = useToast();
 
@@ -273,7 +273,7 @@ const OfficeUsers = () => {
   const deleteUserHandler = (data: any) => {
     const userId = data.id;
     setIsLoader(true);
-    userService
+    service
       .deleteUser(userId)
       .then((updateItem) => {
         if (updateItem.data.success) {
@@ -307,7 +307,7 @@ const OfficeUsers = () => {
   const handlePageChange = async (newPage: any) => {
     table.setPageIndex(newPage);
     try {
-      const users = await userService.list(search, newPage, pageSize);
+      const users = await service.list(search, newPage, pageSize);
       if (users.data.success) {
         setPage(newPage);
         setList(users.data.data.list);
@@ -345,15 +345,14 @@ const OfficeUsers = () => {
 
     setIsLoader(true);
     const formData = new FormData();
-    formData.append('userType', data.userType);
-    formData.append('firstName', data.firstName);
-    formData.append('lastName', data.lastName);
-    formData.append('email', data.email);
-    formData.append('phone', data.phone);
-    formData.append('password', data.password);
-    formData.append('address', data.address);
-    if (data.avatar) formData.append('avatar', data.avatar);
-    userService
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    if (data.images.length) {
+      data.images.forEach((image: any) => {
+        formData.append('images', image);
+      });
+    }
+    service
       .create(data)
       .then((item) => {
         if (item.data.success) {
@@ -379,7 +378,7 @@ const OfficeUsers = () => {
     data.username = data.email;
     delete data.id;
     setIsLoader(true);
-    userService
+    service
       .update(userId, data)
       .then((updateItem) => {
         if (updateItem.data.success) {
@@ -430,11 +429,11 @@ const OfficeUsers = () => {
         <div className="w-full">
           <div className="flex items-center py-4 justify-between">
             <h2 className="text-tertiary-bg font-semibold text-[20px] leading-normal capitalize">
-              Admin Users
+              Blogs
             </h2>
             <div className="flex gap-3 items-center">
               <Input
-                placeholder="Search users..."
+                placeholder="Search blogs..."
                 value={search}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
@@ -577,4 +576,4 @@ const OfficeUsers = () => {
   );
 };
 
-export default OfficeUsers;
+export default Blogs;

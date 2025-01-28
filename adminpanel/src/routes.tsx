@@ -18,6 +18,7 @@ const OfficeUsers = lazy(() => import('@/pages/office-users/OfficeUsers'));
 const RolePermissions = lazy(
   () => import('@/pages/role-permissions/RolePermissions')
 );
+const Blogs = lazy(() => import('@/pages/blogs/Blogs'));
 
 export const routeObjects: RouteObject[] = [
   {
@@ -132,6 +133,23 @@ export const routeObjects: RouteObject[] = [
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
                     <UpdateRolePermissionPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: 'blogs',
+            children: [
+              {
+                index: true,
+                element: <Navigate to="list" replace />,
+              },
+              {
+                path: 'list',
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Blogs />
                   </Suspense>
                 ),
               },

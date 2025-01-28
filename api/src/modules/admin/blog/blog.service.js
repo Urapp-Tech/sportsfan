@@ -22,6 +22,8 @@ const list = async (req) => {
 
 const create = async (req) => {
   const newData = req.body;
+  console.log('reqq', req.body);
+  return;
   // await uploadFile()
   const promise = model.create(req, newData);
 

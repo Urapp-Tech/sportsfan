@@ -34,7 +34,7 @@ type Props = {
   formData: any;
 };
 
-const OfficeUserUpdateDialog = ({
+const BlogsUpdateDialog = ({
   isOpen,
   setIsOpen,
   callback,
@@ -329,4 +329,4 @@ const OfficeUserUpdateDialog = ({
   );
 };
 
-export default OfficeUserUpdateDialog;
+export default BlogsUpdateDialog;

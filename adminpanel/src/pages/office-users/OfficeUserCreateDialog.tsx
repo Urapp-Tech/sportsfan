@@ -57,7 +57,6 @@ const OfficeUserCreateDialog = ({
 
   const [file, setFile] = useState<any>(null);
   const [selectedImg, setSelectedImg] = useState<any>(null);
-  const [selectedRole, setSelectedRole] = useState<any>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [roleLov, setRoleLov] = useState([]);
 

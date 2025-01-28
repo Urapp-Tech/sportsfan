@@ -26,7 +26,7 @@ const swagger = {
         description: Type.String(Type.String()),
         images: Type.Array(Type.Any({ isFile: true })),
       },
-      { required: ['title', 'body'] },
+      { required: ['title'] },
       { additionalProperties: false }
     ),
   },

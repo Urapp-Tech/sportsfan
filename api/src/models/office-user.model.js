@@ -173,22 +173,22 @@ const update = async (req, body, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
-  const existingUser = await knex(MODULE.ADMIN.BACK_OFFICE_USER)
+  const existingUser = await knex(MODULE.ADMIN.OFFICE_USER)
     .leftJoin(
-      `${MODULE.ADMIN.BACK_OFFICE_USER_TENANT_BRANCH} as butb`,
-      'back_Office_user.id',
-      'butb.back_Office_user'
+      `${MODULE.ADMIN.OFFICE_USER_ROLE} as our`,
+      'office_user.id',
+      'our.office_user'
     )
     .where((builder) => {
-      if (email) builder.orWhere({ 'back_Office_user.email': email });
-      if (phone) builder.orWhere({ 'back_Office_user.phone': phone });
+      if (email) builder.orWhere({ 'office_user.email': email });
+      if (phone) builder.orWhere({ 'office_user.phone': phone });
     })
     .andWhere({
-      'back_Office_user.is_deleted': false,
-      'back_Office_user.user_type': 'USER',
-      'butb.branch': params.branch,
+      'office_user.is_deleted': false,
+      'office_user.user_type': 'USER',
+      'our.branch': params.branch,
     })
-    .andWhereNot('back_Office_user.id', params.userId)
+    .andWhereNot('office_user.id', params.userId)
     .first();
 
   if (existingUser) {
@@ -198,7 +198,7 @@ const update = async (req, body, params) => {
     );
   }
 
-  const [updatedEmployee] = await knex(MODULE.ADMIN.BACK_OFFICE_USER)
+  const [updatedEmployee] = await knex(MODULE.ADMIN.OFFICE_USER)
     .update(body)
     .where('id', params.userId)
     .returning('*');
