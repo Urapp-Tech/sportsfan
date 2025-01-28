@@ -12,3 +12,10 @@ export const uploadFile = async (req, file) => {
   }
   return logoUrl;
 };
+
+export const uploadFiles = async (req, files) => {
+  if (files && files.length) {
+    return Promise.all(files.map(async (file) => uploadFile(req, file)));
+  }
+  return [];
+};

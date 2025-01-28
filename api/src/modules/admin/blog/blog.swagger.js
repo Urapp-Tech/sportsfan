@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-
+// console.log(Type.Array(Type.Any({ isFile: true })));
 const swagger = {
   list: {
     description: 'this will list blogs',
@@ -20,13 +20,16 @@ const swagger = {
     tags: ['ADMIN|Blog'],
     summary: 'blog page',
     operationId: 'CreateBlog',
+    consumes: ['multipart/form-data'],
     body: Type.Object(
       {
         title: Type.String(),
-        description: Type.String(Type.String()),
-        images: Type.Array(Type.Any({ isFile: true })),
+        description: Type.String(),
+        'images[]': Type.Union([
+          Type.Array(Type.Any({ isFile: true })),
+          Type.Any({ isFile: true }),
+        ]),
       },
-      { required: ['title'] },
       { additionalProperties: false }
     ),
   },
@@ -47,7 +50,6 @@ const swagger = {
         title: Type.String(),
         body: Type.Optional(Type.String()),
       },
-      { required: ['title', 'body'] },
       { additionalProperties: false }
     ),
   },
@@ -60,7 +62,6 @@ const swagger = {
       {
         id: Type.String({ format: 'uuid' }),
       },
-      { required: 'id' },
       { additionalProperties: false }
     ),
   },

@@ -68,12 +68,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
-  const params = {
-    ...req.user,
-    ...req.params,
-    ...req.query,
-  };
-  const promise = service.update(req, params);
+  const promise = service.update(req);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(

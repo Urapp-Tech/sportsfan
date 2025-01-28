@@ -14,14 +14,14 @@ const list = async (req) => {
       branch: req.user.branch,
       is_deleted: false,
     })
-    .modify(textFilterHelper(req.params.search, ['title']));
+    .modify(textFilterHelper(req.query.search, ['title']));
 
   const promise = query
     .clone()
     .select('*')
     .orderBy('created_at', 'desc')
-    .offset(req.params.page * req.params.size)
-    .limit(req.params.size);
+    .offset(req.query.page * req.query.size)
+    .limit(req.query.size);
 
   const countPromise = query.clone().count('* as total');
 
@@ -58,7 +58,7 @@ const create = async (req, body) => {
   return createdPage;
 };
 
-const update = async (req, body, params) => {
+const update = async (req, body) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
   const data = body;
@@ -68,7 +68,7 @@ const update = async (req, body, params) => {
   };
   const [updatedPage] = await knex(MODULE.ADMIN.PAGE)
     .update(newData)
-    .where('id', params.id)
+    .where('id', req.params.id)
     .returning('*');
 
   return updatedPage;
