@@ -1,9 +1,9 @@
 function s3Config(config) {
   return {
-    region: config.S3_REGION,
+    region: config.region || process.env.S3_REGION,
     credentials: {
-      accessKeyId: config.S3_ACCESS_KEY_ID,
-      secretAccessKey: config.S3_SECRET_ACCESS_KEY,
+      accessKeyId: config.accessKeyId || process.env.S3_ACCESS_ID,
+      secretAccessKey: config.secretAccessKey || process.env.S3_ACCESS_KEY,
     },
   };
 }

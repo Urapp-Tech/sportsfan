@@ -326,8 +326,18 @@ const OfficeUsers = () => {
   });
 
   const createEmployeeHandler = (data: any) => {
+    console.log('dadad', data);
+
     setIsLoader(true);
-    data.userType = 'USER';
+    const formData = new FormData();
+    formData.append('userType', data.userType);
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    formData.append('email', data.email);
+    formData.append('phone', data.phone);
+    formData.append('password', data.password);
+    formData.append('address', data.address);
+    if (data.avatar) formData.append('avatar', data.avatar);
     userService
       .create(data)
       .then((item) => {

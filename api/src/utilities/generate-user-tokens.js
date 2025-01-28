@@ -4,15 +4,17 @@ import createRedisFunctions from './redis-helpers.js';
 import { getAccessTokenKey, getRefreshTokenKey } from './redis-keys.js';
 
 async function generateUserTokens(req, payload) {
-  const { id, tenant } = payload;
+  const { id, tenant, branch } = payload;
   const accessToken = req.jwt.access.sign({
     id,
     tenant,
+    branch,
   });
 
   const refreshToken = req.jwt.refresh.sign({
     id,
     tenant,
+    branch,
   });
 
   const accessTokenHash = getSha256Hash(accessToken);

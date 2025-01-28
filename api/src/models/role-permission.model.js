@@ -222,7 +222,12 @@ const lov = async (req, params) => {
     const roles = await knex
       .select('id', 'name')
       .from(MODULE.ADMIN.ROLE)
-      .where({ tenant: params.tenant, isDeleted: false, isActive: true })
+      .where({
+        tenant: params.tenant,
+        isDeleted: false,
+        isActive: true,
+      })
+      .whereNot({ key: 'SUPER_ADMIN' })
       .orderBy('name', 'asc');
 
     return roles;

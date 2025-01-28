@@ -40,6 +40,65 @@ const swagger = {
       { additionalProperties: false }
     ),
   },
+  create: {
+    description: 'this will create user',
+    tags: ['ADMIN|User'],
+    summary: 'create user',
+    operationId: 'CreateUser',
+    body: Type.Object(
+      {
+        firstName: Type.String(),
+        lastName: Type.Optional(Type.String()),
+        email: Type.String({ format: 'email' }),
+        password: Type.String({
+          pattern: '^[a-zA-Z0-9]{3,30}$',
+        }),
+        phone: Type.String(),
+        address: Type.Optional(Type.String()),
+        userType: Type.String(),
+        role: Type.String(),
+        avatar: Type.Optional(Type.Any({ isFile: true })),
+      },
+      { additionalProperties: false }
+    ),
+  },
+  update: {
+    description: 'this will update user',
+    tags: ['ADMIN|User'],
+    summary: 'update user',
+    operationId: 'UpdateUser',
+    params: Type.Object(
+      {
+        userId: Type.String({ format: 'uuid' }),
+      },
+      { additionalProperties: false }
+    ),
+    body: Type.Object(
+      {
+        firstName: Type.String(),
+        lastName: Type.String(),
+        email: Type.String({ format: 'email' }),
+        phone: Type.String(),
+        address: Type.Optional(Type.String()),
+      },
+      {
+        additionalProperties: false,
+      }
+    ),
+  },
+  delete: {
+    description: 'this will delete user',
+    tags: ['ADMIN|User'],
+    summary: 'delete user',
+    operationId: 'DeleteUser',
+    params: Type.Object(
+      {
+        userId: Type.String({ format: 'uuid' }),
+      },
+      { required: 'userId' },
+      { additionalProperties: false }
+    ),
+  },
 };
 
 export default swagger;

@@ -49,7 +49,10 @@ const login = async (req) => {
 
   const { id, tenant } = result;
 
-  const tokens = await generateUserTokens(req, { id, tenant });
+  const [{ branch }] = await officeUserRoleModel.getBranchByUserId(req, id);
+  result.branch = branch;
+
+  const tokens = await generateUserTokens(req, { id, tenant, branch });
 
   const officeUSerRole = await officeUserRoleModel.officeUserRole(req, id);
   const roles = await rolePermissionModel.getPermissions(
@@ -117,6 +120,8 @@ const list = async (req, params) => {
 
 const create = async (req, params) => {
   let logoUrl;
+  console.log('req', req.body);
+
   if (req.body.avatar) {
     const fileData = {
       Key: `menu/${uuidv4()}-${req.body.avatar.filename}`,

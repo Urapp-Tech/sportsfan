@@ -1,4 +1,5 @@
 import { errorHandler, textFilterHelper } from '#utilities/db-query-helpers';
+import hashAsync from '#configs/bcrypt.config';
 import HTTP_STATUS from '#utilities/http-status';
 import MODULE from '#utilities/module-names';
 import promiseHandler from '#utilities/promise-handler';
@@ -91,6 +92,7 @@ const list = async (req, params) => {
 const create = async (req, body, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
+  console.log('params', params);
 
   return knex.transaction(async (trx) => {
     try {
@@ -111,6 +113,8 @@ const create = async (req, body, params) => {
         })
         .first();
 
+      console.log('existingUser', existingUser);
+
       if (existingUser) {
         errorHandler(
           'The Email / Phone is already registered to another user.',
@@ -130,7 +134,7 @@ const create = async (req, body, params) => {
 
       const branchType = branchRecord.branchType === 'MAIN' ? 'MAIN' : 'OTHER';
 
-      const [officeUser] = await trx(MODULE.ADMIN.BACK_OFFICE_USER)
+      const [officeUser] = await trx(MODULE.ADMIN.OFFICE_USER)
         .insert({
           firstName: body.firstName,
           lastName: body.lastName,
