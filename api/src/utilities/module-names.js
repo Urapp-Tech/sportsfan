@@ -8,6 +8,8 @@ export default Object.freeze({
     BRANCH: 'branch',
     PERMISSION: 'permissions',
     ROLE_PERMISSION: 'role_permissions',
+    PAGE: 'pages',
+    BLOG: 'blogs',
   }),
   APP: Object.freeze({}),
 });

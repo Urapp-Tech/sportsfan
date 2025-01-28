@@ -1,0 +1,93 @@
+import { errorHandler, textFilterHelper } from '#utilities/db-query-helpers';
+import HTTP_STATUS from '#utilities/http-status';
+import MODULE from '#utilities/module-names';
+import promiseHandler from '#utilities/promise-handler';
+
+const list = async (req, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  const query = knex
+    .from(MODULE.ADMIN.PAGE)
+    .where({
+      tenant: params.tenant,
+      is_deleted: false,
+    })
+    .modify(textFilterHelper(params.search, ['title']));
+
+  const promise = query
+    .clone()
+    .select('*')
+    .orderBy('created_at', 'desc')
+    .offset(params.page * params.size)
+    .limit(params.size);
+
+  const countPromise = query.clone().count('* as total');
+
+  const [error, result] = await promiseHandler(promise);
+  const [countError, countResult] = await promiseHandler(countPromise);
+
+  if (error || countError) {
+    errorHandler(error.message, HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  }
+
+  if (!result || !countResult) {
+    errorHandler(`No page found`, HTTP_STATUS.BAD_REQUEST);
+  }
+
+  return {
+    list: result,
+    total: Number(countResult[0].total),
+  };
+};
+
+const create = async (req, body, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+  const data = body;
+  const title = data.title.replace(/\s+/g, '_').toUpperCase();
+  const newData = {
+    ...data,
+    tenant: params.tenant,
+    key: title,
+  };
+  const [createdPage] = await knex(MODULE.ADMIN.PAGE)
+    .insert(newData)
+    .returning('*');
+
+  return createdPage;
+};
+
+const update = async (req, body, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+  const data = body;
+  const title = data.title.replace(/\s+/g, '_').toUpperCase();
+  const newData = {
+    ...data,
+    key: title,
+    updated_at: new Date(),
+  };
+  const [updatedPage] = await knex(MODULE.ADMIN.PAGE)
+    .update(newData)
+    .where('id', params.id)
+    .returning('*');
+
+  return updatedPage;
+};
+
+const deleteRecord = async (req, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  return knex(MODULE.ADMIN.PAGE)
+    .where('id', params.id)
+    .update({ isDeleted: true });
+};
+
+export default {
+  list,
+  create,
+  update,
+  deleteRecord,
+};
