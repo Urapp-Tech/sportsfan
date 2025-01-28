@@ -88,7 +88,133 @@ const list = async (req, params) => {
   };
 };
 
+const create = async (req, body, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  return knex.transaction(async (trx) => {
+    try {
+      const existingUser = await trx(MODULE.ADMIN.OFFICE_USER)
+        .leftJoin(
+          `${MODULE.ADMIN.OFFICE_USER_ROLE} as bur`,
+          'office_user.id',
+          'bur.office_user'
+        )
+        .where((builder) => {
+          if (body.email) builder.orWhere({ 'office_user.email': body.email });
+          if (body.phone) builder.orWhere({ 'office_user.phone': body.phone });
+        })
+        .andWhere({
+          'office_user.is_deleted': false,
+          'office_user.user_type': 'USER',
+          'bur.branch': params.branch,
+        })
+        .first();
+
+      if (existingUser) {
+        errorHandler(
+          'The Email / Phone is already registered to another user.',
+          HTTP_STATUS.BAD_REQUEST
+        );
+      }
+
+      const branchRecord = await trx(MODULE.ADMIN.BRANCH)
+        .where({ id: params.branch })
+        .first();
+
+      if (!branchRecord) {
+        errorHandler(`No branch found`, HTTP_STATUS.BAD_REQUEST);
+      }
+
+      const newPassword = await hashAsync(body.password);
+
+      const branchType = branchRecord.branchType === 'MAIN' ? 'MAIN' : 'OTHER';
+
+      const [officeUser] = await trx(MODULE.ADMIN.BACK_OFFICE_USER)
+        .insert({
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          username: body.email,
+          password: newPassword,
+          phone: body.phone,
+          address: body.address,
+          tenant: params.tenant,
+          userType: body.userType,
+          avatar: body.avatar,
+        })
+        .returning('*');
+
+      await trx(MODULE.ADMIN.OFFICE_USER_ROLE).insert({
+        tenant: params.tenant,
+        branch: params.branch,
+        officeUser: officeUser.id,
+        role: body.role,
+        type: branchType,
+      });
+
+      return officeUser;
+    } catch (error) {
+      errorHandler(
+        `Error creating officeUser: ${error.message}`,
+        HTTP_STATUS.BAD_REQUEST
+      );
+    }
+  });
+};
+
+const update = async (req, body, params) => {
+  const { email, phone } = body;
+
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  const existingUser = await knex(MODULE.ADMIN.BACK_OFFICE_USER)
+    .leftJoin(
+      `${MODULE.ADMIN.BACK_OFFICE_USER_TENANT_BRANCH} as butb`,
+      'back_Office_user.id',
+      'butb.back_Office_user'
+    )
+    .where((builder) => {
+      if (email) builder.orWhere({ 'back_Office_user.email': email });
+      if (phone) builder.orWhere({ 'back_Office_user.phone': phone });
+    })
+    .andWhere({
+      'back_Office_user.is_deleted': false,
+      'back_Office_user.user_type': 'USER',
+      'butb.branch': params.branch,
+    })
+    .andWhereNot('back_Office_user.id', params.userId)
+    .first();
+
+  if (existingUser) {
+    errorHandler(
+      `An employee with the email / phone already exists.`,
+      HTTP_STATUS.BAD_REQUEST
+    );
+  }
+
+  const [updatedEmployee] = await knex(MODULE.ADMIN.BACK_OFFICE_USER)
+    .update(body)
+    .where('id', params.userId)
+    .returning('*');
+
+  return updatedEmployee;
+};
+
+const deleteUser = async (req, params) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+
+  return knex(MODULE.ADMIN.BACK_OFFICE_USER)
+    .where('id', params.userId)
+    .update({ isDeleted: true });
+};
+
 export default {
   login,
   list,
+  create,
+  update,
+  deleteUser,
 };

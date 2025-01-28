@@ -26,6 +26,20 @@ const swagger = {
       { additionalProperties: false }
     ),
   },
+  list: {
+    description: 'this will list office users',
+    tags: ['ADMIN|Back Office User'],
+    summary: 'list back office user',
+    operationId: 'backOfficeUseList',
+    querystring: Type.Object(
+      {
+        page: Type.Integer({ default: 0, minimum: 0 }),
+        size: Type.Integer({ default: 10, minimum: 10 }),
+        search: Type.Optional(Type.String()),
+      },
+      { additionalProperties: false }
+    ),
+  },
 };
 
 export default swagger;

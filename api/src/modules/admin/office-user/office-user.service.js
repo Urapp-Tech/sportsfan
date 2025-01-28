@@ -5,12 +5,12 @@ import generateUserTokens from '#utilities/generate-user-tokens';
 import HTTP_STATUS from '#utilities/http-status';
 import promiseHandler from '#utilities/promise-handler';
 import createRedisFunctions from '#utilities/redis-helpers';
+import { v4 as uuidv4 } from 'uuid';
 import {
   getAccessTokenKey,
   getKeysPattern,
   getRefreshTokenKey,
 } from '#utilities/redis-keys';
-import { SUPER_ADMIN } from '#utilities/constants';
 
 const login = async (req) => {
   const promise = model.login(req);
@@ -115,8 +115,79 @@ const list = async (req, params) => {
   };
 };
 
+const create = async (req, params) => {
+  let logoUrl;
+  if (req.body.avatar) {
+    const fileData = {
+      Key: `menu/${uuidv4()}-${req.body.avatar.filename}`,
+      Body: req.body.avatar.buffer,
+      'Content-Type': req.body.avatar.mimetype,
+    };
+    try {
+      logoUrl = await req.s3Upload(fileData);
+    } catch (error) {
+      throw new Error(`Failed to upload logo to S3 ${error.message}`);
+    }
+  }
+  const updatedData = {
+    ...req.body,
+    avatar: logoUrl,
+  };
+  const promise = model.create(req, updatedData, params);
+
+  const [error, result] = await promiseHandler(promise);
+  if (error) {
+    const err = new Error(error.detail ?? error.message);
+    err.code = error.code ?? HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw err;
+  }
+
+  return {
+    code: HTTP_STATUS.OK,
+    message: 'User has been created successfully.',
+    data: { ...result },
+  };
+};
+
+const update = async (req, params) => {
+  const promise = model.update(req, req.body, params);
+
+  const [error, result] = await promiseHandler(promise);
+  if (error) {
+    const err = new Error(error.detail ?? error.message);
+    err.code = error.code ?? HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw err;
+  }
+
+  return {
+    code: HTTP_STATUS.OK,
+    message: 'User has been updated successfully.',
+    data: { ...result },
+  };
+};
+
+const deleteUser = async (req, params) => {
+  const promise = model.deleteUser(req, params);
+
+  const [error, result] = await promiseHandler(promise);
+  if (error) {
+    const err = new Error(error.detail ?? error.message);
+    err.code = error.code ?? HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    throw err;
+  }
+
+  return {
+    code: HTTP_STATUS.OK,
+    message: 'User has been deleted successfully.',
+    data: { ...result },
+  };
+};
+
 export default {
   login,
   logout,
   list,
+  create,
+  update,
+  deleteUser,
 };

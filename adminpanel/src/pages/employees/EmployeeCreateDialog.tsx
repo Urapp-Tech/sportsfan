@@ -11,7 +11,7 @@ import {
   Form,
   FormControl,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
@@ -19,20 +19,20 @@ import { useState } from 'react';
 import DragDropFile from '@/components/DragDropImgFile';
 import { Button } from '@/components/ui/button';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
-import { Label } from "@/components/ui/label";
+import { Label } from '@/components/ui/label';
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { toast } from '@/hooks/use-toast';
 import { Fields } from '@/interfaces/employee.interface';
@@ -96,7 +96,7 @@ const EmployeeCreationDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="custom-form-section ">
+            <div className="custom-form-section">
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
                   <div className="">
@@ -136,9 +136,8 @@ const EmployeeCreationDialog = ({
                     )}
                   </div>
                 </FormControl>
-
               </div>
-              <div className='form-group w-full my-2'>
+              <div className="form-group w-full my-2">
                 <FormControl className="m-1 w-full">
                   <div className="">
                     <FormLabel
@@ -177,8 +176,7 @@ const EmployeeCreationDialog = ({
                   </div>
                 </FormControl>
               </div>
-              <div className='form-group w-full my-2 cs-radio-wrap'>
-
+              <div className="form-group w-full my-2 cs-radio-wrap">
                 <RadioGroup defaultValue="option-one">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="option-one" id="option-one" />
@@ -189,22 +187,17 @@ const EmployeeCreationDialog = ({
                     <Label htmlFor="option-two">Option Two</Label>
                   </div>
                 </RadioGroup>
-
-
               </div>
-              <div className='form-group w-full my-2'>
-                <div className='flex gap-2 items-center custom--checkbox'>
-                  <Checkbox />  <label>i agree terms</label>
+              <div className="form-group w-full my-2">
+                <div className="flex gap-2 items-center custom--checkbox">
+                  <Checkbox /> <label>i agree terms</label>
                 </div>
-
               </div>
-              <div className='form-group w-full my-2'>
+              <div className="form-group w-full my-2">
                 <Avatar>
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-
-
               </div>
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
@@ -280,19 +273,16 @@ const EmployeeCreationDialog = ({
                   </FormLabel>
                 </div>
                 <div className="w-full my-2 select-field">
-
                   <Select>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Theme" />
                     </SelectTrigger>
-                    <SelectContent className='bg-mars-bg select-contents'>
-                      <SelectItem value="light" >Light</SelectItem>
+                    <SelectContent className="bg-mars-bg select-contents">
+                      <SelectItem value="light">Light</SelectItem>
                       <SelectItem value="dark">Dark</SelectItem>
                       <SelectItem value="system">System</SelectItem>
                     </SelectContent>
                   </Select>
-
-
                 </div>
               </div>
               <div>
@@ -341,7 +331,6 @@ const EmployeeCreationDialog = ({
         </Form>
       </DialogContent>
     </Dialog>
-
   );
 };
 

@@ -36,7 +36,7 @@ export default [
       'prettier/prettier': [
         'error',
         {
-          endOfLine: 'auto',
+          endOfLine: 'off',
           trailingComma: 'es5',
         },
       ],

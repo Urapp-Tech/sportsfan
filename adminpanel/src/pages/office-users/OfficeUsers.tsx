@@ -327,8 +327,6 @@ const OfficeUsers = () => {
 
   const createEmployeeHandler = (data: any) => {
     setIsLoader(true);
-    data.tenant = userDetails?.tenant;
-    data.branch = userDetails?.branch;
     data.userType = 'USER';
     userService
       .create(data)
@@ -503,20 +501,24 @@ const OfficeUsers = () => {
               </Table>
             )}
           </div>
-          <div className="flex items-center justify-center space-x-2 pt-4">
-            <div className="flex-1 text-sm text-muted-foreground">
-              {/* {total} total - Page {page + 1} of {Math.ceil(total / pageSize)} */}
+          {list?.length ? (
+            <div className="flex items-center justify-center space-x-2 pt-4">
+              <div className="flex-1 text-sm text-muted-foreground">
+                {/* {total} total - Page {page + 1} of {Math.ceil(total / pageSize)} */}
+              </div>
+              <div className="my-5 flex justify-center w-full">
+                <Paginator
+                  pageSize={pageSize}
+                  currentPage={page}
+                  totalPages={total}
+                  onPageChange={(pageNumber) => handlePageChange(pageNumber)}
+                  showPreviousNext
+                />
+              </div>
             </div>
-            <div className="my-5 flex justify-center w-full">
-              <Paginator
-                pageSize={pageSize}
-                currentPage={page}
-                totalPages={total}
-                onPageChange={(pageNumber) => handlePageChange(pageNumber)}
-                showPreviousNext
-              />
-            </div>
-          </div>
+          ) : (
+            ''
+          )}
         </div>
       </SidebarInset>
       {isOpen && (

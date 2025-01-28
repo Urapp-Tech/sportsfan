@@ -20,6 +20,9 @@ import { Fields } from '@/interfaces/back-office-user.interface';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import DragDropFile from '@/components/DragDropImgFile';
+import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 type Props = {
   isLoader: boolean;
@@ -36,16 +39,35 @@ const OfficeUserCreateDialog = ({
 }: Props) => {
   const form = useForm<Fields>();
 
+  const ToastHandler = (text: string) => {
+    return toast({
+      description: text,
+      className: cn(
+        'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4 z-[9999]'
+      ),
+      style: {
+        backgroundColor: '#FF5733',
+        color: 'white',
+        zIndex: 9999,
+      },
+    });
+  };
+
+  const [file, setFile] = useState<any>(null);
+  const [selectedImg, setSelectedImg] = useState<any>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = form;
 
   const onSubmit = async (data: Fields) => {
-    callback(data);
+    if (file) data.avatar = file;
+    // callback(data);
+    console.log('s', data);
   };
 
   const togglePasswordVisibility = () => {
@@ -55,7 +77,7 @@ const OfficeUserCreateDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="sm:max-w-[600px]"
+        className="sm:max-w-[600px] cs-dialog-box"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
@@ -63,7 +85,7 @@ const OfficeUserCreateDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="">
+            <div className="custom-form-section">
               <div className="form-group w-full flex gap-3">
                 <FormControl className="m-1 w-full">
                   <div className="">
@@ -93,7 +115,7 @@ const OfficeUserCreateDialog = ({
                       htmlFor="lastName"
                       className="text-sm font-medium"
                     >
-                      First Name
+                      Last Name
                     </FormLabel>
                     <Input
                       className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
@@ -169,7 +191,7 @@ const OfficeUserCreateDialog = ({
                       <Button
                         variant="ghost"
                         type="button"
-                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3"
+                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3 mt-[11px]"
                         onClick={togglePasswordVisibility}
                       >
                         {passwordVisible ? (
@@ -179,8 +201,7 @@ const OfficeUserCreateDialog = ({
                         )}
                       </Button>
                       {errors.password && (
-                        <p>s</p>
-                        // <FormMessage>*{errors.password.message}</FormMessage>
+                        <FormMessage>*{errors.password.message}</FormMessage>
                       )}
                     </div>
                   </div>
@@ -228,8 +249,48 @@ const OfficeUserCreateDialog = ({
                   </div>
                 </FormControl>
               </div>
+              <div>
+                <div className="flex justify-between">
+                  <FormLabel
+                    htmlFor="address"
+                    className="text-sm font-medium my-3"
+                  >
+                    Upload Avatar
+                  </FormLabel>
+                </div>
+                <div className="grid grid-cols-12 items-center">
+                  <div className="col-span-5 mb-1">
+                    <DragDropFile
+                      setFile={setFile}
+                      setImg={setSelectedImg}
+                      setIsNotify={ToastHandler}
+                    />
+                  </div>
+                  {selectedImg ? (
+                    <div className="col-span-6 flex items-center justify-center xl:justify-center 2xl:justify-start">
+                      <img
+                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
+                        src={selectedImg}
+                        alt="Shop Logo"
+                      />
+                    </div>
+                  ) : getValues('avatar') ? (
+                    <div className="col-span-6 flex items-center justify-center  xl:justify-center 2xl:justify-start">
+                      <img
+                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
+                        src={getValues('avatar')}
+                        alt="Shop Logo"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              </div>
               <DialogFooter className="mt-3">
-                <Button disabled={isLoader} type="submit" className="w-24">
+                <Button
+                  disabled={isLoader}
+                  type="submit"
+                  className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
+                >
                   {isLoader && <Loader2 className="animate-spin" />} Add
                 </Button>
               </DialogFooter>

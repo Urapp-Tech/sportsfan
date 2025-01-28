@@ -5,6 +5,7 @@ export default Object.freeze({
     SYSTEM_CONFIG: 'system_config',
     TENANT_CONFIG: 'tenant_config',
     ROLE: 'role',
+    BRANCH: 'branch',
     PERMISSION: 'permissions',
     ROLE_PERMISSION: 'role_permissions',
   }),
