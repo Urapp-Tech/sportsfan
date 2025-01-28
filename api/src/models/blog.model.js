@@ -3,25 +3,25 @@ import HTTP_STATUS from '#utilities/http-status';
 import MODULE from '#utilities/module-names';
 import promiseHandler from '#utilities/promise-handler';
 
-const list = async (req, params) => {
+const list = async (req) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
   const query = knex
     .from(MODULE.ADMIN.BLOG)
     .where({
-      tenant: params.tenant,
-      branch: params.branch,
+      tenant: req.session.tenant,
+      branch: req.session.branch,
       is_deleted: false,
     })
-    .modify(textFilterHelper(params.search, ['title']));
+    .modify(textFilterHelper(req.params.search, ['title']));
 
   const promise = query
     .clone()
     .select('*')
     .orderBy('created_at', 'desc')
-    .offset(params.page * params.size)
-    .limit(params.size);
+    .offset(req.params.page * req.params.size)
+    .limit(req.params.size);
 
   const countPromise = query.clone().count('* as total');
 
@@ -42,14 +42,14 @@ const list = async (req, params) => {
   };
 };
 
-const create = async (req, body, params) => {
+const create = async (req, body) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
   const data = body;
   const newData = {
     ...data,
-    tenant: params.tenant,
-    branch: params.branch,
+    tenant: req.session.tenant,
+    branch: req.session.branch,
   };
   const [createdPage] = await knex(MODULE.ADMIN.BLOG)
     .insert(newData)

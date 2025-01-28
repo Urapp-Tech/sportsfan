@@ -1,9 +1,10 @@
 import model from '#models/blog.model';
+import { uploadFile } from '#utilities/helper';
 import HTTP_STATUS from '#utilities/http-status';
 import promiseHandler from '#utilities/promise-handler';
 
-const list = async (req, params) => {
-  const promise = model.list(req, params);
+const list = async (req) => {
+  const promise = model.list(req);
 
   const [error, result] = await promiseHandler(promise);
 
@@ -19,8 +20,10 @@ const list = async (req, params) => {
   };
 };
 
-const create = async (req, params) => {
-  const promise = model.create(req, updatedData, params);
+const create = async (req) => {
+  const newData = req.body;
+  // await uploadFile()
+  const promise = model.create(req, newData);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {

@@ -23,7 +23,8 @@ const swagger = {
     body: Type.Object(
       {
         title: Type.String(),
-        body: Type.Optional(Type.String()),
+        description: Type.String(Type.String()),
+        images: Type.Array(Type.Any({ isFile: true })),
       },
       { required: ['title', 'body'] },
       { additionalProperties: false }

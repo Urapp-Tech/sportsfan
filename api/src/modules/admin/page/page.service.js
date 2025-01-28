@@ -3,7 +3,7 @@ import HTTP_STATUS from '#utilities/http-status';
 import promiseHandler from '#utilities/promise-handler';
 
 const list = async (req, params) => {
-  const promise = model.list(req, params);
+  const promise = model.list(req);
 
   const [error, result] = await promiseHandler(promise);
 
@@ -19,8 +19,8 @@ const list = async (req, params) => {
   };
 };
 
-const create = async (req, params) => {
-  const promise = model.create(req, updatedData, params);
+const create = async (req) => {
+  const promise = model.create(req, req.body);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {
@@ -36,9 +36,9 @@ const create = async (req, params) => {
   };
 };
 
-const update = async (req, params) => {
-  const promise = model.update(req, req.body, params);
-
+const update = async (req) => {
+  const newData = req.body;
+  const promise = model.update(req, newData);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     const err = new Error(error.detail ?? error.message);
@@ -53,8 +53,8 @@ const update = async (req, params) => {
   };
 };
 
-const deleteRecord = async (req, params) => {
-  const promise = model.deleteRecord(req, params);
+const deleteRecord = async (req) => {
+  const promise = model.deleteRecord(req);
 
   const [error, result] = await promiseHandler(promise);
   if (error) {

@@ -4,12 +4,7 @@ import service from './page.service.js';
 const list = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
-  const params = {
-    ...req.user,
-    ...req.params,
-    ...req.query,
-  };
-  const promise = service.list(req, params);
+  const promise = service.list(req);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(
@@ -41,14 +36,8 @@ const list = async (req, res) => {
 const create = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
-  const params = {
-    ...req.user,
-    ...req.params,
-    ...req.query,
-  };
-  // console.log('req', req.body, params);
 
-  const promise = service.create(req, params);
+  const promise = service.create(req);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(
@@ -79,12 +68,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
-  const params = {
-    ...req.user,
-    ...req.params,
-    ...req.query,
-  };
-  const promise = service.update(req, params);
+  const promise = service.update(req);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(
@@ -115,12 +99,7 @@ const update = async (req, res) => {
 const deleteRecord = async (req, res) => {
   const log = req.logger;
   log.verbose(`RequestId:: ${req.id}\nHandling ${req.method} ${req.url} Route`);
-  const params = {
-    ...req.user,
-    ...req.params,
-    ...req.query,
-  };
-  const promise = service.deleteRecord(req, params);
+  const promise = service.deleteRecord(req);
   const [error, result] = await promiseHandler(promise);
   if (error) {
     log.verbose(

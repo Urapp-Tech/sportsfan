@@ -3,24 +3,24 @@ import HTTP_STATUS from '#utilities/http-status';
 import MODULE from '#utilities/module-names';
 import promiseHandler from '#utilities/promise-handler';
 
-const list = async (req, params) => {
+const list = async (req) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
   const query = knex
     .from(MODULE.ADMIN.PAGE)
     .where({
-      tenant: params.tenant,
+      tenant: req.session.tenant,
       is_deleted: false,
     })
-    .modify(textFilterHelper(params.search, ['title']));
+    .modify(textFilterHelper(req.params.search, ['title']));
 
   const promise = query
     .clone()
     .select('*')
     .orderBy('created_at', 'desc')
-    .offset(params.page * params.size)
-    .limit(params.size);
+    .offset(req.params.page * req.params.size)
+    .limit(req.params.size);
 
   const countPromise = query.clone().count('* as total');
 
@@ -41,14 +41,14 @@ const list = async (req, params) => {
   };
 };
 
-const create = async (req, body, params) => {
+const create = async (req, body) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
   const data = body;
   const title = data.title.replace(/\s+/g, '_').toUpperCase();
   const newData = {
     ...data,
-    tenant: params.tenant,
+    tenant: req.session.tenant,
     key: title,
   };
   const [createdPage] = await knex(MODULE.ADMIN.PAGE)
@@ -58,7 +58,7 @@ const create = async (req, body, params) => {
   return createdPage;
 };
 
-const update = async (req, body, params) => {
+const update = async (req, body) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
   const data = body;
@@ -70,18 +70,18 @@ const update = async (req, body, params) => {
   };
   const [updatedPage] = await knex(MODULE.ADMIN.PAGE)
     .update(newData)
-    .where('id', params.id)
+    .where('id', req.params.id)
     .returning('*');
 
   return updatedPage;
 };
 
-const deleteRecord = async (req, params) => {
+const deleteRecord = async (req) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
   return knex(MODULE.ADMIN.PAGE)
-    .where('id', params.id)
+    .where('id', req.params.id)
     .update({ isDeleted: true });
 };
 
