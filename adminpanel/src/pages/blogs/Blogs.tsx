@@ -115,47 +115,17 @@ const Blogs = () => {
 
   const columns: ColumnDef<Users>[] = [
     {
-      accessorKey: 'firstName',
-      header: 'Name',
+      accessorKey: 'title',
+      header: 'Title',
       cell: ({ row }) => (
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage
-              src={row.original.avatar || ''}
-              alt={row.getValue('firstName') || '@fallback'}
-            />
-            <AvatarFallback>
-              {getInitials(row.getValue('firstName'))}
-            </AvatarFallback>
-          </Avatar>
-          <div className="capitalize font-semibold">
-            {row.getValue('firstName')}
-          </div>
-        </div>
+        <div className="capitalize font-semibold">{row.getValue('title')}</div>
       ),
     },
     {
-      accessorKey: 'email',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Email
-            <ArrowUpDown />
-          </Button>
-        );
-      },
+      accessorKey: 'description',
+      header: 'Description',
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('email')}</div>
-      ),
-    },
-    {
-      accessorKey: 'phone',
-      header: 'Phone',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('phone')}</div>
+        <div className="capitalize">{row.getValue('description')}</div>
       ),
     },
     {
@@ -164,15 +134,6 @@ const Blogs = () => {
       cell: ({ row }) => (
         <div className="capitalize bg-neptune-bg/30 text-center w-[50px] h-[22px] rounded-[30px] text-[10px] leading-normal font-semibold text-saturn-bg py-[1px] border-neptune-bg border-2">
           {row.getValue('isActive') ? 'Active' : 'In-Active'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'address',
-      header: 'Address',
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.getValue('address') ? row.getValue('address') : '---'}
         </div>
       ),
     },
@@ -239,9 +200,9 @@ const Blogs = () => {
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchBlogs = async () => {
     try {
-      const users = await usersService.list(search, page, pageSize);
+      const users = await service.list(search, page, pageSize);
       if (users.data.success) {
         setMainIsLoader(false);
         setList(users.data.data.list);
@@ -262,12 +223,12 @@ const Blogs = () => {
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      fetchUsers();
+      fetchBlogs();
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchBlogs();
   }, []);
 
   const deleteUserHandler = (data: any) => {

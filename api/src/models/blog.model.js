@@ -10,8 +10,8 @@ const list = async (req) => {
   const query = knex
     .from(MODULE.ADMIN.BLOG)
     .where({
-      tenant: req.session.tenant,
-      branch: req.session.branch,
+      tenant: req.user.tenant,
+      branch: req.user.branch,
       is_deleted: false,
     })
     .modify(textFilterHelper(req.params.search, ['title']));

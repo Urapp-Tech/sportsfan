@@ -41,7 +41,12 @@ const BlogsUpdateDialog = ({
   isLoader,
   formData,
 }: Props) => {
-  const form = useForm<Fields>();
+  const form = useForm<Fields>({
+    defaultValues: {
+      email: '', // Empty by default
+      password: '', // Empty by default
+    },
+  });
 
   const ToastHandler = (text: string) => {
     return toast({
@@ -66,6 +71,7 @@ const BlogsUpdateDialog = ({
     register,
     handleSubmit,
     getValues,
+    setValue,
     control,
     formState: { errors },
   } = form;
@@ -102,7 +108,11 @@ const BlogsUpdateDialog = ({
 
   useEffect(() => {
     fetchRoleLov();
+    setValue('phone', formData.phone);
+    setValue('role', formData.role);
   }, []);
+
+  console.log('formData', formData);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -176,6 +186,7 @@ const BlogsUpdateDialog = ({
                       type="text"
                       {...register('email', {
                         required: 'Please enter your email',
+                        value: formData.email,
                       })}
                     />
                     {errors.email && (
@@ -225,7 +236,7 @@ const BlogsUpdateDialog = ({
               <div className="form-group w-full flex items-center justify-center gap-3 m-1">
                 <div className="w-full">
                   <FormLabel
-                    htmlFor="phone"
+                    htmlFor="roles"
                     className="text-sm font-medium my-2 block"
                   >
                     Roles
@@ -269,7 +280,7 @@ const BlogsUpdateDialog = ({
                     id="address"
                     placeholder="Street 55"
                     type="text"
-                    {...register('address')}
+                    {...register('address', { value: formData.phone })}
                   />
                   {errors.address && (
                     <FormMessage>*{errors.address.message}</FormMessage>

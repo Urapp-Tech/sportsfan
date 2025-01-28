@@ -20,6 +20,7 @@ import reportSidebarIcon from './reports-icon.svg';
 import settingSidebarIcon from './setting-icon.svg';
 import logoutSidebarIcon from './logout-icon.svg';
 import blogSidebarIcon from './blog-icon.svg';
+import uploadIcon from './upload-icon.svg';
 
 const assets = {
   images: {
@@ -44,6 +45,7 @@ const assets = {
     logoutSidebarIcon,
     blogSidebarIcon,
     skelImg,
+    uploadIcon,
   },
 } as const;
 

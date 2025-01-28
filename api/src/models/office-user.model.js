@@ -65,7 +65,7 @@ const list = async (req, params) => {
 
   const promise = query
     .clone()
-    .select('office_user.*')
+    .select('office_user.*', 'our.role')
     .orderBy('office_user.created_at', 'desc')
     .offset(params.page * params.size)
     .limit(params.size);

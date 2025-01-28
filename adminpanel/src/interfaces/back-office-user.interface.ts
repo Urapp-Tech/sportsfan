@@ -7,4 +7,5 @@ export interface Fields {
   address: string;
   userType: string;
   avatar: string;
+  role: string;
 }

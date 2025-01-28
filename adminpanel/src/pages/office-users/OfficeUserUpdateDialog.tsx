@@ -41,7 +41,13 @@ const OfficeUserUpdateDialog = ({
   isLoader,
   formData,
 }: Props) => {
-  const form = useForm<Fields>();
+  const form = useForm<Fields>({
+    defaultValues: {
+      password: '',
+      avatar: formData.avatar || '',
+      role: formData.role || '',
+    },
+  });
 
   const ToastHandler = (text: string) => {
     return toast({
@@ -175,6 +181,7 @@ const OfficeUserUpdateDialog = ({
                       placeholder="johndoe@gmail.com"
                       type="text"
                       {...register('email', {
+                        value: formData?.email,
                         required: 'Please enter your email',
                       })}
                     />
@@ -200,6 +207,7 @@ const OfficeUserUpdateDialog = ({
                         className="text-sm pr-10 mt-2"
                         {...register('password', {
                           required: 'Please enter your password.',
+                          value: '',
                         })}
                       />
                       <Button
@@ -235,6 +243,7 @@ const OfficeUserUpdateDialog = ({
                     name="role"
                     label=""
                     items={roleLov}
+                    // value={formData.role}
                     placeholder="Choose an option"
                     rules={{ required: 'This field is required' }}
                   />
@@ -251,6 +260,7 @@ const OfficeUserUpdateDialog = ({
                       type="number"
                       {...register('phone', {
                         required: 'Please enter your phone',
+                        value: formData.phone,
                       })}
                     />
                     {errors.phone && (
@@ -269,7 +279,7 @@ const OfficeUserUpdateDialog = ({
                     id="address"
                     placeholder="Street 55"
                     type="text"
-                    {...register('address')}
+                    {...register('address', { value: formData.address })}
                   />
                   {errors.address && (
                     <FormMessage>*{errors.address.message}</FormMessage>
@@ -318,7 +328,7 @@ const OfficeUserUpdateDialog = ({
                   type="submit"
                   className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
                 >
-                  {isLoader && <Loader2 className="animate-spin" />} Add
+                  {isLoader && <Loader2 className="animate-spin" />} Update
                 </Button>
               </DialogFooter>
             </div>

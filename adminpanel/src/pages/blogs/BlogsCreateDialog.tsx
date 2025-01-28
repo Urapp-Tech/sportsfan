@@ -26,6 +26,7 @@ import { toast } from '@/hooks/use-toast';
 import { SingleSelectDropDown } from '@/components/DropDown/SingleSelectDropDown';
 import service from '@/services/adminapp/role-permissions';
 import { Textarea } from '@/components/ui/textarea';
+import assets from '@/assets/images';
 
 type Props = {
   isLoader: boolean;
@@ -147,7 +148,7 @@ const BlogsCreateDialog = ({
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Add New Admin User</DialogTitle>
+          <DialogTitle>Add New Blog</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -198,17 +199,14 @@ const BlogsCreateDialog = ({
                     className="text-sm font-medium my-3"
                   >
                     Upload Images
+                    <span className="text-xs font-normal">
+                      {' '}
+                      ( Images should be in JPG, JPEG, or PNG format )
+                    </span>
                   </FormLabel>
                 </div>
                 <div className="">
                   <div className="FormField">
-                    <FormLabel className="FormLabel mt-2">
-                      Upload
-                      <span className="">
-                        ( Image should be in JPG, JPEG, or PNG format & Video
-                        should be in MP4 format )
-                      </span>
-                    </FormLabel>
                     <div className="ImageBox">
                       <Controller
                         name="images"
@@ -218,40 +216,51 @@ const BlogsCreateDialog = ({
                         }}
                         render={({ field: { onChange } }) => (
                           <>
-                            <input
-                              accept="image/jpeg,image/png,image/jpg"
-                              style={{}}
-                              id="raised-button-files"
-                              type="file"
-                              multiple
-                              onChange={(event) =>
-                                handleFileChange(onChange, event)
-                              }
-                              onClick={handleFileOnClick}
-                            />
-                            <label
-                              htmlFor="raised-button-files"
-                              className="ImageLabel"
-                            >
-                              <Button className="ImageBtn">
-                                <FileDown />
-                                Upload
-                              </Button>
-                            </label>
+                            <div className="w-full flex h-[50px] items-center">
+                              <input
+                                accept="image/jpeg,image/png,image/jpg"
+                                style={{ display: 'none' }}
+                                id="raised-button-files"
+                                type="file"
+                                multiple
+                                onChange={(event) =>
+                                  handleFileChange(onChange, event)
+                                }
+                                onClick={handleFileOnClick}
+                              />
+                              <span className="bg-lunar-bg w-full rounded-2xl">
+                                <label
+                                  htmlFor="raised-button-files"
+                                  className="ImageLabel text-white flex h-[50px] justify-center items-center w-full "
+                                >
+                                  <img
+                                    width={22}
+                                    src={assets.images.uploadIcon}
+                                  />{' '}
+                                  <span className="text-white px-1">
+                                    Upload
+                                  </span>
+                                </label>
+                              </span>
+                            </div>
 
                             {planFiles && planFiles.length > 0 ? (
-                              <div className="ShowFilesBox mt-2 rounded bg-background">
+                              <div className="mt-2 p-2 rounded-2xl bg-earth-bg">
                                 {planFiles.map((file: any, index: number) => (
-                                  <div key={index} className="ShowFileItem">
-                                    <label className="ShowFileLabel">
-                                      {file.name}
-                                    </label>
+                                  <div
+                                    key={index}
+                                    className="ShowFileItem flex items-center"
+                                  >
                                     <X
-                                      className="btn-dot"
+                                      size={20}
+                                      className="btn-dot mr-2 cursor-pointer"
                                       onClick={() =>
                                         handleRemoveFile(index, onChange)
                                       }
                                     />
+                                    <label className="ShowFileLabel">
+                                      {file.name}
+                                    </label>
                                   </div>
                                 ))}
                               </div>
