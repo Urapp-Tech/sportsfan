@@ -4,6 +4,7 @@ import pageRoutes from './page/page.routes.js';
 import blogRoutes from './blog/blog.routes.js';
 import productRoutes from './product/product.routes.js';
 import feedbackRoutes from './feedback/feedback.routes.js';
+import orderRoutes from './order/order.routes.js';
 
 const adminRoutes = (fastify, options, done) => {
   fastify.register(backOfficeUserRoutes, { prefix: '/office-user' });
@@ -12,6 +13,7 @@ const adminRoutes = (fastify, options, done) => {
   fastify.register(blogRoutes, { prefix: '/blog' });
   fastify.register(productRoutes, { prefix: '/product' });
   fastify.register(feedbackRoutes, { prefix: '/feedback' });
+  fastify.register(orderRoutes, { prefix: '/order' });
 
   done();
 };
