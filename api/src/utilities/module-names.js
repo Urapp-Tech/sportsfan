@@ -12,6 +12,7 @@ export default Object.freeze({
     BLOG: 'blogs',
     CATEGORY: 'categories',
     PRODUCT: 'products',
+    FEEDBACK: 'feedback',
   }),
   APP: Object.freeze({}),
 });
