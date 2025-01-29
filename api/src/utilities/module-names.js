@@ -10,6 +10,8 @@ export default Object.freeze({
     ROLE_PERMISSION: 'role_permissions',
     PAGE: 'pages',
     BLOG: 'blogs',
+    CATEGORY: 'categories',
+    PRODUCT: 'products',
   }),
   APP: Object.freeze({}),
 });

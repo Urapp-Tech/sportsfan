@@ -2,10 +2,10 @@ import { Type } from '@sinclair/typebox';
 // console.log(Type.Array(Type.Any({ isFile: true })));
 const swagger = {
   list: {
-    description: 'this will list blogs',
-    tags: ['ADMIN|Blog'],
-    summary: 'list blog',
-    operationId: 'BlogList',
+    description: 'this will list Products',
+    tags: ['ADMIN|Product'],
+    summary: 'list Product',
+    operationId: 'ProductList',
     querystring: Type.Object(
       {
         page: Type.Integer({ default: 0, minimum: 0 }),
@@ -16,15 +16,19 @@ const swagger = {
     ),
   },
   create: {
-    description: 'this will create blog',
-    tags: ['ADMIN|Blog'],
-    summary: 'blog page',
-    operationId: 'CreateBlog',
+    description: 'this will create Product',
+    tags: ['ADMIN|Product'],
+    summary: 'Product page',
+    operationId: 'CreateProduct',
     consumes: ['multipart/form-data'],
     body: Type.Object(
       {
         title: Type.String(),
-        description: Type.String(),
+        price: Type.Number({ default: 0 }),
+        discountedPrice: Type.Number({ default: 0 }),
+        icon: Type.Optional(Type.Any({ isFile: true })),
+        shortDescription: Type.Optional(Type.String()),
+        detailDescription: Type.Optional(Type.String()),
         'images[]': Type.Union([
           Type.Array(Type.Any({ isFile: true })),
           Type.Any({ isFile: true }),
@@ -34,10 +38,10 @@ const swagger = {
     ),
   },
   update: {
-    description: 'this will update blog',
-    tags: ['ADMIN|Blog'],
-    summary: 'update blog',
-    operationId: 'UpdateBlog',
+    description: 'this will update Product',
+    tags: ['ADMIN|Product'],
+    summary: 'update Product',
+    operationId: 'UpdateProduct',
     params: Type.Object(
       {
         id: Type.String({ format: 'uuid' }),
@@ -48,7 +52,11 @@ const swagger = {
     body: Type.Object(
       {
         title: Type.String(),
-        description: Type.Optional(),
+        price: Type.Number({ default: 0 }),
+        discountedPrice: Type.Number({ default: 0 }),
+        icon: Type.Optional(Type.Any({ isFile: true })),
+        shortDescription: Type.Optional(Type.String()),
+        detailDescription: Type.Optional(Type.String()),
         'images[]': Type.Union([
           Type.Array(Type.Any({ isFile: true })),
           Type.Any({ isFile: true }),
@@ -58,10 +66,10 @@ const swagger = {
     ),
   },
   delete: {
-    description: 'this will delete blog',
-    tags: ['ADMIN|Blog'],
-    summary: 'delete blog',
-    operationId: 'DeleteBlog',
+    description: 'this will delete Product',
+    tags: ['ADMIN|Product'],
+    summary: 'delete Product',
+    operationId: 'DeleteProduct',
     params: Type.Object(
       {
         id: Type.String({ format: 'uuid' }),
