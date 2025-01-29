@@ -66,8 +66,8 @@ export function MainSidebar({
         items: [],
       },
       {
-        title: 'Pages',
-        url: '/admin/pages',
+        title: 'Order',
+        url: '/admin/Order',
         icon: assets.images.pagesSidebarIcon,
         items: [],
       },

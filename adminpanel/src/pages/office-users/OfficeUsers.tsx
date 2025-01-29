@@ -18,10 +18,8 @@ import {
 import {
   ArrowUpDown,
   Loader2,
-  // ChevronDown,
-  MoreHorizontal,
   Pencil,
-  Trash2,
+  Trash2
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // import { Checkbox } from '@/components/ui/checkbox';
@@ -29,11 +27,7 @@ import DeleteDialog from '@/components/DeletePopup';
 import { Paginator } from '@/components/Paginator';
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  //   DropdownMenuLabel,
-  //   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuContent
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
@@ -386,7 +380,7 @@ const OfficeUsers = () => {
   };
 
   return (
-    <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
+    <div className=" bg-quinary-bg p-2 rounded-[20px] shadow-2xl mt-5  records--wraps">
       {/* <div className='flex gap-4'>
         <NavLink to=''>
           <div className='w-[45px] h-[45px]'>
@@ -461,9 +455,9 @@ const OfficeUsers = () => {
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                           </TableHead>
                         );
                       })}

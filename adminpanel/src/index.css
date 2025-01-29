@@ -151,7 +151,7 @@
 
 .custom-form-section input,
 .custom-form-section select {
-  height: 60px;
+  /* height: 60px; */
   border-radius: 20px;
   @apply bg-earth-bg;
   font-size: 14px;
@@ -228,6 +228,42 @@
   border-radius: 20px;
 }
 
+/* new main scroller */
+.cs-main-wrap::-webkit-scrollbar-thumb {
+  width: 24px;
+  @apply bg-mars-bg;
+  border: 5px solid #CCEEF4;
+  border-radius: 15px;
+}
+
+.cs-main-wrap::-webkit-scrollbar {
+  width: 18px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+}
+
+.cs-main-wrap::-webkit-scrollbar-track {
+
+  border-radius: 20px;
+}
+
+.cs-sidebar-navs::-webkit-scrollbar-thumb {
+  width: 24px;
+  @apply bg-mars-bg;
+  border: 5px solid #CCEEF4;
+  border-radius: 15px;
+}
+
+.cs-sidebar-navs::-webkit-scrollbar {
+  width: 18px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+}
+
+.cs-sidebar-navs::-webkit-scrollbar-track {
+  border-radius: 20px;
+}
+
 .cs-dialog-box::-webkit-scrollbar-thumb {
   width: 24px;
   @apply bg-mars-bg;
@@ -279,4 +315,16 @@
 
 .cs-main-wrap {
   border-radius: 20px;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  height: 80vh;
+}
+
+.records--wraps {
+  position: fixed;
+  left: 320px;
+  right: 20px;
+  top: 55px;
+  bottom: 20px;
+  overflow: hidden !important;
 }

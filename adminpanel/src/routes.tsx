@@ -3,15 +3,18 @@ import AppLayout from '@/layout/AppLayout';
 import AuthLayout from '@/layout/AuthLayout';
 import LayoutOutlet from '@/layout/LayoutOutlet';
 import Login from '@/pages/auth/Login';
-import Employees from '@/pages/employees/Employees';
 import EmployeeCabinHistory from '@/pages/employees/EmployeeCabinHistory';
+import Employees from '@/pages/employees/Employees';
+import AddRolePermissionsPage from '@/pages/role-permissions/AddRolePermissionsPage';
+import UpdateRolePermissionPage from '@/pages/role-permissions/UpdateRolePermissionPage';
 import PanelSetting from '@/pages/setting/panelSetting';
 import SystemConfiguration from '@/pages/setting/systemConfiguration';
 import { lazy, Suspense } from 'react';
 import { Navigate, RouteObject } from 'react-router';
+import Order from './pages/admin/Order';
 import Otp from './pages/auth/Otp';
-import AddRolePermissionsPage from '@/pages/role-permissions/AddRolePermissionsPage';
-import UpdateRolePermissionPage from '@/pages/role-permissions/UpdateRolePermissionPage';
+import Page404 from './pages/dashboard/Page404';
+import Without404 from './pages/dashboard/Without404 ';
 
 const Dashboard = lazy(() => import('@/pages/dashboard/Dashboard'));
 const OfficeUsers = lazy(() => import('@/pages/office-users/OfficeUsers'));
@@ -69,6 +72,24 @@ export const routeObjects: RouteObject[] = [
               <Suspense fallback={<div>Loading...</div>}>
                 <Dashboard />
               </Suspense>
+            ),
+          },
+          {
+            path: '404',
+            element: (
+              <Page404 />
+            ),
+          },
+          {
+            path: 'Without404',
+            element: (
+              <Without404 />
+            ),
+          },
+          {
+            path: 'order',
+            element: (
+              <Order />
             ),
           },
           {
