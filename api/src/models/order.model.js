@@ -68,7 +68,7 @@ const detail = (req) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
-  const query = knex
+  return knex
     .select([
       'orders.*',
       knex.raw(
