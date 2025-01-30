@@ -10,6 +10,12 @@ export default Object.freeze({
     ROLE_PERMISSION: 'role_permissions',
     PAGE: 'pages',
     BLOG: 'blogs',
+    CATEGORY: 'categories',
+    PRODUCT: 'products',
+    FEEDBACK: 'feedback',
+    ORDER: 'orders',
+    ORDER_ITEM: 'order_items',
+    ORDER_STATUS: 'order_statuses',
   }),
   APP: Object.freeze({}),
 });
