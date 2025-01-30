@@ -231,11 +231,11 @@ const Blogs = () => {
     fetchBlogs();
   }, []);
 
-  const deleteUserHandler = (data: any) => {
+  const deleteHandler = (data: any) => {
     const userId = data.id;
     setIsLoader(true);
     service
-      .deleteUser(userId)
+      .deleteBlog(userId)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setDeleteOpen(false);
@@ -301,9 +301,7 @@ const Blogs = () => {
     },
   });
 
-  const createEmployeeHandler = (data: any) => {
-    console.log('dadad', data);
-
+  const createBlogHandler = (data: any) => {
     setIsLoader(true);
     const formData = new FormData();
     formData.append('title', data.title);
@@ -334,13 +332,22 @@ const Blogs = () => {
       });
   };
 
-  const updateEmployeeHandler = (data: any) => {
-    const userId = data.id;
-    data.username = data.email;
-    delete data.id;
+  const updateBlogHandler = (data: any) => {
     setIsLoader(true);
+    const blogId = data.id;
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    formData.append('deletedPrevImages', data.deletedPrevImages);
+    if (data.images.length) {
+      data.images.forEach((image: any) => {
+        formData.append('images', image);
+      });
+    } else {
+      formData.append('images', '');
+    }
     service
-      .update(userId, data)
+      .update(blogId, formData)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setEditOpen(false);
@@ -348,11 +355,9 @@ const Blogs = () => {
           setList((newArr: any) => {
             return newArr.map((item: any) => {
               if (item.id === updateItem.data.data.id) {
-                item.firstName = updateItem.data.data.firstName;
-                item.lastName = updateItem.data.data.lastName;
-                item.email = updateItem.data.data.email;
-                item.phone = updateItem.data.data.phone;
-                item.address = updateItem.data.data.address;
+                item.title = updateItem.data.data.title;
+                item.description = updateItem.data.data.description;
+                item.images = updateItem.data.data.images;
               }
               return { ...item };
             });
@@ -372,19 +377,7 @@ const Blogs = () => {
 
   return (
     <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
-      {/* <div className='flex gap-4'>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.notifyIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.avatarIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-      </div> */}
-      <TopBar title="Admin Users" />
+      <TopBar title="Blogs" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* admin content page height */}
         <div className="w-full">
@@ -511,7 +504,7 @@ const Blogs = () => {
           isLoader={isLoader}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          callback={createEmployeeHandler}
+          callback={createBlogHandler}
         />
       )}
       {editOpen && (
@@ -520,7 +513,7 @@ const Blogs = () => {
           isOpen={editOpen}
           setIsOpen={setEditOpen}
           formData={editFormData}
-          callback={updateEmployeeHandler}
+          callback={updateBlogHandler}
         />
       )}
       {deleteOpen && (
@@ -528,9 +521,9 @@ const Blogs = () => {
           isLoader={isLoader}
           isOpen={deleteOpen}
           setIsOpen={setDeleteOpen}
-          title={'User'}
+          title={'Blog'}
           formData={editFormData}
-          callback={deleteUserHandler}
+          callback={deleteHandler}
         />
       )}
     </div>

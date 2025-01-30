@@ -79,6 +79,7 @@ const OfficeUserUpdateDialog = ({
   const onSubmit = async (data: Fields) => {
     if (file) data.avatar = file;
     data.userType = 'USER';
+    data.id = formData.id;
     callback(data);
     // console.log('s', data);
   };

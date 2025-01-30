@@ -40,7 +40,7 @@ function DragDropFile({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files);
     }
-    const droppedFile = e.dataTransfer.files[0]; // Get the dropped file
+    const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
       const fileType = droppedFile.type;
       if (imageAllowedTypes.includes(fileType)) {
@@ -48,7 +48,6 @@ function DragDropFile({
         const reader = new FileReader();
         reader.onload = () => {
           setImg(reader.result as string);
-          // setImageUrl(reader.result as string);
         };
         reader.readAsDataURL(droppedFile);
       } else {
@@ -94,8 +93,9 @@ function DragDropFile({
         onChange={handleChange}
       />
       <div
-        className={`p-4 border-dashed border-0 flex items-center justify-center rounded-[20px] cursor-pointer bg-earth-bg w-[180px] h-[150px] ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-          }`}
+        className={`p-4 border-dashed border-0 flex items-center justify-center rounded-[20px] cursor-pointer bg-earth-bg w-[180px] h-[150px] ${
+          dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+        }`}
         onClick={onButtonClick}
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
@@ -104,8 +104,12 @@ function DragDropFile({
       >
         <div className="flex flex-col items-center justify-center text-center">
           {/* <FileImage className="" size={60} /> */}
-          <div className='w-[44px] h-[44px]'>
-            <img src={assets.images.skelImg} alt='icon' className='w-full h-full object-contain' />
+          <div className="w-[44px] h-[44px]">
+            <img
+              src={assets.images.skelImg}
+              alt="icon"
+              className="w-full h-full object-contain"
+            />
           </div>
           {/* <Button className="ml-2 hover:underline" variant="link" type="button">
             Drag & drop files

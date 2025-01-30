@@ -17,18 +17,13 @@ const update = (id: string, data: any) => {
   return network.postMultipart(`${BLOG_PREFIX}/update/${id}`, data);
 };
 
-const deleteEmp = (id: string) => {
+const deleteBlog = (id: string) => {
   return network.post(`${BLOG_PREFIX}/delete/${id}`, {});
-};
-
-const lov = () => {
-  return network.get(`${BLOG_PREFIX}/lov`);
 };
 
 export default {
   list,
   create,
   update,
-  deleteEmp,
-  lov,
+  deleteBlog,
 };

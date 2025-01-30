@@ -16,15 +16,18 @@ import {
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Fields } from '@/interfaces/back-office-user.interface';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Fields } from '@/interfaces/blog.interface';
+import { Eye, EyeOff, FileDown, Loader2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import DragDropFile from '@/components/DragDropImgFile';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { SingleSelectDropDown } from '@/components/DropDown/SingleSelectDropDown';
 import service from '@/services/adminapp/role-permissions';
+import { Textarea } from '@/components/ui/textarea';
+import assets from '@/assets/images';
+import DeleteDialog from '@/components/DeletePopup';
 
 type Props = {
   isLoader: boolean;
@@ -41,12 +44,7 @@ const BlogsUpdateDialog = ({
   isLoader,
   formData,
 }: Props) => {
-  const form = useForm<Fields>({
-    defaultValues: {
-      email: '', // Empty by default
-      password: '', // Empty by default
-    },
-  });
+  const form = useForm<Fields>();
 
   const ToastHandler = (text: string) => {
     return toast({
@@ -62,281 +60,375 @@ const BlogsUpdateDialog = ({
     });
   };
 
-  const [file, setFile] = useState<any>(null);
-  const [selectedImg, setSelectedImg] = useState<any>(null);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [roleLov, setRoleLov] = useState([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const [planFiles, setPlanFiles] = useState<any>([]);
+  const [selectedPlanImages, setSelectedPlanImages] = useState<any>([]);
+
+  const [prevFiles, setPrevFiles] = useState<any>(formData?.images || []);
+  const [deletedFiles, setDeletedFiles] = useState<any>([]);
+
+  const [imageToDelete, setImageToDelete] = useState<{
+    index: number | any;
+    onChange: any;
+    file: any;
+  } | null>(null);
 
   const {
     register,
     handleSubmit,
-    getValues,
-    setValue,
     control,
     formState: { errors },
   } = form;
 
   const onSubmit = async (data: Fields) => {
-    if (file) data.avatar = file;
-    data.userType = 'USER';
+    // if (file) data.images = file;
+    data.images = planFiles;
+    data.deletedPrevImages = deletedFiles;
+    data.id = formData.id;
+    // console.log('updated submit', data);
     callback(data);
-    // console.log('s', data);
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const handleFileChange = async (onChange: any, event: any) => {
+    const selectedFiles = Array.from(event.target.files || []); // Files from input
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
-  const fetchRoleLov = async () => {
-    try {
-      const roles = await service.lov();
-      if (roles.data.success) {
-        const lov = roles.data.data.map((el: any) => {
-          return {
-            name: el.name,
-            id: el.id,
-          };
-        });
-        setRoleLov(lov);
-      } else {
-        console.log('error: ', roles.data.message);
-      }
-    } catch (error: Error | unknown) {
-      console.log('error: ', error);
+    const validFiles: File[] = [];
+    const fileReaders = selectedFiles.map((file: any) => {
+      return new Promise<string | null>((resolve) => {
+        if (allowedImageTypes.includes(file.type)) {
+          validFiles.push(file);
+
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        } else {
+          ToastHandler('Only .jpeg, .jpg, .png images are allowed');
+          resolve(null);
+        }
+      });
+    });
+
+    const imageUrls = (await Promise.all(fileReaders)).filter(
+      (url) => url !== null
+    ) as string[];
+
+    if (validFiles.length > 0) {
+      setPlanFiles((prevFiles: any) => [...(prevFiles || []), ...validFiles]);
+      setSelectedPlanImages((prevImages: any) => [
+        ...(prevImages || []),
+        ...imageUrls,
+      ]); // Store Image URLs
+      onChange(validFiles);
     }
   };
 
-  useEffect(() => {
-    fetchRoleLov();
-    setValue('phone', formData.phone);
-    setValue('role', formData.role);
-  }, []);
+  const handleFileOnClick = (event: any) => {
+    event.target.value = null;
+    setPlanFiles([]);
+    setSelectedPlanImages([]);
+  };
 
-  console.log('formData', formData);
+  const handleRemoveFile = (index: number, onChange: any, file: any) => {
+    setImageToDelete({ index, onChange, file });
+    setDeleteOpen(true);
+  };
+
+  const deleteUserHandler = (_: any) => {
+    const deletedImgs = prevFiles.filter(
+      (_: any, i: number) => i === imageToDelete?.index
+    );
+    setDeletedFiles((prev: any) => [...prev, ...deletedImgs]);
+    if (typeof imageToDelete?.file === 'string') {
+      setPrevFiles((prevFiles: any) => {
+        const updatedFiles = [...prevFiles];
+        updatedFiles.splice(imageToDelete?.index, 1);
+        imageToDelete?.onChange(updatedFiles);
+        return updatedFiles;
+      });
+    } else {
+      setPlanFiles((prevFiles: any) => {
+        const updatedFiles = [...prevFiles];
+        updatedFiles.splice(imageToDelete?.index, 1);
+        imageToDelete?.onChange(updatedFiles);
+        return updatedFiles;
+      });
+    }
+    setImageToDelete({ index: null, onChange: null, file: null });
+    setDeleteOpen(false);
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent
-        className="sm:max-w-[600px] cs-dialog-box"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <DialogHeader>
-          <DialogTitle>Update Admin User</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="custom-form-section">
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="firstName"
-                      className="text-sm font-medium"
-                    >
-                      First Name
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="firstName"
-                      placeholder="john"
-                      type="text"
-                      {...register('firstName', {
-                        value: formData?.firstName,
-                        required: 'Please enter your first name',
-                      })}
-                    />
-                    {errors.firstName && (
-                      <FormMessage>*{errors.firstName.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="lastName"
-                      className="text-sm font-medium"
-                    >
-                      Last Name
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="lastName"
-                      placeholder="doe"
-                      type="text"
-                      {...register('lastName', {
-                        value: formData?.lastName,
-                      })}
-                    />
-                    {/* {errors.lastName && (
-                      <FormMessage>*{errors.lastName.message}</FormMessage>
-                    )} */}
-                  </div>
-                </FormControl>
-              </div>
-              <div className="form-group w-full flex gap-3">
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="email" className="text-sm font-medium">
-                      Eamil
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="email"
-                      placeholder="johndoe@gmail.com"
-                      type="text"
-                      {...register('email', {
-                        required: 'Please enter your email',
-                        value: formData.email,
-                      })}
-                    />
-                    {errors.email && (
-                      <FormMessage>*{errors.email.message}</FormMessage>
-                    )}
-                  </div>
-                </FormControl>
-                {/* <div className="form-group w-full"> */}
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel
-                      htmlFor="password"
-                      className="text-sm font-medium"
-                    >
-                      Password
-                    </FormLabel>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        placeholder="********"
-                        type={passwordVisible ? 'text' : 'password'}
-                        className="text-sm pr-10 mt-2"
-                        {...register('password', {
-                          required: 'Please enter your password.',
-                        })}
-                      />
+    <>
+      {deleteOpen && (
+        <DeleteDialog
+          isLoader={isLoader}
+          isOpen={deleteOpen}
+          setIsOpen={setDeleteOpen}
+          title={'Blog'}
+          formData={formData}
+          callback={deleteUserHandler}
+        />
+      )}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent
+          className="sm:max-w-[900px] cs-dialog-box"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Update Blog</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-6">
+              <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="custom-form-section">
+                    <div className="form-group w-full flex gap-3">
+                      <FormControl className="m-1 w-full">
+                        <div className="">
+                          <FormLabel
+                            htmlFor="title"
+                            className="text-sm font-medium"
+                          >
+                            Title
+                          </FormLabel>
+                          <Input
+                            className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
+                            id="title"
+                            placeholder="news"
+                            type="text"
+                            {...register('title', {
+                              required: 'Please update your title name',
+                              value: formData?.title,
+                            })}
+                          />
+                          {errors.title && (
+                            <FormMessage>*{errors.title.message}</FormMessage>
+                          )}
+                        </div>
+                      </FormControl>
+                    </div>
+                    <div className="form-group w-full flex">
+                      <FormControl className="m-1 w-full">
+                        <div className="">
+                          <FormLabel
+                            htmlFor="description"
+                            className="text-sm font-medium"
+                          >
+                            Description
+                          </FormLabel>
+                          <Textarea
+                            className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
+                            id="description"
+                            placeholder="Type your message here."
+                            {...register('description', {
+                              value: formData?.description,
+                            })}
+                          />
+                        </div>
+                      </FormControl>
+                    </div>
+                    <div>
+                      <div className="flex justify-between">
+                        <FormLabel
+                          htmlFor="address"
+                          className="text-sm font-medium my-3"
+                        >
+                          Upload Images
+                          <span className="text-xs font-normal">
+                            {' '}
+                            ( Images should be in JPG, JPEG, or PNG format )
+                          </span>
+                        </FormLabel>
+                      </div>
+                      <div className="">
+                        <div className="FormField">
+                          <div className="ImageBox">
+                            <Controller
+                              name="images"
+                              control={control}
+                              rules={{
+                                validate: () => {
+                                  if (
+                                    [...prevFiles, ...planFiles]?.length > 0
+                                  ) {
+                                    return true;
+                                  }
+                                  return 'At least one image is required';
+                                },
+                              }}
+                              render={({ field: { onChange } }) => (
+                                <>
+                                  <div className="w-full flex h-[50px] items-center">
+                                    <input
+                                      accept="image/jpeg,image/png,image/jpg"
+                                      style={{ display: 'none' }}
+                                      id="raised-button-files"
+                                      type="file"
+                                      multiple
+                                      onChange={(event) =>
+                                        handleFileChange(onChange, event)
+                                      }
+                                      onClick={handleFileOnClick}
+                                    />
+                                    <span className="bg-lunar-bg w-full rounded-2xl">
+                                      <label
+                                        htmlFor="raised-button-files"
+                                        className="ImageLabel text-white flex h-[50px] justify-center items-center w-full "
+                                      >
+                                        <img
+                                          width={22}
+                                          src={assets.images.uploadIcon}
+                                        />{' '}
+                                        <span className="text-white px-1">
+                                          Upload
+                                        </span>
+                                      </label>
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                            />
+                            {errors.images && (
+                              <FormMessage>
+                                *{errors.images?.message}
+                              </FormMessage>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <DialogFooter className="mt-3">
                       <Button
-                        variant="ghost"
-                        type="button"
-                        className="bg-transparent absolute inset-y-0 right-0 flex items-center pr-3 mt-[11px]"
-                        onClick={togglePasswordVisibility}
+                        disabled={isLoader}
+                        type="submit"
+                        className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
                       >
-                        {passwordVisible ? (
-                          <EyeOff color="black" />
-                        ) : (
-                          <Eye color="black" />
-                        )}
+                        {isLoader && <Loader2 className="animate-spin" />}{' '}
+                        Update
                       </Button>
-                      {errors.password && (
-                        <FormMessage>*{errors.password.message}</FormMessage>
-                      )}
-                    </div>
+                    </DialogFooter>
                   </div>
-                </FormControl>
-                {/* </div> */}
-              </div>
-              <div className="form-group w-full flex items-center justify-center gap-3 m-1">
-                <div className="w-full">
-                  <FormLabel
-                    htmlFor="roles"
-                    className="text-sm font-medium my-2 block"
-                  >
-                    Roles
-                  </FormLabel>
-                  <SingleSelectDropDown
-                    control={control}
-                    name="role"
-                    label=""
-                    items={roleLov}
-                    placeholder="Choose an option"
-                    rules={{ required: 'This field is required' }}
-                  />
-                </div>
-                <FormControl className="m-1 w-full">
-                  <div className="">
-                    <FormLabel htmlFor="phone" className="text-sm font-medium">
-                      Phone
-                    </FormLabel>
-                    <Input
-                      className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                      id="phone"
-                      placeholder="876543215"
-                      type="number"
-                      {...register('phone', {
-                        required: 'Please enter your phone',
-                      })}
-                    />
-                    {errors.phone && (
-                      <FormMessage>*{errors.phone.message}</FormMessage>
+                </form>
+              </Form>
+            </div>
+            <div className="col-span-6">
+              <Controller
+                name="images"
+                control={control}
+                rules={{
+                  validate: () => {
+                    if ([...prevFiles, ...planFiles]?.length > 0) {
+                      return true;
+                    }
+                    return 'At least one image is required';
+                  },
+                }}
+                render={({ field: { onChange } }) => (
+                  <div>
+                    <span className="text-sm mb-2 block font-medium underline-offset-2 underline">
+                      Uploaded Images
+                    </span>
+                    {prevFiles?.length > 0 ? (
+                      <div className="mt-2 p-2 flex flex-wrap rounded-2xl">
+                        {prevFiles?.map((file: any, index: number) => (
+                          <div
+                            key={index}
+                            className="ShowFileItem p-1 flex items-center relative"
+                          >
+                            <X
+                              size={20}
+                              className="absolute top-1 right-[-1px] cursor-pointer text-white bg-red-500 rounded-full p-1"
+                              onClick={() =>
+                                handleRemoveFile(index, onChange, file)
+                              }
+                            />
+                            <div
+                              className={`p-4 border-dashed border-0 flex items-center justify-center rounded-[20px] cursor-pointer bg-earth-bg w-[180px] h-[150px]
+                            border-blue-500 bg-blue-50'
+                            }`}
+                            >
+                              <div className="flex flex-col items-center justify-center text-center">
+                                <div className="w-[88px] h-[88px]">
+                                  <img
+                                    src={file}
+                                    alt={file}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      ''
                     )}
                   </div>
-                </FormControl>
-              </div>
-              <FormControl className="m-1 w-full">
-                <div className="">
-                  <FormLabel htmlFor="address" className="text-sm font-medium">
-                    Address
-                  </FormLabel>
-                  <Input
-                    className="mt-2 text-[11px] outline-none focus:outline-none focus:border-none focus-visible:ring-offset-[1px] focus-visible:ring-0"
-                    id="address"
-                    placeholder="Street 55"
-                    type="text"
-                    {...register('address', { value: formData.phone })}
-                  />
-                  {errors.address && (
-                    <FormMessage>*{errors.address.message}</FormMessage>
-                  )}
-                </div>
-              </FormControl>
-              <div>
-                <div className="flex justify-between">
-                  <FormLabel
-                    htmlFor="address"
-                    className="text-sm font-medium my-3"
-                  >
-                    Upload Avatar
-                  </FormLabel>
-                </div>
-                <div className="grid grid-cols-12 items-center">
-                  <div className="col-span-5 mb-1">
-                    <DragDropFile
-                      setFile={setFile}
-                      setImg={setSelectedImg}
-                      setIsNotify={ToastHandler}
-                    />
+                )}
+              />
+              <Controller
+                name="images"
+                control={control}
+                rules={{
+                  validate: () => {
+                    if ([...prevFiles, ...planFiles]?.length > 0) {
+                      return true;
+                    }
+                    return 'At least one image is required';
+                  },
+                }}
+                render={({ field: { onChange } }) => (
+                  <div>
+                    <span className="text-sm mb-2 block font-medium underline-offset-2 underline">
+                      New Images
+                    </span>
+                    {selectedPlanImages?.length > 0 ? (
+                      <div className="mt-2 p-2 flex flex-wrap rounded-2xl">
+                        {selectedPlanImages?.map((file: any, index: number) => (
+                          <div
+                            key={index}
+                            className="ShowFileItem p-1 flex items-center relative"
+                          >
+                            <X
+                              size={20}
+                              className="absolute top-1 right-[-1px] cursor-pointer text-white bg-red-500 rounded-full p-1"
+                              onClick={() =>
+                                handleRemoveFile(index, onChange, file)
+                              }
+                            />
+                            <div
+                              className={`p-4 border-dashed border-0 flex items-center justify-center rounded-[20px] cursor-pointer bg-earth-bg w-[180px] h-[150px]
+                          border-blue-500 bg-blue-50'
+                          }`}
+                            >
+                              <div className="flex flex-col items-center justify-center text-center">
+                                <div className="w-[88px] h-[88px]">
+                                  <img
+                                    src={file}
+                                    alt={file}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex justify-center items-center text-sm w-full">
+                        New images not uploaded yet.
+                      </div>
+                    )}
                   </div>
-                  {selectedImg ? (
-                    <div className="col-span-6 flex items-center justify-center xl:justify-center 2xl:justify-start">
-                      <img
-                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
-                        src={selectedImg}
-                        alt="Shop Logo"
-                      />
-                    </div>
-                  ) : getValues('avatar') ? (
-                    <div className="col-span-6 flex items-center justify-center  xl:justify-center 2xl:justify-start">
-                      <img
-                        className="max-h-[100px] max-w-[150px] rounded-md mx-auto"
-                        src={getValues('avatar')}
-                        alt="Shop Logo"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-              <DialogFooter className="mt-3">
-                <Button
-                  disabled={isLoader}
-                  type="submit"
-                  className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
-                >
-                  {isLoader && <Loader2 className="animate-spin" />} Add
-                </Button>
-              </DialogFooter>
+                )}
+              />
             </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

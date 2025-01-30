@@ -141,11 +141,17 @@ const create = async (req, params) => {
 };
 
 const update = async (req, params) => {
-  const file = await uploadFile(req, req.body.avatar);
+  let file;
+  if (typeof req.body.avatar === 'file') {
+    file = await uploadFile(req, req.body.avatar);
+  } else {
+    file = req.body.avatar;
+  }
   const updatedData = {
     ...req.body,
     avatar: file,
   };
+
   const promise = model.update(req, updatedData, params);
 
   const [error, result] = await promiseHandler(promise);

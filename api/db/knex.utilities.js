@@ -20,6 +20,11 @@ export function createTriggerUpdateTimestampTrigger(tableName) {
     EXECUTE PROCEDURE update_timestamp()`;
 }
 
+export function dropTriggerUpdateTimestampTrigger(tableName) {
+  return `DROP TRIGGER IF EXISTS update_timestamp
+    ON ${tableName} CASCADE`;
+}
+
 export function dropType(typeName) {
   return `DROP TYPE IF EXISTS ${typeName}`;
 }

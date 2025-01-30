@@ -1,5 +1,5 @@
 import { errorHandler, textFilterHelper } from '#utilities/db-query-helpers';
-import hashAsync from '#configs/bcrypt.config';
+import { hashAsync } from '#utilities/bcrypt';
 import HTTP_STATUS from '#utilities/http-status';
 import MODULE from '#utilities/module-names';
 import promiseHandler from '#utilities/promise-handler';
@@ -168,49 +168,73 @@ const create = async (req, body, params) => {
 };
 
 const update = async (req, body, params) => {
-  const { email, phone } = body;
+  const { email, phone, role } = body;
 
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
-  const existingUser = await knex(MODULE.ADMIN.OFFICE_USER)
-    .leftJoin(
-      `${MODULE.ADMIN.OFFICE_USER_ROLE} as our`,
-      'office_user.id',
-      'our.office_user'
-    )
-    .where((builder) => {
-      if (email) builder.orWhere({ 'office_user.email': email });
-      if (phone) builder.orWhere({ 'office_user.phone': phone });
-    })
-    .andWhere({
-      'office_user.is_deleted': false,
-      'office_user.user_type': 'USER',
-      'our.branch': params.branch,
-    })
-    .andWhereNot('office_user.id', params.userId)
-    .first();
+  console.log('body', body);
 
-  if (existingUser) {
-    errorHandler(
-      `An employee with the email / phone already exists.`,
-      HTTP_STATUS.BAD_REQUEST
-    );
-  }
+  return await knex.transaction(async (trx) => {
+    const existingUser = await trx(MODULE.ADMIN.OFFICE_USER)
+      .leftJoin(
+        `${MODULE.ADMIN.OFFICE_USER_ROLE} as our`,
+        'office_user.id',
+        'our.office_user'
+      )
+      .where((builder) => {
+        if (email) builder.orWhere({ 'office_user.email': email });
+        if (phone) builder.orWhere({ 'office_user.phone': phone });
+      })
+      .andWhere({
+        'office_user.is_deleted': false,
+        'office_user.user_type': 'USER',
+        'our.branch': params.branch,
+      })
+      .andWhereNot('office_user.id', params.userId)
+      .first();
 
-  const [updatedEmployee] = await knex(MODULE.ADMIN.OFFICE_USER)
-    .update(body)
-    .where('id', params.userId)
-    .returning('*');
+    if (existingUser) {
+      throw errorHandler(
+        `An employee with the email / phone already exists.`,
+        HTTP_STATUS.BAD_REQUEST
+      );
+    }
 
-  return updatedEmployee;
+    const updateUserData = {
+      ...body,
+      updated_at: knex.fn.now(),
+    };
+
+    if (body.password) {
+      updateUserData.password = await hashAsync(body.password);
+    }
+
+    delete updateUserData.role;
+
+    const [updatedEmployee] = await trx(MODULE.ADMIN.OFFICE_USER)
+      .update(updateUserData)
+      .where('id', params.userId)
+      .returning('*');
+
+    await trx(MODULE.ADMIN.OFFICE_USER_ROLE)
+      .where({
+        office_user: updatedEmployee.id,
+        branch: params.branch,
+      })
+      .update({
+        role,
+      });
+
+    return updatedEmployee;
+  });
 };
 
 const deleteUser = async (req, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
-  return knex(MODULE.ADMIN.BACK_OFFICE_USER)
+  return knex(MODULE.ADMIN.OFFICE_USER)
     .where('id', params.userId)
     .update({ isDeleted: true });
 };
