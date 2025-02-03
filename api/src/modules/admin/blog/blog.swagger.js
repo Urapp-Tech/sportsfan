@@ -38,18 +38,19 @@ const swagger = {
     tags: ['ADMIN|Blog'],
     summary: 'update blog',
     operationId: 'UpdateBlog',
+    consumes: ['multipart/form-data'],
     params: Type.Object(
       {
         id: Type.String({ format: 'uuid' }),
       },
-      { required: 'id' },
       { additionalProperties: false }
     ),
     body: Type.Object(
       {
         title: Type.String(),
-        description: Type.Optional(),
-        'images[]': Type.Union([
+        description: Type.String(),
+        deletedPrevImages: Type.Optional(Type.String()),
+        images: Type.Union([
           Type.Array(Type.Any({ isFile: true })),
           Type.Any({ isFile: true }),
         ]),

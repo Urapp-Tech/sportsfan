@@ -34,15 +34,51 @@ const create = async (req) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: 'User has been created successfully.',
+    message: 'Blog has been created successfully.',
     data: { ...result },
   };
 };
 
 const update = async (req) => {
   const newData = req.body;
-  newData.images = JSON.stringify(await uploadFiles(req, req.body['images[]']));
-  delete newData['images[]'];
+  const { deletedPrevImages, images } = newData;
+  let updatedImages = [];
+  let uploadedImages = [];
+
+  const existingImages = await model.findById(req);
+  let existing = existingImages ? existingImages.images : [];
+  if (!Array.isArray(existing)) {
+    existing = [existing];
+  }
+
+  if (images[0] !== '')
+    uploadedImages = await uploadFiles(
+      req,
+      !Array.isArray(images) ? [images] : images
+    );
+
+  const cleanedImages = existing.map((url) => {
+    return url.replace(/\s+/g, '');
+  });
+
+  const deletedImagesArray =
+    deletedPrevImages[0] !== ''
+      ? deletedPrevImages.split(',').map((x) => x.replace(/\s+/g, ''))
+      : [];
+
+  updatedImages = cleanedImages.filter(
+    (image) => !deletedImagesArray.includes(image)
+  );
+
+  console.log('uploaded images', uploadedImages);
+  console.log('deletedImagesArray', deletedImagesArray);
+  console.log('updatedImages', updatedImages);
+
+  delete newData.deletedPrevImages;
+  const allImages = [...updatedImages, ...uploadedImages];
+  newData.images = allImages.length > 0 ? allImages : [];
+
+  // console.log('New Data', newData);
   const promise = model.update(req, newData);
 
   const [error, result] = await promiseHandler(promise);
@@ -54,7 +90,7 @@ const update = async (req) => {
 
   return {
     code: HTTP_STATUS.OK,
-    message: 'User has been updated successfully.',
+    message: 'Blog has been updated successfully.',
     data: { ...result },
   };
 };

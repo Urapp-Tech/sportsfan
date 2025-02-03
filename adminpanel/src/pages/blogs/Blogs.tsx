@@ -115,47 +115,17 @@ const Blogs = () => {
 
   const columns: ColumnDef<Users>[] = [
     {
-      accessorKey: 'firstName',
-      header: 'Name',
+      accessorKey: 'title',
+      header: 'Title',
       cell: ({ row }) => (
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage
-              src={row.original.avatar || ''}
-              alt={row.getValue('firstName') || '@fallback'}
-            />
-            <AvatarFallback>
-              {getInitials(row.getValue('firstName'))}
-            </AvatarFallback>
-          </Avatar>
-          <div className="capitalize font-semibold">
-            {row.getValue('firstName')}
-          </div>
-        </div>
+        <div className="capitalize font-semibold">{row.getValue('title')}</div>
       ),
     },
     {
-      accessorKey: 'email',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Email
-            <ArrowUpDown />
-          </Button>
-        );
-      },
+      accessorKey: 'description',
+      header: 'Description',
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('email')}</div>
-      ),
-    },
-    {
-      accessorKey: 'phone',
-      header: 'Phone',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('phone')}</div>
+        <div className="capitalize">{row.getValue('description')}</div>
       ),
     },
     {
@@ -164,15 +134,6 @@ const Blogs = () => {
       cell: ({ row }) => (
         <div className="capitalize bg-neptune-bg/30 text-center w-[50px] h-[22px] rounded-[30px] text-[10px] leading-normal font-semibold text-saturn-bg py-[1px] border-neptune-bg border-2">
           {row.getValue('isActive') ? 'Active' : 'In-Active'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'address',
-      header: 'Address',
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.getValue('address') ? row.getValue('address') : '---'}
         </div>
       ),
     },
@@ -239,9 +200,9 @@ const Blogs = () => {
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchBlogs = async () => {
     try {
-      const users = await usersService.list(search, page, pageSize);
+      const users = await service.list(search, page, pageSize);
       if (users.data.success) {
         setMainIsLoader(false);
         setList(users.data.data.list);
@@ -262,19 +223,19 @@ const Blogs = () => {
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      fetchUsers();
+      fetchBlogs();
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchBlogs();
   }, []);
 
-  const deleteUserHandler = (data: any) => {
+  const deleteHandler = (data: any) => {
     const userId = data.id;
     setIsLoader(true);
     service
-      .deleteUser(userId)
+      .deleteBlog(userId)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setDeleteOpen(false);
@@ -340,9 +301,7 @@ const Blogs = () => {
     },
   });
 
-  const createEmployeeHandler = (data: any) => {
-    console.log('dadad', data);
-
+  const createBlogHandler = (data: any) => {
     setIsLoader(true);
     const formData = new FormData();
     formData.append('title', data.title);
@@ -373,13 +332,22 @@ const Blogs = () => {
       });
   };
 
-  const updateEmployeeHandler = (data: any) => {
-    const userId = data.id;
-    data.username = data.email;
-    delete data.id;
+  const updateBlogHandler = (data: any) => {
     setIsLoader(true);
+    const blogId = data.id;
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    formData.append('deletedPrevImages', data.deletedPrevImages);
+    if (data.images.length) {
+      data.images.forEach((image: any) => {
+        formData.append('images', image);
+      });
+    } else {
+      formData.append('images', '');
+    }
     service
-      .update(userId, data)
+      .update(blogId, formData)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setEditOpen(false);
@@ -387,11 +355,9 @@ const Blogs = () => {
           setList((newArr: any) => {
             return newArr.map((item: any) => {
               if (item.id === updateItem.data.data.id) {
-                item.firstName = updateItem.data.data.firstName;
-                item.lastName = updateItem.data.data.lastName;
-                item.email = updateItem.data.data.email;
-                item.phone = updateItem.data.data.phone;
-                item.address = updateItem.data.data.address;
+                item.title = updateItem.data.data.title;
+                item.description = updateItem.data.data.description;
+                item.images = updateItem.data.data.images;
               }
               return { ...item };
             });
@@ -411,19 +377,7 @@ const Blogs = () => {
 
   return (
     <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
-      {/* <div className='flex gap-4'>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.notifyIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.avatarIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-      </div> */}
-      <TopBar title="Admin Users" />
+      <TopBar title="Blogs" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* admin content page height */}
         <div className="w-full">
@@ -550,7 +504,7 @@ const Blogs = () => {
           isLoader={isLoader}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          callback={createEmployeeHandler}
+          callback={createBlogHandler}
         />
       )}
       {editOpen && (
@@ -559,7 +513,7 @@ const Blogs = () => {
           isOpen={editOpen}
           setIsOpen={setEditOpen}
           formData={editFormData}
-          callback={updateEmployeeHandler}
+          callback={updateBlogHandler}
         />
       )}
       {deleteOpen && (
@@ -567,9 +521,9 @@ const Blogs = () => {
           isLoader={isLoader}
           isOpen={deleteOpen}
           setIsOpen={setDeleteOpen}
-          title={'User'}
+          title={'Blog'}
           formData={editFormData}
-          callback={deleteUserHandler}
+          callback={deleteHandler}
         />
       )}
     </div>

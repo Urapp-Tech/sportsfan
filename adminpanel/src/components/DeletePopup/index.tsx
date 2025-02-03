@@ -41,18 +41,18 @@ const DeleteDialog = ({
           </div>
           <DialogFooter className="mt-3">
             <Button
+              variant="ghost"
               onClick={() => {
                 setIsOpen(false);
               }}
-              className="w-24"
+              className="ml-auto w-[148px] h-[35px] bg-white rounded-[20px] text-[12px] leading-[16px] font-semibold text-venus-bg border-[2px]"
             >
               No
             </Button>
             <Button
-              variant={'outline'}
               disabled={isLoader}
               onClick={() => callback({ id: formData.id, text: 'yes' })}
-              className="w-24 hover:bg-red-700 hover:text-white"
+              className="ml-auto w-[148px] h-[35px] bg-venus-bg rounded-[20px] text-[12px] leading-[16px] font-semibold text-quinary-bg"
             >
               {isLoader && <Loader2 className="animate-spin" />} Delete
             </Button>

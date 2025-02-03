@@ -10,8 +10,8 @@ const list = async (req) => {
   const query = knex
     .from(MODULE.ADMIN.BLOG)
     .where({
-      tenant: req.session.tenant,
-      branch: req.session.branch,
+      tenant: req.user.tenant,
+      branch: req.user.branch,
       is_deleted: false,
     })
     .modify(textFilterHelper(req.query.search, ['title']));
@@ -48,8 +48,8 @@ const create = async (req, body) => {
   const data = body;
   const newData = {
     ...data,
-    tenant: req.session.tenant,
-    branch: req.session.branch,
+    tenant: req.user.tenant,
+    branch: req.user.branch,
   };
   const [createdPage] = await knex(MODULE.ADMIN.BLOG)
     .insert(newData)
@@ -59,14 +59,17 @@ const create = async (req, body) => {
 };
 
 const update = async (req, body) => {
+  console.log('BODY', body);
+
   /** @type {import('knex').Knex} */
   const knex = req.knex;
   const data = body;
   const newData = {
     ...data,
+    images: JSON.stringify(body.images),
     updated_at: new Date(),
   };
-  const [updatedPage] = await knex(MODULE.ADMIN.PAGE)
+  const [updatedPage] = await knex(MODULE.ADMIN.BLOG)
     .update(newData)
     .where('id', req.params.id)
     .returning('*');
@@ -78,9 +81,18 @@ const deleteRecord = async (req, params) => {
   /** @type {import('knex').Knex} */
   const knex = req.knex;
 
-  return knex(MODULE.ADMIN.PAGE)
+  return knex(MODULE.ADMIN.BLOG)
     .where('id', params.id)
     .update({ isDeleted: true });
+};
+
+const findById = async (req) => {
+  /** @type {import('knex').Knex} */
+  const knex = req.knex;
+  return knex(MODULE.ADMIN.BLOG)
+    .select('images')
+    .where({ id: req.params.id })
+    .first();
 };
 
 export default {
@@ -88,4 +100,5 @@ export default {
   create,
   update,
   deleteRecord,
+  findById,
 };

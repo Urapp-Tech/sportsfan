@@ -13,6 +13,10 @@ export default Object.freeze({
     CATEGORY: 'categories',
     PRODUCT: 'products',
     USER: 'users',
+    FEEDBACK: 'feedback',
+    ORDER: 'orders',
+    ORDER_ITEM: 'order_items',
+    ORDER_STATUS: 'order_statuses',
   }),
   APP: Object.freeze({}),
 });

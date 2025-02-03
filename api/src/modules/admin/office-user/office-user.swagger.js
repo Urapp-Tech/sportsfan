@@ -78,6 +78,9 @@ const swagger = {
         firstName: Type.String(),
         lastName: Type.Optional(Type.String()),
         email: Type.String({ format: 'email' }),
+        password: Type.String({
+          pattern: '^[a-zA-Z0-9]{3,30}$',
+        }),
         phone: Type.String(),
         address: Type.Optional(Type.String()),
         role: Type.String(),

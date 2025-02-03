@@ -1,4 +1,5 @@
 export interface Fields {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -7,4 +8,5 @@ export interface Fields {
   address: string;
   userType: string;
   avatar: string;
+  role: string;
 }

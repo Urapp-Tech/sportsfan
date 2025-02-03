@@ -352,6 +352,7 @@ const OfficeUsers = () => {
     formData.append('phone', data.phone);
     formData.append('password', data.password);
     formData.append('address', data.address);
+    formData.append('role', data.role);
     if (data.avatar) formData.append('avatar', data.avatar);
     userService
       .create(data)
@@ -375,12 +376,20 @@ const OfficeUsers = () => {
   };
 
   const updateEmployeeHandler = (data: any) => {
-    const userId = data.id;
-    data.username = data.email;
-    delete data.id;
+    // console.log('🚀 ~ updateEmployeeHandler ~ data:', data);
+    const formData = new FormData();
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    formData.append('email', data.email);
+    formData.append('username', data.email);
+    formData.append('phone', data.phone);
+    formData.append('password', data.password);
+    formData.append('address', data.address);
+    formData.append('role', data.role);
+    if (data.avatar) formData.append('avatar', data.avatar);
     setIsLoader(true);
     userService
-      .update(userId, data)
+      .update(data.id, formData)
       .then((updateItem) => {
         if (updateItem.data.success) {
           setEditOpen(false);
@@ -412,18 +421,6 @@ const OfficeUsers = () => {
 
   return (
     <div className=" bg-white p-2 rounded-[20px] shadow-2xl mt-5">
-      {/* <div className='flex gap-4'>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.notifyIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-        <NavLink to=''>
-          <div className='w-[45px] h-[45px]'>
-            <img src={assets.images.avatarIcon} alt='icon' className='w-full h-full object-contain' />
-          </div>
-        </NavLink>
-      </div> */}
       <TopBar title="Admin Users" />
       <SidebarInset className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* admin content page height */}

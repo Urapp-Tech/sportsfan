@@ -2,14 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
-  font-family: "Montserrat";
+  font-family: 'Montserrat';
 }
 
 @layer base {
   :root {
-
     /* Sports Var Start */
 
     --custom-primary: 255, 225, 230;
@@ -26,9 +24,6 @@
     --custom-red: 255, 48, 79;
     --custom-placeholder: 197, 201, 213;
     /* Sports Var End */
-
-
-
 
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
@@ -62,7 +57,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -97,7 +92,7 @@
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -149,6 +144,18 @@
   @apply text-tertiary-bg;
 }
 
+.custom-form-section textarea {
+  height: 60px;
+  border-radius: 20px;
+  @apply bg-earth-bg;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  @apply text-tertiary-bg;
+  padding: 10px 12px;
+  border: none;
+}
+
 .custom-form-section input,
 .custom-form-section select {
   height: 60px;
@@ -162,16 +169,16 @@
   border: none;
 }
 
-.custom-form-section input:focus {
+.custom-form-section input:focus,
+.custom-form-section textarea:focus {
   outline: none !important;
   border: none !important;
   box-shadow: unset !important;
 }
 
-.custom-form-section input::placeholder {
+.custom-form-section input::placeholder,
+.custom-form-section textarea::placeholder {
   @apply text-palceholder-bg;
-
-
 }
 
 /* .select-field button:focus {
@@ -182,7 +189,6 @@
 .select-field select:focus {
   border: none !important;
   outline: none !important;
-
 }
 
 .select-field button {
@@ -199,8 +205,6 @@
 
 .select-field button::placeholder {
   @apply text-palceholder-bg;
-
-
 }
 
 .select-field option {
@@ -224,31 +228,29 @@
 }
 
 .cs-dialog-box::-webkit-scrollbar-track {
-
   border-radius: 20px;
 }
 
 .cs-dialog-box::-webkit-scrollbar-thumb {
   width: 24px;
   @apply bg-mars-bg;
-  border: 5px solid #CCEEF4;
+  border: 5px solid #cceef4;
   border-radius: 15px;
 }
 
-.cs-radio-wrap button[aria-checked="false"] {
+.cs-radio-wrap button[aria-checked='false'] {
   @apply border-lunar-bg !important;
   border: 2px solid;
-
 }
 
-.cs-radio-wrap button[aria-checked="true"] {
+.cs-radio-wrap button[aria-checked='true'] {
   @apply border-lunar-bg !important;
   border: 2px solid;
 
   @apply bg-earth-bg !important;
 }
 
-.cs-radio-wrap button[aria-checked="true"] svg {
+.cs-radio-wrap button[aria-checked='true'] svg {
   fill: rgb(114, 149, 246) !important;
   stroke: none;
   width: 10px;
@@ -261,21 +263,20 @@
   background: #ffff00; */
 }
 
-.custom--checkbox button[aria-checked="false"] {
+.custom--checkbox button[aria-checked='false'] {
   border: 2px solid #1b46df;
   border-radius: 3px;
   width: 20px;
   height: 20px;
 }
 
-.custom--checkbox button[aria-checked="true"] {
+.custom--checkbox button[aria-checked='true'] {
   border: 2px solid rgb(27, 70, 223);
   border-radius: 3px;
   width: 20px;
   height: 20px;
   @apply bg-lunar-bg !important;
 }
-
 
 .cs-main-wrap {
   border-radius: 20px;

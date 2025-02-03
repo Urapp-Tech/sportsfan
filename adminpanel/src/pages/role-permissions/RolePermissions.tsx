@@ -54,6 +54,7 @@ import { useNavigate } from 'react-router';
 
 export type Users = {
   id: string; // UUID
+  key: string;
   tenant: string; // UUID representing the tenant ID
   firstName: string;
   lastName: string;
@@ -77,7 +78,6 @@ export type Users = {
 };
 
 const RolePermissions = () => {
-  const userDetails: any = getItem('USER');
   const { toast } = useToast();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
@@ -93,8 +93,6 @@ const RolePermissions = () => {
 
   const [isLoader, setIsLoader] = useState(false);
   const [mainIsLoader, setMainIsLoader] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const ToastHandler = (text: string) => {
@@ -141,8 +139,8 @@ const RolePermissions = () => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const { id } = row.original;
-        return (
+        const { id, key } = row.original;
+        return key !== 'SUPER_ADMIN' ? (
           <div className="flex justify-center items-center">
             <div>
               <Pencil
@@ -163,6 +161,10 @@ const RolePermissions = () => {
                 size={20}
               />
             </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center">
+            ALL PERMISSIONS
           </div>
         );
       },

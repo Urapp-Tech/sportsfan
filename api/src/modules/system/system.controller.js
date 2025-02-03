@@ -10,7 +10,7 @@ const get = async (req, res) => {
     ...req.query,
   };
 
-  console.log('🚀 ~ get ~ ̥:', params);
+  // console.log('🚀 ~ get ~ ̥:', params);
   const promise = service.get(req, params);
   const [error, result] = await promiseHandler(promise);
   if (error) {
