@@ -5,6 +5,7 @@ import HTTP_STATUS from '#utilities/http-status';
 import generate from '#utilities/otp-generator';
 import promiseHandler from '#utilities/promise-handler';
 import createRedisFunctions from '#utilities/redis-helpers';
+import { getAccessTokenKey, getKeysPattern, getRefreshTokenKey } from '#utilities/redis-keys';
 
 /**
  * Authenticate USer.
@@ -15,7 +16,7 @@ import createRedisFunctions from '#utilities/redis-helpers';
 const login = async (req) => {
   const [error, result] = await promiseHandler(
     model.getUserBy(req.knex, (db) => {
-      db.where('email', req.body.email).andWhere('tenant', req.query.tenant);
+      db.where('email', req.body.email).andWhere('tenant', req.query.tenant).where('is_deleted',false);
     })
   );
 
@@ -26,7 +27,7 @@ const login = async (req) => {
   }
 
   if (!result) {
-    const err = new Error(`Invalid Credentials`);
+    const err = new Error(`User does not exist`);
     err.code = HTTP_STATUS.UNAUTHORIZED;
     throw err;
   }
@@ -138,7 +139,7 @@ const register = async (req) => {
 const forgotPassword = async (req) => {
   const [error, result] = await promiseHandler(
     model.getUserBy(req.knex, (db) => {
-      db.where('email', req.body.email).where('tenant', req.query.tenant);
+      db.where('email', req.body.email).where('tenant', req.query.tenant).where('is_deleted',false);
     })
   );
 
@@ -206,7 +207,7 @@ const verifyOtp = async (req) => {
 
   const [error, user] = await promiseHandler(
     model.getUserBy(req.knex, (db) => {
-      db.where('email', email).where('tenant', tenant);
+      db.where('email', email).where('tenant', tenant).where('is_deleted',false);
     })
   );
 
@@ -240,7 +241,7 @@ const resetPassword = async (req) => {
 
   const [error, user] = await promiseHandler(
     model.getUserBy(req.knex, (db) => {
-      db.where('email', email).where('tenant', tenant);
+      db.where('email', email).where('tenant', tenant).where('is_deleted',false);
     })
   );
 
@@ -295,6 +296,35 @@ const resetPassword = async (req) => {
   };
 };
 
+const logout = async (req) => {
+  const { id } = req.user;
+
+  const { keys, del } = createRedisFunctions(req.redis);
+
+  if (req.body.invalidateAllTokens) {
+    const pattern = getKeysPattern(id);
+    const userKeys = await keys(pattern);
+    await del(userKeys);
+
+    return {
+      code: HTTP_STATUS.OK,
+      message: 'signed out successfully.',
+    };
+  }
+
+  const tokenHash = req.headers.tokenHash;
+
+  const accessTokenKey = getAccessTokenKey(id, tokenHash);
+  const refreshTokenKey = getRefreshTokenKey(id, tokenHash);
+
+  await del([accessTokenKey, refreshTokenKey]);
+
+  return {
+    code: HTTP_STATUS.OK,
+    message: 'signed out successfully.',
+  };
+};
+
 
 export default {
   login,
@@ -302,4 +332,5 @@ export default {
   forgotPassword,
   verifyOtp,
   resetPassword,
+  logout,
 };

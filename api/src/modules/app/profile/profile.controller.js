@@ -12,7 +12,13 @@ const updatePassword = async (req, res) => {
     return handleResponse(req, res, promise);
 }
 
+const deleteProfile = async (req, res) => {
+    const promise = promiseHandler(service.deleteAccount(req));
+    return handleResponse(req, res, promise);
+}
+
 export default {
   update,
   updatePassword,
+  deleteProfile,
 };

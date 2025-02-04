@@ -27,10 +27,16 @@ const otpVerify = async (req, res) => {
     return handleResponse(req, res, promise);
 }
 
+const logout = async (req, res) => {
+    const promise = promiseHandler(service.logout(req));
+    return handleResponse(req, res, promise);
+}
+
 export default {
   login,
   register,
   forgotPassword,
   resetPassword,
   otpVerify,
+  logout,
 };

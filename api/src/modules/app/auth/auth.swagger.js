@@ -129,6 +129,18 @@ const swagger = {
       { additionalProperties: false }
     ),
   },
+  logout: {
+    description: 'this will sign out user',
+    tags: ['APP| Auth |Sign out'],
+    summary: 'sign out user',
+    operationId: 'appUserSignOutAction',
+    body: Type.Object(
+      {
+        invalidateAllTokens: Type.Boolean(),
+      },
+      { additionalProperties: false }
+    ),
+  },
 };
 
 export default swagger;

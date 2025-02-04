@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 const swagger = {
   profileUpdate: {
     description: 'This will update the user profile information.',
-    tags: ['APP| Auth |User Profile Update'],
+    tags: ['APP| Profile |User Profile Update'],
     summary: 'Update user profile information',
     operationId: 'appUserProfileUpdate',
     querystring: Type.Object(
@@ -33,10 +33,9 @@ const swagger = {
 
   updatePassword: {
     description: 'This will update the user password.',
-    tags: ['APP| Auth |User Password Update'],
+    tags: ['APP| Profile |User Password Update'],
     summary: 'Update user password',
     operationId: 'appUserPasswordUpdate',
-    security: [{ BearerAuth: [] }], // Ensure the endpoint requires authentication
     body: Type.Object(
       {
         currentPassword: Type.String({ minLength: 8, maxLength: 50 }),
@@ -124,6 +123,66 @@ const swagger = {
               code: Type.Number({ default: 500 }),
               message: Type.String({
                 default: 'An error occurred while updating the password.',
+              }),
+            }),
+          },
+        },
+      },
+    },
+  },
+  
+  deleteProfile: {
+    description: 'This will delete the user profile/account.',
+    tags: ['APP| Profile |User Profile Delete'],
+    summary: 'Delete user profile/account',
+    operationId: 'appUserProfileDelete',
+    response: {
+      200: {
+        description: 'Profile deleted successfully.',
+        content: {
+          'application/json': {
+            schema: Type.Object({
+              code: Type.Number({ default: 200 }),
+              message: Type.String({
+                default: 'Profile deleted successfully.',
+              }),
+              data: Type.Object({}),
+            }),
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+        content: {
+          'application/json': {
+            schema: Type.Object({
+              code: Type.Number({ default: 401 }),
+              message: Type.String({
+                default: 'Unauthorized. Please log in to continue.',
+              }),
+            }),
+          },
+        },
+      },
+      404: {
+        description: 'User not found',
+        content: {
+          'application/json': {
+            schema: Type.Object({
+              code: Type.Number({ default: 404 }),
+              message: Type.String({ default: 'User not found.' }),
+            }),
+          },
+        },
+      },
+      500: {
+        description: 'Internal Server Error',
+        content: {
+          'application/json': {
+            schema: Type.Object({
+              code: Type.Number({ default: 500 }),
+              message: Type.String({
+                default: 'An error occurred while deleting the profile.',
               }),
             }),
           },
